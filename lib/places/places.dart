@@ -23,30 +23,27 @@ class PlacesState extends State<Places> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _formKey,
-      appBar: AppBar(title: Text("Рестораны")),
+      appBar: AppBar(title: const Text("Рестораны")),
       body: GridView.count(
         primary: false,
         padding: const EdgeInsets.all(20),
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         crossAxisCount: 2,
-        children: <Widget>[
-          const PlaceBox(),
-          const PlaceBox(),
-          const PlaceBox()
-        ],
+        children: data.map((place) => PlaceBox(data: place)).toList(),
       ),
     );
   }
 }
 
-class PlaceModel {
-  String name;
-  int currentGuests;
-  int maxGuests;
+class PlaceModel extends Container {
+  final String name;
+  final int currentGuests;
+  final int maxGuests;
 
   PlaceModel(
-      {required this.name,
+      {super.key,
+      required this.name,
       required this.currentGuests,
       required this.maxGuests});
 }
