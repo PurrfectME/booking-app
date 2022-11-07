@@ -1,17 +1,27 @@
-import 'package:booking_app/form/registration_form.dart';
-import 'package:booking_app/places/places.dart';
 import 'package:flutter/material.dart';
+
+import '../models/place_model.dart';
+import '../models/table_model.dart';
+import 'place_info.dart';
 
 class PlaceBox extends StatelessWidget {
   final PlaceModel data;
-  const PlaceBox({super.key, required this.data});
+  final mocked = [
+    TableModel(isFree: true, guestsCount: 6, config: null),
+    TableModel(isFree: false, guestsCount: 2, config: null),
+    TableModel(isFree: false, guestsCount: 3, config: null),
+    TableModel(isFree: true, guestsCount: 6, config: null)
+  ];
+
+  PlaceBox({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => {
-        Future.delayed(Duration(seconds: 1))
-            .then((value) => Navigator.pop(context))
+        Future.delayed(Duration(seconds: 1)).then((value) => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PlaceInfo(data: mocked))))
       },
       child: Container(
           margin: const EdgeInsets.all(7.0),

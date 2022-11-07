@@ -24,13 +24,6 @@ class RegistrationFormState extends State<RegistrationForm> {
     }
   }
 
-  // void phoneNumberOnChange(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return;
-  //   }
-  //   else if(value.length == )
-  // }
-
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -57,8 +50,10 @@ class RegistrationFormState extends State<RegistrationForm> {
                     const SnackBar(content: Text('Входим')),
                   );
                   Future.delayed(Duration(seconds: 1)).then((value) =>
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Places())));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Places())));
                 }
               },
               child: const Text('Войти'),

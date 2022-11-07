@@ -1,5 +1,6 @@
-import 'package:booking_app/places/place_box.dart';
 import 'package:flutter/material.dart';
+import '../models/place_model.dart';
+import 'place_box.dart';
 
 class Places extends StatefulWidget {
   const Places({super.key});
@@ -34,16 +35,4 @@ class PlacesState extends State<Places> {
       ),
     );
   }
-}
-
-class PlaceModel extends Container {
-  final String name;
-  final int currentGuests;
-  final int maxGuests;
-
-  PlaceModel(
-      {super.key,
-      required this.name,
-      required this.currentGuests,
-      required this.maxGuests});
 }
