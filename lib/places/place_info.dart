@@ -33,7 +33,12 @@ class PlaceInfoState extends State<PlaceInfo> {
         right: data[i].config?.right,
         top: data[i].config?.top,
         child: InkWell(
-            onTap: () => data[i].isFree ? showAlertDialog(context) : null,
+            onTap: data[i].isFree
+                ? () => showAlertDialog(context, data[i]).then((value) =>
+                    value != null
+                        ? setState((() => widget.data[i] = value))
+                        : null)
+                : null,
             child: Container(
                 width: 100,
                 height: 100,
@@ -50,7 +55,7 @@ class PlaceInfoState extends State<PlaceInfo> {
     return result;
   }
 
-  showAlertDialog(BuildContext context) {
+  Future<dynamic> showAlertDialog(BuildContext context, TableModel model) {
     Widget cancelButton = TextButton(
       child: const Text("Закрыть"),
       onPressed: () {
@@ -60,7 +65,9 @@ class PlaceInfoState extends State<PlaceInfo> {
     Widget continueButton = TextButton(
       child: const Text("Подтвердить"),
       onPressed: () {
-        Navigator.pop(context);
+        model.isFree = false;
+        model.guestsCount += 1;
+        Navigator.pop(context, model);
       },
     );
 
@@ -75,7 +82,7 @@ class PlaceInfoState extends State<PlaceInfo> {
     );
 
     // show the dialog
-    showDialog(
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
         return alert;
