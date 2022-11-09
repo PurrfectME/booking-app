@@ -1,9 +1,11 @@
+import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/table_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PlaceInfoScreen extends StatefulWidget {
-  final List<TableModel> data;
-  const PlaceInfoScreen({super.key, required this.data});
+  const PlaceInfoScreen({super.key});
 
   @override
   PlaceInfoScreenState createState() {
@@ -33,12 +35,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         right: data[i].config?.right,
         top: data[i].config?.top,
         child: InkWell(
-            onTap: data[i].isFree
-                ? () => showAlertDialog(context, data[i]).then((value) =>
-                    value != null
-                        ? setState((() => widget.data[i] = value))
-                        : null)
-                : null,
+            onTap:
+                data[i].isFree ? () => showAlertDialog(context, data[i]) : null,
             child: Container(
                 width: 100,
                 height: 100,
@@ -55,7 +53,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
     return result;
   }
 
-  Future<dynamic> showAlertDialog(BuildContext context, TableModel model) {
+  void showAlertDialog(BuildContext context, TableModel table) {
     Widget cancelButton = TextButton(
       child: const Text("Закрыть"),
       onPressed: () {
@@ -65,9 +63,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
     Widget continueButton = TextButton(
       child: const Text("Подтвердить"),
       onPressed: () {
-        model.isFree = false;
-        model.guestsCount += 1;
-        Navigator.pop(context, model);
+        Navigator.pop(context);
+        context.read<PlaceInfoBloc>().add(PlaceTableReserve(table.id));
       },
     );
 
@@ -82,7 +79,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
     );
 
     // show the dialog
-    return showDialog(
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return alert;
@@ -92,11 +89,34 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text("Выбрать место")),
-        body: Container(
-          margin: const EdgeInsets.all(17.0),
-          child: Stack(children: processTables(widget.data)),
-        ));
+    return BlocListener<PlaceInfoBloc, PlaceInfoState>(
+      listener: (context, state) {
+        if (state is PlaceTableReserveSuccess) {
+          // TODO: modal: success reserve
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Стол ${state.id} забронирован!')),
+          );
+          // Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(title: const Text("Выбрать место")),
+          body: BlocBuilder<PlaceInfoBloc, PlaceInfoState>(
+            builder: (context, state) {
+              if (state is PlaceInfoLoading) {
+                return const CupertinoActivityIndicator();
+              } else if (state is PlaceInfoError) {
+                return Text(state.error);
+              } else if (state is PlaceInfoLoaded) {
+                return Container(
+                  margin: const EdgeInsets.all(17.0),
+                  child: Stack(children: processTables(state.data)),
+                );
+              } else {
+                return SizedBox();
+              }
+            },
+          )),
+    );
   }
 }

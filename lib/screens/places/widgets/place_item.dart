@@ -1,27 +1,16 @@
 import 'package:booking_app/models/models.dart';
-import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 
-class PlaceBox extends StatelessWidget {
-  final PlaceModel data;
-  final mocked = [
-    TableModel(isFree: true, guestsCount: 6, config: null),
-    TableModel(isFree: false, guestsCount: 2, config: null),
-    TableModel(isFree: false, guestsCount: 3, config: null),
-    TableModel(isFree: true, guestsCount: 6, config: null)
-  ];
+class PlaceItem extends StatelessWidget {
+  final PlaceModel place;
+  final void Function(PlaceModel place) onTap;
 
-  PlaceBox({super.key, required this.data});
+  const PlaceItem({super.key, required this.place, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => {
-        Future.delayed(Duration(seconds: 1)).then((value) => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PlaceInfoScreen(data: mocked))))
-      },
+      onTap: () => onTap(place),
       child: Container(
           margin: const EdgeInsets.all(7.0),
           width: 50.0,
@@ -38,11 +27,11 @@ class PlaceBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  data.name,
+                  place.name,
                   style: const TextStyle(color: Colors.white),
                 ),
                 Text(
-                  "Места: ${data.currentGuests}/${data.maxGuests}",
+                  "Места: ${place.currentGuests}/${place.maxGuests}",
                   style: const TextStyle(color: Colors.white),
                 )
               ],

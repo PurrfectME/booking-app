@@ -1,9 +1,11 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'widgets/place_box.dart';
+
+import 'widgets/widgets.dart';
 
 class PlacesScreen extends StatefulWidget {
   const PlacesScreen({super.key});
@@ -35,8 +37,9 @@ class PlacesScreenState extends State<PlacesScreen> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               crossAxisCount: 2,
-              children:
-                  state.data.map((place) => PlaceBox(data: place)).toList(),
+              children: state.data
+                  .map((place) => PlaceItem(place: place, onTap: _onPlaceTap))
+                  .toList(),
             );
           } else {
             //если билдер не нашёл стейт в обработке ифов
@@ -45,5 +48,16 @@ class PlacesScreenState extends State<PlacesScreen> {
         },
       ),
     );
+  }
+
+  void _onPlaceTap(PlaceModel place) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                  create: (context) =>
+                      PlaceInfoBloc(place: place)..add(PlaceInfoLoad()),
+                  child: const PlaceInfoScreen(),
+                )));
   }
 }
