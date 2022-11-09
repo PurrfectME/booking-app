@@ -1,8 +1,29 @@
-import 'package:booking_app/form/registration_form.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'blocs/simple_bloc_observer.dart';
 
 void main() {
-  runApp(const MyApp());
+  BlocOverrides.runZoned(
+    () => runApp(MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => LoginBloc()),
+          BlocProvider(create: (context) => PlacesBloc())
+        ],
+        child: BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {
+            if (state is LoginSuccess) {
+              context.read<PlacesBloc>().add(PlacesLoad());
+            }
+          },
+          child: MyApp(),
+        ))),
+    blocObserver: SimpleBlocObserver(),
+    eventTransformer: sequential<dynamic>(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -10,13 +31,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Давай заброним',
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Давай заброним'),
-          ),
-          body: const RegistrationForm()),
-    );
+    return const MaterialApp(title: 'Давай заброним', home: LoginScreen());
   }
 }
