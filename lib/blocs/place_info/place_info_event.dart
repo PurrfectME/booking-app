@@ -11,9 +11,11 @@ class PlaceInfoLoad extends PlaceInfoEvent {}
 
 class PlaceTableReserve extends PlaceInfoEvent {
   final int id;
+  final int guestsCount;
+  final DateTime selectedDateTime;
 
-  const PlaceTableReserve(this.id);
+  const PlaceTableReserve(this.id, this.guestsCount, this.selectedDateTime);
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [id, guestsCount, selectedDateTime];
 }

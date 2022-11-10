@@ -13,7 +13,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
         emit(PlacesLoading());
 
 //call to api
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 2));
 
         final data = [
           PlaceModel(name: "NEFT", currentGuests: 30, maxGuests: 100),

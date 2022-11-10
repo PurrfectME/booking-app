@@ -27,7 +27,12 @@ class PlacesScreenState extends State<PlacesScreen> {
       body: BlocBuilder<PlacesBloc, PlacesState>(
         builder: (context, state) {
           if (state is PlacesLoading) {
-            return CupertinoActivityIndicator();
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: const CupertinoActivityIndicator(radius: 20)),
+              ],
+            );
           } else if (state is PlacesError) {
             return Text(state.error);
           } else if (state is PlacesLoaded) {

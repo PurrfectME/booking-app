@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/table_model.dart';
+import 'package:booking_app/screens/place_info/widgets/reserve_table_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +37,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         top: data[i].config?.top,
         child: InkWell(
             onTap:
-                data[i].isFree ? () => showAlertDialog(context, data[i]) : null,
+                data[i].isFree ? () => showTableReserveDialog(data[i]) : null,
             child: Container(
                 width: 100,
                 height: 100,
@@ -53,36 +54,20 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
     return result;
   }
 
-  void showAlertDialog(BuildContext context, TableModel table) {
-    Widget cancelButton = TextButton(
-      child: const Text("Закрыть"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    Widget continueButton = TextButton(
-      child: const Text("Подтвердить"),
-      onPressed: () {
-        Navigator.pop(context);
-        context.read<PlaceInfoBloc>().add(PlaceTableReserve(table.id));
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("Бронирование стола"),
-      content: const Text("Укажите точное количество гостей и время брони"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
+  void showTableReserveDialog(TableModel table) {
+    final placeInfoBloc = context.read<PlaceInfoBloc>();
 
     // show the dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return alert;
+        return ReserveTableDialog(
+            table: table,
+            onReserveCallback: (guestsCount, selectedDateTime) {
+              Navigator.pop(context);
+              placeInfoBloc.add(
+                  PlaceTableReserve(table.id, guestsCount, selectedDateTime));
+            });
       },
     );
   }
@@ -98,13 +83,21 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
           );
           // Navigator.pop(context);
         }
+        // else if (state is Place) {
+        //   //TODO: error modal
+        // }
       },
       child: Scaffold(
           appBar: AppBar(title: const Text("Выбрать место")),
           body: BlocBuilder<PlaceInfoBloc, PlaceInfoState>(
             builder: (context, state) {
               if (state is PlaceInfoLoading) {
-                return const CupertinoActivityIndicator();
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(child: const CupertinoActivityIndicator(radius: 20)),
+                  ],
+                );
               } else if (state is PlaceInfoError) {
                 return Text(state.error);
               } else if (state is PlaceInfoLoaded) {

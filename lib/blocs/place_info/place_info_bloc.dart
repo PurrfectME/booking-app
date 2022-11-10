@@ -15,7 +15,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
 
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 2));
 
         final data = [
           TableModel(id: 1, isFree: true, guestsCount: 6, config: null),
@@ -40,7 +40,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           }
           emit(PlaceTableReserveSuccess(id: event.id));
         } else {
-          // emit(Place``)
+          // RESERVE ERROR IN MODal
         }
         emit(PlaceInfoLoaded(tables));
       }
