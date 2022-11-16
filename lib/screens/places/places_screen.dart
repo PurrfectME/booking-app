@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'widgets/widgets.dart';
 
 class PlacesScreen extends StatefulWidget {
+  static const pageRoute = '/places';
   const PlacesScreen({super.key});
 
   @override
