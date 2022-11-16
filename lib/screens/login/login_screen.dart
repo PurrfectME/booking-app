@@ -1,11 +1,13 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/navigation.dart';
+import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const pageRoute = '/login';
+  static const pageRoute = '/';
   const LoginScreen({super.key});
 
   @override
@@ -41,13 +43,13 @@ class LoginScreenState extends State<LoginScreen> {
         } else if (state is LoginSuccess) {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const PlacesScreen()),
+              MaterialPageRoute(builder: (context) => const MainScreen()),
               (route) => false);
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Рестораны'),
+          title: const Text('Логин'),
         ),
         body: Form(
           key: _formKey,
@@ -72,7 +74,7 @@ class LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: BlocBuilder<LoginBloc, LoginState>(
                       buildWhen: (previous, current) {
-                    if (current is LoginSuccess) return false;
+                    if (current is LoginSuccess) Navigation.toMain();
                     if (current is LoginError) return false;
                     return true;
                   }, builder: (context, state) {

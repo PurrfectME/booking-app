@@ -30,17 +30,14 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) => SafeArea(
         bottom: false,
         child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 0, 16, 36),
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.green,
-                    blurRadius: 15,
-                    offset: const Offset(0, 4))
-              ]),
+          // margin: const EdgeInsets.fromLTRB(16, 0, 16, 36),
+          // padding: const EdgeInsets.symmetric(vertical: 4),
+          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+            BoxShadow(
+                color: Color.fromARGB(255, 198, 201, 198),
+                blurRadius: 15,
+                offset: const Offset(0, 4))
+          ]),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,

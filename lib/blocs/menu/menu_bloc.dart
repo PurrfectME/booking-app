@@ -11,7 +11,7 @@ part 'menu_state.dart';
 class MenuBloc extends Bloc<MenuEvent, MenuState> {
   MenuTab? currentTab;
 
-  MenuBloc() : super(const MenuState(tab: MenuTab.login)) {
+  MenuBloc() : super(const MenuState(tab: MenuTab.places)) {
     on<MenuEvent>(_onEvent);
   }
 

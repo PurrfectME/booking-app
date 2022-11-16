@@ -1,6 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
+import 'package:booking_app/models/menu_tab.dart';
 import 'package:booking_app/screens/login/login_screen.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
@@ -55,15 +56,14 @@ class MyApp extends StatelessWidget {
         } else if (path == MainScreen.pageRoute) {
           builder = (context) => const MainScreen();
         } else {
-          builder ??= (context) => const MainScreen();
-
-          return MaterialWithModalsPageRoute<void>(
-            settings: settings,
-            builder: builder,
-          );
+          builder ??= (context) => const LoginScreen();
         }
+
+        return MaterialWithModalsPageRoute<void>(
+          settings: settings,
+          builder: builder,
+        );
       },
-      home: MainScreen(),
       locale: Locale('ru', 'RU'),
       supportedLocales: [Locale('ru', 'RU')],
       localizationsDelegates: const [

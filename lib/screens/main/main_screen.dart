@@ -1,7 +1,6 @@
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/models/menu_tab.dart';
 import 'package:booking_app/models/nav_item.dart';
-import 'package:booking_app/screens/login/login_screen.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
 import 'package:booking_app/screens/profile/profile_screen.dart';
 import 'package:booking_app/widgets/bottom_nav.dart';
@@ -30,10 +29,6 @@ class _MainScreenState extends State<MainScreen>
       tab: MenuTab.profile,
       child: ProfileScreen(key: Key('ProfileScreen')),
     ),
-    const MenuTabWrapper(
-      tab: MenuTab.login,
-      child: LoginScreen(key: Key('LoginScreen')),
-    ),
   ];
 
   @override
@@ -42,8 +37,10 @@ class _MainScreenState extends State<MainScreen>
   }
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<MenuBloc, MenuState>(
-        builder: (context, state) => Scaffold(
+  Widget build(BuildContext context) =>
+      BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
+        final a = state;
+        return Scaffold(
           extendBody: true,
           backgroundColor: Colors.white,
           body: IndexedStack(
@@ -77,8 +74,8 @@ class _MainScreenState extends State<MainScreen>
               )
             ],
           ),
-        ),
-      );
+        );
+      });
 
   // Widget mapTabToScreen(MenuState tab) {
   //   var id = 0;
