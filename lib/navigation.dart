@@ -22,7 +22,7 @@ class Navigation {
 
   /// Navigate to [MainScreen]
   static Future<void> toMain() {
-    beforeNavigate();
+    // beforeNavigate();
     return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(MainScreen.pageRoute, (route) => false);
   }

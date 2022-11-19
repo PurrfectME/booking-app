@@ -74,6 +74,7 @@ class LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: BlocBuilder<LoginBloc, LoginState>(
                       buildWhen: (previous, current) {
+                    //разобраться почему падает null
                     if (current is LoginSuccess) Navigation.toMain();
                     if (current is LoginError) return false;
                     return true;

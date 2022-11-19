@@ -12,6 +12,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'blocs/simple_bloc_observer.dart';
+import 'navigation.dart';
 
 void main() {
   BlocOverrides.runZoned(
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: Navigation.navigatorKey,
       title: 'Давай заброним',
       initialRoute: '/',
       onGenerateRoute: (settings) {
