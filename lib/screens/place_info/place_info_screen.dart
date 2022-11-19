@@ -4,6 +4,7 @@ import 'package:booking_app/screens/place_info/widgets/reserve_table_dialog.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class PlaceInfoScreen extends StatefulWidget {
   const PlaceInfoScreen({super.key});
@@ -15,9 +16,32 @@ class PlaceInfoScreen extends StatefulWidget {
 }
 
 class PlaceInfoScreenState extends State<PlaceInfoScreen> {
+  late DateTime selectedDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    selectedDateTime =
+        DateTime(now.year, now.month, now.day, now.hour, now.minute);
+  }
+
   List<Widget> processTables(List<TableModel> data) {
     double top = 50;
-    List<Positioned> result = <Positioned>[];
+    List<Positioned> result = <Positioned>[
+      Positioned(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Center(
+            child: TextButton(
+                onPressed: _onDateTimeTap,
+                child: Text(DateFormat('E, d MMM yyyy HH:mm', 'RU')
+                    .format(selectedDateTime))),
+          ),
+        ],
+      ))
+    ];
 
     if (data.isEmpty) {
       return <Widget>[];
@@ -111,5 +135,24 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
             },
           )),
     );
+  }
+
+  _onDateTimeTap() async {
+    final date = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(Duration(days: 20000)));
+
+    if (date != null) {
+      final time =
+          await showTimePicker(context: context, initialTime: TimeOfDay.now());
+      if (time != null) {
+        setState(() {
+          selectedDateTime =
+              DateTime(date.year, date.month, date.day, time.hour, time.minute);
+        });
+      }
+    }
   }
 }
