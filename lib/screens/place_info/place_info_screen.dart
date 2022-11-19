@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/table_model.dart';
 import 'package:booking_app/screens/place_info/widgets/reserve_table_dialog.dart';
+import 'package:booking_app/screens/place_info/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,19 +60,21 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         left: data[i].config?.left,
         right: data[i].config?.right,
         top: data[i].config?.top,
-        child: InkWell(
-            onTap:
-                data[i].isFree ? () => showTableReserveDialog(data[i]) : null,
-            child: Container(
-                width: 100,
-                height: 100,
-                color: data[i].isFree ? Colors.greenAccent : Colors.redAccent,
-                child: Center(
-                  child: Text(
-                    data[i].isFree ? "Свободно" : "Занято",
-                    textAlign: TextAlign.center,
-                  ),
-                ))),
+        child: TableInfo(),
+        // child: InkWell(
+
+        //     onTap:
+        //         data[i].isFree ? () => showTableReserveDialog(data[i]) : null,
+        //     child: Container(
+        //         width: 100,
+        //         height: 100,
+        //         color: data[i].isFree ? Colors.greenAccent : Colors.redAccent,
+        //         child: Center(
+        //           child: Text(
+        //             data[i].isFree ? "Свободно" : "Занято",
+        //             textAlign: TextAlign.center,
+        //           ),
+        //         ))),
       ));
     }
 
@@ -87,7 +90,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
       builder: (BuildContext context) {
         return ReserveTableDialog(
             table: table,
-            onReserveCallback: (guestsCount, selectedDateTime) {
+            onReserveCallback: (guestsCount) {
               Navigator.pop(context);
               placeInfoBloc.add(
                   PlaceTableReserve(table.id, guestsCount, selectedDateTime));
@@ -125,9 +128,19 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
               } else if (state is PlaceInfoError) {
                 return Text(state.error);
               } else if (state is PlaceInfoLoaded) {
-                return Container(
-                  margin: const EdgeInsets.all(17.0),
-                  child: Stack(children: processTables(state.data)),
+                //TODO: TABLE PHOTOS CAROUSEL
+                return GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.all(20),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 1,
+                  children: [
+                    TableInfo(),
+                    TableInfo(),
+                    TableInfo(),
+                    TableInfo()
+                  ],
                 );
               } else {
                 return SizedBox();
