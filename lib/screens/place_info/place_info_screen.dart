@@ -2,6 +2,7 @@ import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/table_model.dart';
 import 'package:booking_app/screens/place_info/widgets/reserve_table_dialog.dart';
 import 'package:booking_app/screens/place_info/widgets/widgets.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,35 +49,35 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
       return <Widget>[];
     }
 
-    for (var i = 0; i < data.length; i++) {
-      if (i % 2 == 0) {
-        data[i].config = TableConfig(left: 0, top: top);
-      } else {
-        data[i].config = TableConfig(right: 0, top: top);
-        top += 250;
-      }
+    // for (var i = 0; i < data.length; i++) {
+    //   if (i % 2 == 0) {
+    //     data[i].config = TableConfig(left: 0, top: top);
+    //   } else {
+    //     data[i].config = TableConfig(right: 0, top: top);
+    //     top += 250;
+    //   }
 
-      result.add(Positioned(
-        left: data[i].config?.left,
-        right: data[i].config?.right,
-        top: data[i].config?.top,
-        child: TableInfo(),
-        // child: InkWell(
+    result.add(Positioned(
+      // left: data[i].config?.left,
+      // right: data[i].config?.right,
+      // top: data[i].config?.top,
+      child: TableInfo(),
+      // child: InkWell(
 
-        //     onTap:
-        //         data[i].isFree ? () => showTableReserveDialog(data[i]) : null,
-        //     child: Container(
-        //         width: 100,
-        //         height: 100,
-        //         color: data[i].isFree ? Colors.greenAccent : Colors.redAccent,
-        //         child: Center(
-        //           child: Text(
-        //             data[i].isFree ? "Свободно" : "Занято",
-        //             textAlign: TextAlign.center,
-        //           ),
-        //         ))),
-      ));
-    }
+      //     onTap:
+      //         data[i].isFree ? () => showTableReserveDialog(data[i]) : null,
+      //     child: Container(
+      //         width: 100,
+      //         height: 100,
+      //         color: data[i].isFree ? Colors.greenAccent : Colors.redAccent,
+      //         child: Center(
+      //           child: Text(
+      //             data[i].isFree ? "Свободно" : "Занято",
+      //             textAlign: TextAlign.center,
+      //           ),
+      //         ))),
+    ));
+    // }
 
     return result;
   }
@@ -128,20 +129,30 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
               } else if (state is PlaceInfoError) {
                 return Text(state.error);
               } else if (state is PlaceInfoLoaded) {
-                //TODO: TABLE PHOTOS CAROUSEL
                 return GridView.count(
-                  primary: false,
-                  padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 1,
-                  children: [
-                    TableInfo(),
-                    TableInfo(),
-                    TableInfo(),
-                    TableInfo()
-                  ],
-                );
+                    primary: false,
+                    // padding: const EdgeInsets.all(20),
+                    crossAxisCount: 1,
+                    children: state.data
+                        .map((table) => CarouselSlider.builder(
+                            itemCount: state.data.length, //COUNT OF PHOTOS
+                            itemBuilder: (context, index, realIndex) {
+                              return Container(
+                                  margin: EdgeInsets.only(bottom: 50),
+                                  child: TableInfo());
+                            },
+                            options: CarouselOptions(
+                              aspectRatio: 1,
+                              viewportFraction: 1,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: false,
+                              enlargeCenterPage: false,
+                              onPageChanged: null,
+                              scrollDirection: Axis.horizontal,
+                            )))
+                        .toList());
               } else {
                 return SizedBox();
               }

@@ -1,7 +1,6 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
-import 'package:booking_app/models/menu_tab.dart';
 import 'package:booking_app/screens/login/login_screen.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
@@ -20,12 +19,13 @@ void main() {
         providers: [
           BlocProvider(create: (context) => LoginBloc()),
           BlocProvider(create: (context) => PlacesBloc()),
-          BlocProvider(create: (context) => MenuBloc())
+          BlocProvider(create: (context) => MenuBloc()),
+          BlocProvider(create: (context) => ProfileBloc())
         ],
-        child: BlocListener<LoginBloc, LoginState>(
+        child: BlocListener<ProfileBloc, ProfileState>(
           listener: (context, state) {
-            if (state is LoginSuccess) {
-              context.read<PlacesBloc>().add(PlacesLoad());
+            if (state is ProfileSuccess) {
+              context.read<PlacesBloc>()..add(PlacesLoad());
             }
           },
           child: const MyApp(),

@@ -5,13 +5,9 @@ class TableModel extends Equatable {
   final int id;
   final bool isFree;
   final int guestsCount;
-  TableConfig? config;
 
-  TableModel(
-      {required this.id,
-      required this.isFree,
-      required this.guestsCount,
-      required this.config});
+  const TableModel(
+      {required this.id, required this.isFree, required this.guestsCount});
 
   @override
   List<Object?> get props => [id, isFree, guestsCount];
@@ -20,22 +16,11 @@ class TableModel extends Equatable {
     int? id,
     bool? isFree,
     int? guestsCount,
-    TableConfig? config,
   }) {
     return TableModel(
       id: id ?? this.id,
       isFree: isFree ?? this.isFree,
       guestsCount: guestsCount ?? this.guestsCount,
-      config: config ?? this.config,
     );
   }
-}
-
-class TableConfig {
-  double? left;
-  double? right;
-  double? bottom;
-  double? top;
-
-  TableConfig({this.left, this.right, this.bottom, this.top});
 }

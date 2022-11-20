@@ -18,10 +18,10 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         await Future.delayed(Duration(seconds: 2));
 
         final data = [
-          TableModel(id: 1, isFree: true, guestsCount: 6, config: null),
-          TableModel(id: 2, isFree: false, guestsCount: 2, config: null),
-          TableModel(id: 3, isFree: false, guestsCount: 3, config: null),
-          TableModel(id: 4, isFree: true, guestsCount: 6, config: null)
+          TableModel(id: 1, isFree: true, guestsCount: 6),
+          TableModel(id: 2, isFree: false, guestsCount: 2),
+          TableModel(id: 3, isFree: false, guestsCount: 3),
+          TableModel(id: 4, isFree: true, guestsCount: 6)
         ];
 
         tables = List.from(data);

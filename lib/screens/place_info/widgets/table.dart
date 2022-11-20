@@ -10,9 +10,9 @@ class TableInfo extends StatelessWidget {
     return InkWell(
       // onTap: () => onTap(place),
       child: Container(
-          margin: const EdgeInsets.all(7.0),
-          width: 300,
-          height: 300,
+          // margin: const EdgeInsets.all(5.0),
+          // width: 300,
+          // height: 300,
           decoration: const BoxDecoration(
               image: DecorationImage(
                   opacity: 1,

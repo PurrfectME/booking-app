@@ -36,7 +36,7 @@ class Navigation {
 
   /// Navigate to [ProfileScreen]
   static Future<void> toProfile() {
-    beforeNavigate();
+    // beforeNavigate();
     return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(ProfileScreen.pageRoute, (route) => false);
   }

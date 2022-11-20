@@ -41,10 +41,7 @@ class LoginScreenState extends State<LoginScreen> {
             SnackBar(content: Text('Ошибка: ${state.error}')),
           );
         } else if (state is LoginSuccess) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const MainScreen()),
-              (route) => false);
+          Navigation.toProfile();
         }
       },
       child: Scaffold(
@@ -74,8 +71,7 @@ class LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: BlocBuilder<LoginBloc, LoginState>(
                       buildWhen: (previous, current) {
-                    //разобраться почему падает null
-                    if (current is LoginSuccess) Navigation.toMain();
+                    if (current is LoginSuccess) Navigation.toProfile();
                     if (current is LoginError) return false;
                     return true;
                   }, builder: (context, state) {
