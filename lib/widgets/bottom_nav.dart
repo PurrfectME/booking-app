@@ -58,7 +58,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                             const SizedBox(height: 4),
                             DefaultTextStyle(
                               style:
-                                  TextStyle(color: Colors.amber, fontSize: 12),
+                                  TextStyle(color: Colors.black, fontSize: 18),
                               textAlign: TextAlign.center,
                               child: Text(e.label ?? ''),
                             )
@@ -71,18 +71,25 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
       );
 
-  BottomNavigationBarItem _navItem(String iconName, String title) =>
-      BottomNavigationBarItem(
-        // icon: Icon(Icons.home),
-        // activeIcon: Padding(
-        //   padding: const EdgeInsets.symmetric(vertical: 6),
-        //   child: SvgPicture.asset(
-        //     'assets/icon/$iconName.svg',
-        //     width: iconSize,
-        //     color: AppStyles.secondaryColor,
-        //   ),
-        // ),
-        icon: Icon(Icons.settings),
-        label: title,
-      );
+  BottomNavigationBarItem _navItem(String iconName, String title) {
+    Icon icon;
+
+    switch (iconName) {
+      case "menu_places":
+        icon = Icon(Icons.restaurant);
+        break;
+      case "menu_profile":
+        icon = Icon(Icons.account_box);
+        break;
+      default:
+        //TODO: add default icon
+        icon = Icon(Icons.add_box_sharp);
+    }
+
+    return BottomNavigationBarItem(
+      activeIcon: Icon(icon.icon, color: Colors.blue),
+      icon: icon,
+      label: title,
+    );
+  }
 }

@@ -50,25 +50,16 @@ class _MainScreenState extends State<MainScreen>
           bottomNavigationBar: BottomNavigation(
             currentIndex: pages.indexWhere((e) => e.tab == state.tab),
             onTap: (tab) {
-              // if (tab == MenuTab.qrScan) {
-              //   Navigation.toQrScan(context: context);
-              // } else {
               context.read<MenuBloc>().add(MenuTabUpdate(tab));
             },
-            // ignore: prefer_const_literals_to_create_immutables
-            items: [
-              const NavItem(
-                iconName: 'menu_history',
+            items: const [
+              NavItem(
+                iconName: 'menu_places',
                 title: "Рестораны",
                 tab: MenuTab.places,
               ),
-              // const NavItem(
-              //   iconName: 'menu_history',
-              //   title: "Логин",
-              //   tab: MenuTab.Login,
-              // ),
-              const NavItem(
-                iconName: 'menu_accounts',
+              NavItem(
+                iconName: 'menu_profile',
                 title: "Профиль",
                 tab: MenuTab.profile,
               )
@@ -76,35 +67,4 @@ class _MainScreenState extends State<MainScreen>
           ),
         );
       });
-
-  // Widget mapTabToScreen(MenuState tab) {
-  //   var id = 0;
-  //   if (tab is MenuTabHome) {
-  //     id = 0;
-  //   } else if (tab is MenuTabHistory) {
-  //     id = 1;
-  //   } else if (tab is MenuTabAccounts) {
-  //     id = 2;
-  //   } else if (tab is MenuTabProfile) {
-  //     id = 3;
-  //   }
-  //   return pages[id];
-  //   // Widget screen = HomeScreen(key: PageStorageKey('HomeScreen'));
-  //   // if (tab is TabHome) {
-  //   //   screen = HomeScreen(key: PageStorageKey('HomeScreen'));
-  //   // }
-  //   // if (tab is TabHistory) {
-  //   //   screen = HistoryScreen(key: PageStorageKey('HistoryScreen'));
-  //   // }
-  //   // if (tab is TabAccounts) {
-  //   //   screen = AccountsScreen(key: PageStorageKey('AccountsScreen'));
-  //   // }
-  //   // if (tab is TabProfile) {
-  //   //   screen = ProfileScreen(key: PageStorageKey('ProfileScreen'));
-  //   // }
-  //   // return PageStorage(
-  //   //   child: screen,
-  //   //   bucket: _bucket,
-  //   // );
-  // }
 }

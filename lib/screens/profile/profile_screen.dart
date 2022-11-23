@@ -40,6 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Text("Как мне называть тебя?"),
                 TextFormField(
                   keyboardType: TextInputType.name,
                   onSaved: (newValue) {
