@@ -4,15 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ExtraInfoScreen extends StatefulWidget {
   static const pageRoute = '/profile';
-  const ProfileScreen({super.key});
+  const ExtraInfoScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ExtraInfoScreen> createState() => _ExtraInfoScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
   final _formKey = GlobalKey<FormState>();
   String? name;
 

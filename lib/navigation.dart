@@ -1,7 +1,6 @@
 import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/profile/profile_screen.dart';
 import 'screens/screens.dart';
 
 // ignore: avoid_classes_with_only_static_members
@@ -34,10 +33,10 @@ class Navigation {
         .pushNamedAndRemoveUntil(LoginScreen.pageRoute, (route) => false);
   }
 
-  /// Navigate to [ProfileScreen]
+  /// Navigate to [ExtraInfoScreen]
   static Future<void> toProfile() {
     // beforeNavigate();
     return navigatorKey.currentState!
-        .pushNamedAndRemoveUntil(ProfileScreen.pageRoute, (route) => false);
+        .pushNamedAndRemoveUntil(ExtraInfoScreen.pageRoute, (route) => false);
   }
 }

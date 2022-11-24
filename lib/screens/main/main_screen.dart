@@ -2,7 +2,7 @@ import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/models/menu_tab.dart';
 import 'package:booking_app/models/nav_item.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
-import 'package:booking_app/screens/profile/profile_screen.dart';
+import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
 import 'package:booking_app/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +27,7 @@ class _MainScreenState extends State<MainScreen>
     ),
     const MenuTabWrapper(
       tab: MenuTab.profile,
-      child: ProfileScreen(key: Key('ProfileScreen')),
+      child: ExtraInfoScreen(key: Key('ProfileScreen')),
     ),
   ];
 

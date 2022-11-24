@@ -4,7 +4,7 @@ import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/screens/login/login_screen.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
-import 'package:booking_app/screens/profile/profile_screen.dart';
+import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -53,8 +53,8 @@ class MyApp extends StatelessWidget {
           builder = (context) => const PlacesScreen();
         } else if (path == LoginScreen.pageRoute) {
           builder = (context) => const LoginScreen();
-        } else if (path == ProfileScreen.pageRoute) {
-          builder = (context) => const ProfileScreen();
+        } else if (path == ExtraInfoScreen.pageRoute) {
+          builder = (context) => const ExtraInfoScreen();
         } else if (path == MainScreen.pageRoute) {
           builder = (context) => const MainScreen();
         } else {
