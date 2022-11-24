@@ -40,11 +40,17 @@ class TableWrapper extends StatelessWidget {
                                 onTap: () => showTableReserveDialog(table),
                                 child: Container(
                                     margin: const EdgeInsets.only(bottom: 50),
-                                    child: const TableInfo(isReserved: false)),
+                                    child: TableInfo(
+                                      isReserved: false,
+                                      table: table,
+                                    )),
                               )
                             : Container(
                                 margin: const EdgeInsets.only(bottom: 50),
-                                child: const TableInfo(isReserved: true));
+                                child: TableInfo(
+                                  isReserved: true,
+                                  table: table,
+                                ));
                       },
                       options: CarouselOptions(
                         aspectRatio: 1,

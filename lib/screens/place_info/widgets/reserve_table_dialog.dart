@@ -26,22 +26,23 @@ class _ReserveTableDialogState extends State<ReserveTableDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Бронирование стола"),
+      title: const Center(child: Text("Бронирование стола")),
       content: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Количество гостей'),
+            const Text('Количество гостей'),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                     onPressed:
                         currentGuestsCount > 1 ? _onGuestsCountDecrease : null,
-                    icon: Icon(Icons.abc)),
+                    icon: const Icon(Icons.arrow_back_ios_new)),
                 Text('$currentGuestsCount'),
                 IconButton(
-                    onPressed: _onGuestsCountIncrease, icon: Icon(Icons.abc))
+                    onPressed: _onGuestsCountIncrease,
+                    icon: const Icon(Icons.arrow_forward_ios))
               ],
             )
           ]),
