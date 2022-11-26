@@ -8,14 +8,13 @@ class PlaceModel {
   String description;
   int logo;
   List<int> gallery;
-  DateTime updateDate;
-  List<TableModel> tables;
+  int updateDate;
+  // List<TableModel> tables;
 
   PlaceModel(this.id, this.name, this.description, this.gallery, this.logo,
-      this.updateDate, this.tables);
+      this.updateDate);
 
-  List<Object?> get props =>
-      [id, name, description, gallery, logo, updateDate, tables];
+  List<Object?> get props => [id, name, description, gallery, logo, updateDate];
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -24,8 +23,8 @@ class PlaceModel {
       'description': description,
       'logo': logo,
       'gallery': gallery,
-      'updateDate': updateDate.millisecondsSinceEpoch,
-      'tables': tables.map((x) => x.toMap()).toList(),
+      'updateDate': updateDate,
+      // 'tables': tables.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -36,9 +35,9 @@ class PlaceModel {
         map['description'] as String,
         List<int>.from((map['gallery'] as List<int>)),
         map['logo'] as int,
-        DateTime.fromMillisecondsSinceEpoch(map['updateDate'] as int),
-        List<TableModel>.from((map['tables'] as List<int>).map<TableModel>(
-            (x) => TableModel.fromMap(x as Map<String, dynamic>))));
+        map['updateDate'] as int);
+    // List<TableModel>.from((map['tables'] as List<int>).map<TableModel>(
+    //     (x) => TableModel.fromMap(x as Map<String, dynamic>))));
   }
 
   String toJson() => json.encode(toMap());

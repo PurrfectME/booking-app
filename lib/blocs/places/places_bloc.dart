@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:equatable/equatable.dart';
@@ -22,18 +24,20 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
         // ];
 
         await DbProvider.db.createPlaceModel(PlaceModel(
-            1,
+            2,
             "NEFT",
             "desc",
-            [1, 2],
+            Uint8List.fromList([1, 2]),
             1,
-            DateTime.now(),
-            [
-              TableModel(1, 1, 1, 6),
-              TableModel(2, 1, 1, 6),
-              TableModel(3, 1, 1, 6),
-              TableModel(4, 1, 1, 6)
-            ]));
+            DateTime.now().millisecondsSinceEpoch));
+
+        //CREATE TABLES
+        // [
+        //   TableModel(1, 1, 1, 6),
+        //   TableModel(2, 1, 1, 6),
+        //   TableModel(3, 1, 1, 6),
+        //   TableModel(4, 1, 1, 6)
+        // ]));
 
         final actualPlace = await DbProvider.db.getAllPlaceModes();
 

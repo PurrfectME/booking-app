@@ -25,52 +25,43 @@ class DbProvider {
   // Create the database and the PlaceModel table
   initDb() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, 'booking_manager.db');
+    final path = join(documentsDirectory.path, 'booking_manager_01.db');
 
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onConfigure: (db) async {
       await db.execute('PRAGMA foreign_keys = ON');
     }, onCreate: (Database db, int version) async {
-      await db.execute('CREATE TABLE IF NOT EXISTS Tables('
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS places(id INTEGER PRIMARY KEY, name TEXT, description TEXT, logo INTEGER, gallery BLOB, updateDate INTEGER)");
+
+      await db.execute('CREATE TABLE IF NOT EXISTS tables('
           'id INTEGER PRIMARY KEY,'
           'placeId INTEGER NOT NULL,'
           'number INTEGER NOT NULL,'
           'image INTEGER,'
           'guests INTEGER NOT NULL,'
-          'FOREIGN KEY (placeId) REFERENCES Places (id)'
-          ');'
-          //
-          'CREATE TABLE IF NOT EXISTS Places('
-          'id INTEGER PRIMARY KEY,'
-          'name TEXT,'
-          'description TEXT,'
-          'logo INTEGER,'
-          'gallery TEXT,'
-          'updateDate TEXT,'
-          // 'tables TEXT,'
-          ');');
+          'FOREIGN KEY (placeId) REFERENCES places (id))');
     });
   }
 
   // Insert PlaceMode on database
   Future<int> createPlaceModel(PlaceModel model) async {
     final db = await database;
-    final res = await db!.insert('Places', model.toMap());
-
-    return res;
+    final res = await db?.insert("places", model.toMap());
+    return res!;
   }
 
   // Delete all PlaceModels
   Future<int> deleteAllPlaceModels() async {
     final db = await database;
-    final res = await db!.rawDelete('DELETE FROM Places');
+    final res = await db!.rawDelete('DELETE FROM places');
 
     return res;
   }
 
   Future<List<PlaceModel>> getAllPlaceModes() async {
     final db = await database;
-    final res = await db!.rawQuery("SELECT * FROM Places");
+    final res = await db!.rawQuery("SELECT * FROM places");
 
     List<PlaceModel> list =
         res.isNotEmpty ? res.map((c) => PlaceModel.fromMap(c)).toList() : [];
