@@ -1,17 +1,26 @@
-class TableModel {
-  bool isFree;
-  int guestsCount;
-  TableConfig? config;
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:equatable/equatable.dart';
 
-  TableModel(
-      {required this.isFree, required this.guestsCount, required this.config});
-}
+class TableModel extends Equatable {
+  final int id;
+  final bool isFree;
+  final int guestsCount;
 
-class TableConfig {
-  double? left;
-  double? right;
-  double? bottom;
-  double? top;
+  const TableModel(
+      {required this.id, required this.isFree, required this.guestsCount});
 
-  TableConfig({this.left, this.right, this.bottom, this.top});
+  @override
+  List<Object?> get props => [id, isFree, guestsCount];
+
+  TableModel copyWith({
+    int? id,
+    bool? isFree,
+    int? guestsCount,
+  }) {
+    return TableModel(
+      id: id ?? this.id,
+      isFree: isFree ?? this.isFree,
+      guestsCount: guestsCount ?? this.guestsCount,
+    );
+  }
 }
