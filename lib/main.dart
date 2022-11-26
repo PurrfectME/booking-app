@@ -20,12 +20,12 @@ void main() {
           BlocProvider(create: (context) => LoginBloc()),
           BlocProvider(create: (context) => PlacesBloc()),
           BlocProvider(create: (context) => MenuBloc()),
-          BlocProvider(create: (context) => ProfileBloc())
+          BlocProvider(create: (context) => ExtraInfoBloc())
         ],
-        child: BlocListener<ProfileBloc, ProfileState>(
+        child: BlocListener<ExtraInfoBloc, ExtraInfoState>(
           listener: (context, state) {
-            if (state is ProfileSuccess) {
-              context.read<PlacesBloc>()..add(PlacesLoad());
+            if (state is ExtraInfoSuccess) {
+              context.read<PlacesBloc>().add(PlacesLoad());
             }
           },
           child: const MyApp(),

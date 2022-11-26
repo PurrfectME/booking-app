@@ -1,13 +1,13 @@
-part of 'profile_bloc.dart';
+part of 'extra_info_bloc.dart';
 
-abstract class ProfileEvent extends Equatable {
-  const ProfileEvent();
+abstract class ExtraInfoEvent extends Equatable {
+  const ExtraInfoEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class AddProfileName extends ProfileEvent {
+class AddProfileName extends ExtraInfoEvent {
   final String name;
 
   const AddProfileName(this.name);

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ExtraInfoScreen extends StatefulWidget {
-  static const pageRoute = '/profile';
+  static const pageRoute = '/extra-info';
   const ExtraInfoScreen({super.key});
 
   @override
@@ -18,13 +18,13 @@ class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ProfileBloc, ProfileState>(
+    return BlocListener<ExtraInfoBloc, ExtraInfoState>(
       listener: (context, state) {
-        if (state is ProfileError) {
+        if (state is ExtraInfoError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Ошибка: ${state.error}')),
           );
-        } else if (state is ProfileSuccess) {
+        } else if (state is ExtraInfoSuccess) {
           Navigation.toMain();
         }
       },
@@ -53,13 +53,13 @@ class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
                 SizedBox(height: 50),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: BlocBuilder<ProfileBloc, ProfileState>(
+                  child: BlocBuilder<ExtraInfoBloc, ExtraInfoState>(
                       buildWhen: (previous, current) {
-                    if (current is ProfileSuccess) Navigation.toMain();
-                    if (current is ProfileError) return false;
+                    if (current is ExtraInfoSuccess) Navigation.toMain();
+                    if (current is ExtraInfoError) return false;
                     return true;
                   }, builder: (context, state) {
-                    if (state is ProfileLoading) {
+                    if (state is ExtraInfoLoading) {
                       return const ElevatedButton(
                         onPressed: null,
                         child: CupertinoActivityIndicator(),
@@ -71,7 +71,7 @@ class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
                             context
-                                .read<ProfileBloc>()
+                                .read<ExtraInfoBloc>()
                                 .add(AddProfileName(name!));
                           }
                         },

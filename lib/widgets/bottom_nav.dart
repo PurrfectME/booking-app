@@ -32,11 +32,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
         child: Container(
           // margin: const EdgeInsets.fromLTRB(16, 0, 16, 36),
           // padding: const EdgeInsets.symmetric(vertical: 4),
-          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+          decoration: const BoxDecoration(color: Colors.white, boxShadow: [
             BoxShadow(
                 color: Color.fromARGB(255, 198, 201, 198),
                 blurRadius: 15,
-                offset: const Offset(0, 4))
+                offset: Offset(0, 4))
           ]),
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -57,8 +57,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
                               e.icon,
                             const SizedBox(height: 4),
                             DefaultTextStyle(
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 18),
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 18),
                               textAlign: TextAlign.center,
                               child: Text(e.label ?? ''),
                             )
@@ -76,14 +76,14 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
     switch (iconName) {
       case "menu_places":
-        icon = Icon(Icons.restaurant);
+        icon = const Icon(Icons.restaurant);
         break;
       case "menu_profile":
-        icon = Icon(Icons.account_box);
+        icon = const Icon(Icons.account_box);
         break;
       default:
         //TODO: add default icon
-        icon = Icon(Icons.add_box_sharp);
+        icon = const Icon(Icons.add_box_sharp);
     }
 
     return BottomNavigationBarItem(
