@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
-import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/providers/db.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'places_event.dart';
 part 'places_state.dart';
@@ -15,13 +15,29 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
 //call to api
         await Future.delayed(Duration(seconds: 2));
 
-        final data = [
-          PlaceModel(name: "NEFT", currentGuests: 30, maxGuests: 100),
-          PlaceModel(name: "FABRIQ", currentGuests: 6, maxGuests: 56),
-          PlaceModel(name: "EMBER", currentGuests: 19, maxGuests: 76),
-        ];
+        // final data = [
+        //   PlaceModel(1, "NEFT", "desc", [1, 2], 1, DateTime.now(), []),
+        //   PlaceModel(2, "NEFT", "desc", [1, 2], 1, DateTime.now(), []),
+        //   PlaceModel(3, "NEFT", "desc", [1, 2], 1, DateTime.now(), []),
+        // ];
 
-        emit(PlacesLoaded(data));
+        await DbProvider.db.createPlaceModel(PlaceModel(
+            1,
+            "NEFT",
+            "desc",
+            [1, 2],
+            1,
+            DateTime.now(),
+            [
+              TableModel(1, 1, 1, 6),
+              TableModel(2, 1, 1, 6),
+              TableModel(3, 1, 1, 6),
+              TableModel(4, 1, 1, 6)
+            ]));
+
+        final actualPlace = await DbProvider.db.getAllPlaceModes();
+
+        emit(PlacesLoaded(actualPlace));
       }
     });
   }

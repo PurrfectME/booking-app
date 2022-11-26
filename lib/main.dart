@@ -14,6 +14,7 @@ import 'blocs/simple_bloc_observer.dart';
 import 'navigation.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   BlocOverrides.runZoned(
     () => runApp(MultiBlocProvider(
         providers: [

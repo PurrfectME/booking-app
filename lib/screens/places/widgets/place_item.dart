@@ -31,7 +31,7 @@ class PlaceItem extends StatelessWidget {
                   style: const TextStyle(color: Colors.white),
                 ),
                 Text(
-                  "Места: ${place.currentGuests}/${place.maxGuests}",
+                  "ID: ${place.id}",
                   style: const TextStyle(color: Colors.white),
                 )
               ],

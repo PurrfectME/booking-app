@@ -18,10 +18,10 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         await Future.delayed(Duration(seconds: 2));
 
         final data = [
-          TableModel(id: 1, isFree: true, guestsCount: 6),
-          TableModel(id: 2, isFree: false, guestsCount: 2),
-          TableModel(id: 3, isFree: false, guestsCount: 3),
-          TableModel(id: 4, isFree: true, guestsCount: 6)
+          TableModel(1, 2, 3, 4),
+          TableModel(1, 2, 3, 4),
+          TableModel(1, 2, 3, 4),
+          TableModel(1, 2, 3, 4)
         ];
 
         tables = List.from(data);
@@ -34,10 +34,10 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         // if ok
         // if (response.status == 200)
         if (true) {
-          final tableIndex = tables.indexWhere((table) => table.id == event.id);
-          if (tableIndex > -1) {
-            tables[tableIndex] = tables[tableIndex].copyWith(isFree: false);
-          }
+          // final tableIndex = tables.indexWhere((table) => table.id == event.id);
+          // if (tableIndex > -1) {
+          //   tables[tableIndex] = tables[tableIndex].copyWith(isFree: false);
+          // }
           emit(PlaceTableReserveSuccess(id: event.id));
         } else {
           // RESERVE ERROR IN MODal

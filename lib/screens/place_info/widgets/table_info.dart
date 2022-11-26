@@ -34,10 +34,10 @@ class TableInfo extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 "Стол ${table.id}",
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
-                            Expanded(
+                            const Expanded(
                               child: Text(
                                 "Ожидание подтверждения",
                                 style: TextStyle(color: Colors.white),
@@ -64,11 +64,11 @@ class TableInfo extends StatelessWidget {
                 children: [
                   Text(
                     "Стол ${table.id}",
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   Text(
-                    "Мест: ${table.guestsCount}",
-                    style: TextStyle(color: Colors.white),
+                    "ID: ${table.id}",
+                    style: const TextStyle(color: Colors.white),
                   )
                 ],
               ),

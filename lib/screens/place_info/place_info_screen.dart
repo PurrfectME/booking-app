@@ -1,5 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/table_model.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/place_info/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
