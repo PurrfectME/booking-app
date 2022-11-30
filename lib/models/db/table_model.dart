@@ -7,24 +7,17 @@ class TableModel extends Equatable {
   int number;
   int image;
   int guests;
+  int placeId;
 
-  TableModel(this.id, this.number, this.image, this.guests);
+  TableModel(this.id, this.number, this.image, this.guests, this.placeId);
 
   @override
-  List<Object?> get props => [id, number, image, guests];
+  List<Object?> get props => [id, number, image, guests, placeId];
 
-  TableModel copyWith({
-    int? id,
-    int? number,
-    int? image,
-    int? guests,
-  }) {
-    return TableModel(
-      id ?? this.id,
-      number ?? this.number,
-      image ?? this.image,
-      guests ?? this.guests,
-    );
+  TableModel copyWith(
+      {int? id, int? number, int? image, int? guests, int? placeId}) {
+    return TableModel(id ?? this.id, number ?? this.number, image ?? this.image,
+        guests ?? this.guests, placeId ?? this.placeId);
   }
 
   Map<String, dynamic> toMap() {
@@ -33,6 +26,7 @@ class TableModel extends Equatable {
       'number': number,
       'image': image,
       'guests': guests,
+      'placeId': placeId
     };
   }
 
@@ -42,6 +36,7 @@ class TableModel extends Equatable {
       map['number'] as int,
       map['image'] as int,
       map['guests'] as int,
+      map['placeId'] as int,
     );
   }
 

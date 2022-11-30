@@ -43,9 +43,12 @@ class PlacesScreenState extends State<PlacesScreen> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               crossAxisCount: 2,
-              children: state.data
-                  .map((place) => PlaceItem(place: place, onTap: _onPlaceTap))
-                  .toList(),
+              children: state.data.isNotEmpty
+                  ? state.data
+                      .map((place) =>
+                          PlaceItem(place: place, onTap: _onPlaceTap))
+                      .toList()
+                  : [],
             );
           } else {
             //если билдер не нашёл стейт в обработке ифов

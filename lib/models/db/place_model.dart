@@ -9,12 +9,13 @@ class PlaceModel {
   int logo;
   List<int> gallery;
   int updateDate;
-  // List<TableModel> tables;
+  List<TableModel> tables;
 
   PlaceModel(this.id, this.name, this.description, this.gallery, this.logo,
-      this.updateDate);
+      this.updateDate, this.tables);
 
-  List<Object?> get props => [id, name, description, gallery, logo, updateDate];
+  List<Object?> get props =>
+      [id, name, description, gallery, logo, updateDate, tables];
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -35,9 +36,7 @@ class PlaceModel {
         map['description'] as String,
         List<int>.from((map['gallery'] as List<int>)),
         map['logo'] as int,
-        map['updateDate'] as int);
-    // List<TableModel>.from((map['tables'] as List<int>).map<TableModel>(
-    //     (x) => TableModel.fromMap(x as Map<String, dynamic>))));
+        map['updateDate'] as int, []);
   }
 
   String toJson() => json.encode(toMap());
