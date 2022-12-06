@@ -91,7 +91,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(Duration(days: 20000)));
+        lastDate: DateTime.now().add(const Duration(days: 20000)));
 
     if (date != null) {
       final time = await showTimePicker(

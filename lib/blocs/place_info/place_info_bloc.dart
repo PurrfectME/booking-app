@@ -1,3 +1,4 @@
+import 'package:booking_app/models/api/user_reservation_model.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:equatable/equatable.dart';
@@ -15,27 +16,45 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         emit(PlaceInfoLoading());
 
         // `get: /place/{event.placeId}/tables`
-        final response = [
+        final reservedTables = [
           ReservationModel(
             1,
             5,
-            DateTime(2022, 12, 3, 20).millisecondsSinceEpoch,
-            DateTime(2022, 12, 3, 21).millisecondsSinceEpoch,
+            DateTime(2022, 12, 7, 21).millisecondsSinceEpoch,
+            DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
+          ),
+          ReservationModel(
+            2,
+            6,
+            DateTime(2022, 12, 7, 21).millisecondsSinceEpoch,
+            DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
           ),
         ];
 
-        //INSERT INTO DB
+        //INSERT RESERVATIONS INTO DB??
 
-        place.tables = place.tables.where((table) {
-          for (var reservation in response) {
-            if (table?.id == reservation.tableId) {
-              return true;
+        //`get: /profile/tables`
+        final userReservedTables = [
+          UserReservationModel(
+              1, 2, 5, reservedTables[0].from, reservedTables[0].to)
+        ];
+
+        final availableTables = place.tables.where((table) {
+          for (var reservation in reservedTables) {
+            //TODO: add date validation
+
+            if (table?.id == reservation.tableId &&
+                userReservedTables.indexWhere((userTable) =>
+                        userTable.tableId == reservation.tableId &&
+                        userTable.placeId == table?.placeId) ==
+                    -1) {
+              return false;
             }
           }
-          return false;
+          return true;
         }).toList();
 
-        emit(PlaceInfoLoaded(place.tables));
+        emit(PlaceInfoLoaded(availableTables));
       } else if (event is PlaceTableReserve) {
         // api call
         // final response = await api.reserveTable(id: event.id)

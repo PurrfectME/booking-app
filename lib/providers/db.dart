@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:booking_app/models/db/reservation_model.dart';
+import 'package:booking_app/scripts/scripts.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -32,23 +33,9 @@ class DbProvider {
         onConfigure: (db) async {
       await db.execute('PRAGMA foreign_keys = ON');
     }, onCreate: (Database db, int version) async {
-      await db.execute(
-          "CREATE TABLE IF NOT EXISTS places(id INTEGER PRIMARY KEY, name TEXT, description TEXT, logo INTEGER, gallery BLOB, updateDate INTEGER)");
-
-      await db.execute('CREATE TABLE IF NOT EXISTS tables('
-          'id INTEGER PRIMARY KEY,'
-          'placeId INTEGER NOT NULL,'
-          'number INTEGER NOT NULL,'
-          'image INTEGER,'
-          'guests INTEGER NOT NULL,'
-          'FOREIGN KEY (placeId) REFERENCES places (id) ON DELETE CASCADE)');
-
-      await db.execute('CREATE TABLE IF NOT EXISTS reservations('
-          'id INTEGER PRIMARY KEY,'
-          'tableId INTEGER NOT NULL,'
-          'from INTEGER NOT NULL,'
-          'to INTEGER,'
-          'FOREIGN KEY (tableId) REFERENCES tables (id) ON DELETE CASCADE)');
+      await db.execute(places);
+      await db.execute(tables);
+      await db.execute(reservations);
     });
   }
 
