@@ -1,3 +1,4 @@
+import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,12 +9,31 @@ part 'place_info_state.dart';
 class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
   final PlaceModel place;
 
-  // late List<TableModel> tables;
-
   PlaceInfoBloc({required this.place}) : super(PlaceInfoLoading()) {
     on<PlaceInfoEvent>((event, emit) async {
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
+
+        // `get: /place/{event.placeId}/tables`
+        final response = [
+          ReservationModel(
+            1,
+            5,
+            DateTime(2022, 12, 3, 20).millisecondsSinceEpoch,
+            DateTime(2022, 12, 3, 21).millisecondsSinceEpoch,
+          ),
+        ];
+
+        //INSERT INTO DB
+
+        place.tables = place.tables.where((table) {
+          for (var reservation in response) {
+            if (table?.id == reservation.tableId) {
+              return true;
+            }
+          }
+          return false;
+        }).toList();
 
         emit(PlaceInfoLoaded(place.tables));
       } else if (event is PlaceTableReserve) {

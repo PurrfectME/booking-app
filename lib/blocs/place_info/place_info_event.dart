@@ -7,7 +7,14 @@ abstract class PlaceInfoEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class PlaceInfoLoad extends PlaceInfoEvent {}
+class PlaceInfoLoad extends PlaceInfoEvent {
+  final int placeId;
+
+  const PlaceInfoLoad(this.placeId);
+
+  @override
+  List<Object> get props => [placeId];
+}
 
 class PlaceTableReserve extends PlaceInfoEvent {
   final int id;

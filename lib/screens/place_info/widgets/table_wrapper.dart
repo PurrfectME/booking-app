@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class TableWrapper extends StatelessWidget {
   final onDateTimeTap;
   final DateTime selectedDateTime;
-  final List<TableModel> data;
+  final List<TableModel?> data;
   final void Function(TableModel) showTableReserveDialog;
   final int? reservedTableId;
 
@@ -35,7 +35,7 @@ class TableWrapper extends StatelessWidget {
                   .map((table) => CarouselSlider.builder(
                       itemCount: data.length, //COUNT OF PHOTOS
                       itemBuilder: (context, index, realIndex) {
-                        return table.id != reservedTableId
+                        return table!.id != reservedTableId
                             ? InkWell(
                                 onTap: () => showTableReserveDialog(table),
                                 child: Container(

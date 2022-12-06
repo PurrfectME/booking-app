@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -41,6 +42,13 @@ class DbProvider {
           'image INTEGER,'
           'guests INTEGER NOT NULL,'
           'FOREIGN KEY (placeId) REFERENCES places (id) ON DELETE CASCADE)');
+
+      await db.execute('CREATE TABLE IF NOT EXISTS reservations('
+          'id INTEGER PRIMARY KEY,'
+          'tableId INTEGER NOT NULL,'
+          'from INTEGER NOT NULL,'
+          'to INTEGER,'
+          'FOREIGN KEY (tableId) REFERENCES tables (id) ON DELETE CASCADE)');
     });
   }
 
@@ -53,7 +61,7 @@ class DbProvider {
       batch.insert("places", place.toMap());
 
       for (var table in place.tables) {
-        batch.insert("tables", table.toMap());
+        batch.insert("tables", table!.toMap());
       }
     }
 
@@ -81,29 +89,26 @@ class DbProvider {
     }
 
     for (var map in res) {
-      final id = map['id'] as int;
-      final placeId = map['placeId'] as int;
+      final placeId = map['id'] as int;
 
-      if (placeId == id) {
-        var index = places.indexWhere((x) => x.id == placeId);
-        if (index != -1) {
-          places[index].tables.add(TableModel(
-              map['tableId'] as int,
-              map['number'] as int,
-              map['image'] as int,
-              map['guests'] as int,
-              placeId));
-        } else {
-          final placeToAdd = PlaceModel.fromMap(map);
-          placeToAdd.tables.add(TableModel(
-              map['tableId'] as int,
-              map['number'] as int,
-              map['image'] as int,
-              map['guests'] as int,
-              placeId));
+      var index = places.indexWhere((x) => x.id == placeId);
+      if (index != -1) {
+        places[index].tables.add(TableModel(
+            map['tableId'] as int,
+            map['number'] as int,
+            map['image'] as int,
+            map['guests'] as int,
+            map['placeId'] as int));
+      } else {
+        final placeToAdd = PlaceModel.fromMap(map);
+        placeToAdd.tables.add(TableModel(
+            map['tableId'] as int,
+            map['number'] as int,
+            map['image'] as int,
+            map['guests'] as int,
+            map['placeId'] as int));
 
-          places.add(placeToAdd);
-        }
+        places.add(placeToAdd);
       }
     }
 
@@ -113,8 +118,20 @@ class DbProvider {
   Future<int> getLastUpdateDate() async {
     final db = await database;
     final result = await db!.rawQuery('SELECT updateDate FROM places '
-        'WHERE [updateDate] = (SELECT MAX([updateDate]) FROM places) LIMIT 1');
+        'ORDER BY updateDate DESC LIMIT 1');
 
     return result.isNotEmpty ? result.first.values.first as int : 0;
+  }
+
+  Future<List<Object?>> createReservations(
+      List<ReservationModel> models) async {
+    final db = await database;
+    final batch = db!.batch();
+
+    for (var reservation in models) {
+      batch.insert("reservations", reservation.toMap());
+    }
+
+    return await batch.commit(noResult: true);
   }
 }

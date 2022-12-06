@@ -65,8 +65,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
               if (state is PlaceInfoLoading) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(child: const CupertinoActivityIndicator(radius: 20)),
+                  children: const [
+                    Center(child: CupertinoActivityIndicator(radius: 20)),
                   ],
                 );
               } else if (state is PlaceInfoError) {
@@ -79,7 +79,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                     showTableReserveDialog: showTableReserveDialog,
                     reservedTableId: reservedTableId);
               } else {
-                return SizedBox();
+                return const SizedBox();
               }
             },
           )),
