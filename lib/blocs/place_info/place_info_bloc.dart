@@ -18,16 +18,16 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         // `get: /place/{event.placeId}/tables`
         final reservedTables = [
           ReservationModel(
-            1,
-            5,
-            DateTime(2022, 12, 7, 21).millisecondsSinceEpoch,
-            DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
-          ),
-          ReservationModel(
             2,
             6,
-            DateTime(2022, 12, 7, 21).millisecondsSinceEpoch,
             DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
+            DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
+          ),
+          ReservationModel(
+            1,
+            5,
+            DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
+            DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
           ),
         ];
 
@@ -39,20 +39,44 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
               1, 2, 5, reservedTables[0].from, reservedTables[0].to)
         ];
 
-        final availableTables = place.tables.where((table) {
-          for (var reservation in reservedTables) {
-            //TODO: add date validation
+        //INSERT USER RESERVATIONS INTO DB?? add update_date to user reservations
 
-            if (table?.id == reservation.tableId &&
-                userReservedTables.indexWhere((userTable) =>
-                        userTable.tableId == reservation.tableId &&
-                        userTable.placeId == table?.placeId) ==
-                    -1) {
-              return false;
-            }
+        final availableTables = <TableViewModel>[];
+
+        for (var table in place.tables) {
+          if (table == null) {
+            continue;
           }
-          return true;
-        }).toList();
+
+          //TODO: add date validation
+          final reserved = reservedTables
+              .any((reservation) => table.id == reservation.tableId);
+
+          if (reserved) {
+            final currentUserReservationIndex = userReservedTables.indexWhere(
+                (userTable) =>
+                    userTable.tableId == table.id &&
+                    userTable.placeId == table.placeId);
+
+            if (currentUserReservationIndex != -1) {
+              availableTables.add(TableViewModel(
+                  table,
+                  null,
+                  null,
+                  // userReservedTables[currentUserReservationIndex].from,
+                  // userReservedTables[currentUserReservationIndex].to,
+                  true));
+            }
+          } else {
+            availableTables.add(TableViewModel(
+                table,
+                null,
+                null,
+                // userReservedTables[currentUserReservationIndex].from,
+                // userReservedTables[currentUserReservationIndex].to,
+                false));
+          }
+        }
 
         emit(PlaceInfoLoaded(availableTables));
       } else if (event is PlaceTableReserve) {
@@ -70,7 +94,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         } else {
           // RESERVE ERROR IN MODal
         }
-        emit(PlaceInfoLoaded(place.tables));
+        emit(PlaceInfoLoaded([]));
       }
     });
   }
