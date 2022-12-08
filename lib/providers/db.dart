@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:booking_app/models/db/reservation_model.dart';
+import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/scripts/scripts.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,6 +37,7 @@ class DbProvider {
       await db.execute(places);
       await db.execute(tables);
       await db.execute(reservations);
+      await db.execute(userReservations);
     });
   }
 
@@ -69,11 +71,11 @@ class DbProvider {
         'SELECT tables.id as tableId, tables.number, tables.image, '
         'tables.guests, tables.placeId, places.* FROM places LEFT JOIN tables on tables.placeId = places.id');
 
-    final places = <PlaceModel>[];
-
     if (res.isEmpty) {
       return [];
     }
+
+    final places = <PlaceModel>[];
 
     for (var map in res) {
       final placeId = map['id'] as int;
@@ -120,5 +122,51 @@ class DbProvider {
     }
 
     return await batch.commit(noResult: true);
+  }
+
+  Future<List<Object?>> createUserReservations(
+      List<UserReservationModel> models) async {
+    final db = await database;
+    final batch = db!.batch();
+
+    for (var reservation in models) {
+      batch.insert("user_reservations", reservation.toMap());
+    }
+
+    return await batch.commit(noResult: true);
+  }
+
+  Future<List<Object?>> createAllReservations(
+      List<ReservationModel> reservations,
+      List<UserReservationModel> userReservations) async {
+    final db = await database;
+    final batch = db!.batch();
+
+    for (var reservation in userReservations) {
+      batch.insert("user_reservations", reservation.toMap());
+    }
+
+    for (var reservation in reservations) {
+      batch.insert("reservations", reservation.toMap());
+    }
+
+    return await batch.commit(noResult: true);
+  }
+
+  Future<List<UserReservationModel>> getAllUserReservations() async {
+    final db = await database;
+    final res = await db!.rawQuery("SELECT * FROM user_reservations");
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final reservations = <UserReservationModel>[];
+
+    for (var reservation in res) {
+      reservations.add(UserReservationModel.fromMap(reservation));
+    }
+
+    return reservations;
   }
 }

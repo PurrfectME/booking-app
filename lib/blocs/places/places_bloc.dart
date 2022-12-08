@@ -15,10 +15,10 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
         // await DbProvider.db.deleteAllPlaceModels();
         emit(PlacesLoading());
 
-        //`get: /places?update_date=date`
-
         int lastUpdate = await DbProvider.db.getLastUpdateDate();
         final a = DateTime.fromMillisecondsSinceEpoch(lastUpdate);
+
+        //TODO: `get: /places?update_date=date`
 
         // final placesResponse = [
         //   PlaceModel(1, "NEFT", "desc", Uint8List.fromList([1, 2]), 1,

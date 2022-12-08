@@ -1,6 +1,7 @@
-import 'package:booking_app/models/api/user_reservation_model.dart';
+import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/providers/db.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,7 +16,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
 
-        // `get: /place/{event.placeId}/tables`
+        //TODO: `get: /place/{event.placeId}/tables`
         final reservedTables = [
           ReservationModel(
             2,
@@ -31,15 +32,18 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           ),
         ];
 
-        //INSERT RESERVATIONS INTO DB??
-
-        //`get: /profile/tables`
+        //TODO: `get: /profile/tables`
         final userReservedTables = [
-          UserReservationModel(
-              1, 2, 5, reservedTables[0].from, reservedTables[0].to)
+          UserReservationModel(1, 2, 5, reservedTables[0].start,
+              reservedTables[0].end, DateTime.now().millisecondsSinceEpoch)
         ];
 
         //INSERT USER RESERVATIONS INTO DB?? add update_date to user reservations
+
+        await DbProvider.db
+            .createAllReservations(reservedTables, userReservedTables);
+
+        final r = await DbProvider.db.getAllUserReservations();
 
         final availableTables = <TableViewModel>[];
 

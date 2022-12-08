@@ -14,6 +14,7 @@ import 'blocs/simple_bloc_observer.dart';
 import 'navigation.dart';
 
 void main() {
+  //TODO: initialize DbProvider here to create it on app init
   WidgetsFlutterBinding.ensureInitialized();
   BlocOverrides.runZoned(
     () => runApp(MultiBlocProvider(
@@ -67,8 +68,8 @@ class MyApp extends StatelessWidget {
           builder: builder,
         );
       },
-      locale: Locale('ru', 'RU'),
-      supportedLocales: [Locale('ru', 'RU')],
+      locale: const Locale('ru', 'RU'),
+      supportedLocales: const [Locale('ru', 'RU')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

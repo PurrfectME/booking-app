@@ -5,24 +5,21 @@ class UserReservationModel {
   int id;
   int placeId;
   int tableId;
-  int from;
-  int to;
+  int start;
+  int end;
+  int updateDate;
 
-  UserReservationModel(
-    this.id,
-    this.placeId,
-    this.tableId,
-    this.from,
-    this.to,
-  );
+  UserReservationModel(this.id, this.placeId, this.tableId, this.start,
+      this.end, this.updateDate);
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'placeId': placeId,
       'tableId': tableId,
-      'from': from,
-      'to': to,
+      'start': start,
+      'end': end,
+      'updateDate': updateDate
     };
   }
 
@@ -31,8 +28,9 @@ class UserReservationModel {
       map['id'] as int,
       map['placeId'] as int,
       map['tableId'] as int,
-      map['from'] as int,
-      map['to'] as int,
+      map['start'] as int,
+      map['end'] as int,
+      map['updateDate'] as int,
     );
   }
 
