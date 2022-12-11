@@ -16,6 +16,10 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
 
+        //мы сохраняем локально в бд резервации юзера, а просто таблицу со всеми резервациями нет
+        //а как менеджить момент когда с одного телефона два юзера разных зайдут,(бд одна)
+        //тогда помимо юзер резерваций нужно сохранять и в обычные
+
         //TODO: `get: /place/{event.placeId}/tables`
         final reservedTablesResponse = [
           ReservationModel(
@@ -44,6 +48,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         ];
 
         //INSERT USER RESERVATIONS INTO DB?? add update_date to user reservations
+
+        //TODO: надо будет удалять из бд резервации, которые уже прошли, чтобы не захламлять бд телефона
 
         await DbProvider.db.createAllReservations(
             reservedTablesResponse, userReservedTablesResponse);
