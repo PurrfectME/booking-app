@@ -17,7 +17,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         emit(PlaceInfoLoading());
 
         //TODO: `get: /place/{event.placeId}/tables`
-        final reservedTables = [
+        final reservedTablesResponse = [
           ReservationModel(
             2,
             6,
@@ -33,17 +33,20 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         ];
 
         //TODO: `get: /profile/tables`
-        final userReservedTables = [
-          UserReservationModel(1, 2, 5, reservedTables[0].start,
-              reservedTables[0].end, DateTime.now().millisecondsSinceEpoch)
+        final userReservedTablesResponse = [
+          UserReservationModel(
+              1,
+              2,
+              5,
+              reservedTablesResponse[0].start,
+              reservedTablesResponse[0].end,
+              DateTime.now().millisecondsSinceEpoch)
         ];
 
         //INSERT USER RESERVATIONS INTO DB?? add update_date to user reservations
 
-        await DbProvider.db
-            .createAllReservations(reservedTables, userReservedTables);
-
-        final r = await DbProvider.db.getAllUserReservations();
+        await DbProvider.db.createAllReservations(
+            reservedTablesResponse, userReservedTablesResponse);
 
         final availableTables = <TableViewModel>[];
 
@@ -53,12 +56,12 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           }
 
           //TODO: add date validation
-          final reserved = reservedTables
+          final reserved = reservedTablesResponse
               .any((reservation) => table.id == reservation.tableId);
 
           if (reserved) {
-            final currentUserReservationIndex = userReservedTables.indexWhere(
-                (userTable) =>
+            final currentUserReservationIndex =
+                userReservedTablesResponse.indexWhere((userTable) =>
                     userTable.tableId == table.id &&
                     userTable.placeId == table.placeId);
 
@@ -81,6 +84,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                 false));
           }
         }
+
+        final a = await DbProvider.db.getUserReservationsLastUpdateDate();
 
         emit(PlaceInfoLoaded(availableTables));
       } else if (event is PlaceTableReserve) {

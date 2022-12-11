@@ -104,13 +104,18 @@ class DbProvider {
     return places;
   }
 
-  Future<int> getLastUpdateDate() async {
+  Future<int> getLastUpdateDate(String tableName) async {
     final db = await database;
-    final result = await db!.rawQuery('SELECT updateDate FROM places '
+    final result = await db!.rawQuery('SELECT updateDate FROM $tableName '
         'ORDER BY updateDate DESC LIMIT 1');
 
     return result.isNotEmpty ? result.first.values.first as int : 0;
   }
+
+  Future<int> getPlacesLastUpdateDate() => getLastUpdateDate("places");
+
+  Future<int> getUserReservationsLastUpdateDate() =>
+      getLastUpdateDate("user_reservations");
 
   Future<List<Object?>> createReservations(
       List<ReservationModel> models) async {
@@ -151,6 +156,23 @@ class DbProvider {
     }
 
     return await batch.commit(noResult: true);
+  }
+
+  Future<List<ReservationModel>> getReservations() async {
+    final db = await database;
+    final res = await db!.rawQuery("SELECT * FROM reservations");
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final reservations = <ReservationModel>[];
+
+    for (var reservation in res) {
+      reservations.add(ReservationModel.fromMap(reservation));
+    }
+
+    return reservations;
   }
 
   Future<List<UserReservationModel>> getAllUserReservations() async {

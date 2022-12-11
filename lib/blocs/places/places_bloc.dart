@@ -15,7 +15,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
         // await DbProvider.db.deleteAllPlaceModels();
         emit(PlacesLoading());
 
-        int lastUpdate = await DbProvider.db.getLastUpdateDate();
+        final lastUpdate = await DbProvider.db.getPlacesLastUpdateDate();
         final a = DateTime.fromMillisecondsSinceEpoch(lastUpdate);
 
         //TODO: `get: /places?update_date=date`
