@@ -37,8 +37,12 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
             table: table,
             onReserveCallback: (guestsCount) {
               Navigator.pop(context);
-              placeInfoBloc.add(
-                  PlaceTableReserve(table.id, guestsCount, selectedDateTime));
+              placeInfoBloc.add(PlaceTableReserve(
+                  table.id,
+                  guestsCount,
+                  table.placeId,
+                  selectedDateTime,
+                  DateTime.now().add(const Duration(hours: 10))));
             });
       },
     );
