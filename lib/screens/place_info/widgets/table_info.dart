@@ -4,13 +4,14 @@ import 'package:booking_app/models/models.dart';
 import 'package:flutter/material.dart';
 
 class TableInfo extends StatelessWidget {
-  final bool isReserved;
+  final bool isReservedByUser;
   final TableModel table;
-  const TableInfo({super.key, required this.isReserved, required this.table});
+  const TableInfo(
+      {super.key, required this.isReservedByUser, required this.table});
 
   @override
   Widget build(BuildContext context) {
-    return isReserved
+    return isReservedByUser
         //move to common widget
         ? Container(
             decoration: BoxDecoration(
@@ -34,10 +35,10 @@ class TableInfo extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 "Стол ${table.id}",
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
-                            Expanded(
+                            const Expanded(
                               child: Text(
                                 "Ожидание подтверждения",
                                 style: TextStyle(color: Colors.white),
@@ -64,11 +65,11 @@ class TableInfo extends StatelessWidget {
                 children: [
                   Text(
                     "Стол ${table.id}",
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   Text(
-                    "Мест: ${table.guestsCount}",
-                    style: TextStyle(color: Colors.white),
+                    "ID: ${table.id}",
+                    style: const TextStyle(color: Colors.white),
                   )
                 ],
               ),

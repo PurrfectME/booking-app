@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class TableWrapper extends StatelessWidget {
   final onDateTimeTap;
   final DateTime selectedDateTime;
-  final List<TableModel> data;
+  final List<TableViewModel?> data;
   final void Function(TableModel) showTableReserveDialog;
   final int? reservedTableId;
 
@@ -32,24 +32,26 @@ class TableWrapper extends StatelessWidget {
               primary: false,
               crossAxisCount: 1,
               children: data
-                  .map((table) => CarouselSlider.builder(
+                  .map((tableVm) => CarouselSlider.builder(
                       itemCount: data.length, //COUNT OF PHOTOS
                       itemBuilder: (context, index, realIndex) {
-                        return table.id != reservedTableId
+                        return tableVm!.table.id != reservedTableId
                             ? InkWell(
-                                onTap: () => showTableReserveDialog(table),
+                                onTap: () =>
+                                    showTableReserveDialog(tableVm.table),
                                 child: Container(
                                     margin: const EdgeInsets.only(bottom: 50),
                                     child: TableInfo(
-                                      isReserved: false,
-                                      table: table,
+                                      isReservedByUser:
+                                          tableVm.isReservedByUser,
+                                      table: tableVm.table,
                                     )),
                               )
                             : Container(
                                 margin: const EdgeInsets.only(bottom: 50),
                                 child: TableInfo(
-                                  isReserved: true,
-                                  table: table,
+                                  isReservedByUser: tableVm.isReservedByUser,
+                                  table: tableVm.table,
                                 ));
                       },
                       options: CarouselOptions(

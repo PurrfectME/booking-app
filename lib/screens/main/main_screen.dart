@@ -1,6 +1,6 @@
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
-import 'package:booking_app/models/menu_tab.dart';
-import 'package:booking_app/models/nav_item.dart';
+import 'package:booking_app/models/local/menu_tab.dart';
+import 'package:booking_app/models/local/nav_item.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
 import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
 import 'package:booking_app/widgets/bottom_nav.dart';

@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_void_async
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../models/menu_tab.dart';
+import 'package:booking_app/models/models.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'menu_event.dart';
 part 'menu_state.dart';

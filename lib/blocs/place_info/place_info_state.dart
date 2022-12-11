@@ -19,7 +19,7 @@ class PlaceInfoError extends PlaceInfoState {
 }
 
 class PlaceInfoLoaded extends PlaceInfoState {
-  final List<TableModel> data;
+  final List<TableViewModel?> data;
 
   const PlaceInfoLoaded(this.data);
 

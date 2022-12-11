@@ -10,8 +10,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (event is LoginStart) {
         emit(LoginLoading());
 
-        await Future.delayed(Duration(seconds: 2));
-
         emit(LoginSuccess());
       }
     });

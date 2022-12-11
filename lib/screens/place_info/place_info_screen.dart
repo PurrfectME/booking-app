@@ -1,5 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/table_model.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/place_info/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,8 +65,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
               if (state is PlaceInfoLoading) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(child: const CupertinoActivityIndicator(radius: 20)),
+                  children: const [
+                    Center(child: CupertinoActivityIndicator(radius: 20)),
                   ],
                 );
               } else if (state is PlaceInfoError) {
@@ -79,7 +79,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                     showTableReserveDialog: showTableReserveDialog,
                     reservedTableId: reservedTableId);
               } else {
-                return SizedBox();
+                return const SizedBox();
               }
             },
           )),
@@ -91,7 +91,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(Duration(days: 20000)));
+        lastDate: DateTime.now().add(const Duration(days: 20000)));
 
     if (date != null) {
       final time = await showTimePicker(

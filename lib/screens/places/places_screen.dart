@@ -30,8 +30,8 @@ class PlacesScreenState extends State<PlacesScreen> {
           if (state is PlacesLoading) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(child: const CupertinoActivityIndicator(radius: 20)),
+              children: const [
+                Center(child: CupertinoActivityIndicator(radius: 20)),
               ],
             );
           } else if (state is PlacesError) {
@@ -43,9 +43,12 @@ class PlacesScreenState extends State<PlacesScreen> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               crossAxisCount: 2,
-              children: state.data
-                  .map((place) => PlaceItem(place: place, onTap: _onPlaceTap))
-                  .toList(),
+              children: state.data.isNotEmpty
+                  ? state.data
+                      .map((place) =>
+                          PlaceItem(place: place, onTap: _onPlaceTap))
+                      .toList()
+                  : [],
             );
           } else {
             //если билдер не нашёл стейт в обработке ифов
@@ -62,7 +65,7 @@ class PlacesScreenState extends State<PlacesScreen> {
         MaterialPageRoute(
             builder: (context) => BlocProvider(
                   create: (context) =>
-                      PlaceInfoBloc(place: place)..add(PlaceInfoLoad()),
+                      PlaceInfoBloc(place: place)..add(PlaceInfoLoad(place.id)),
                   child: const PlaceInfoScreen(),
                 )));
   }

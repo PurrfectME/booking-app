@@ -1,5 +1,4 @@
-import 'package:booking_app/models/menu_tab.dart';
-import 'package:booking_app/models/nav_item.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/utils/ext.dart';
 import 'package:flutter/material.dart';
 
