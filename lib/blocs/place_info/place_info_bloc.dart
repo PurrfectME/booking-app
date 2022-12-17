@@ -17,6 +17,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
     on<PlaceInfoEvent>((event, emit) async {
       if (event is PlaceInfoLoad) {
+        //TODO: хотя если каждый раз создаётся новый блок, то клеар не нужен
         availableTables.clear();
         emit(PlaceInfoLoading());
 
