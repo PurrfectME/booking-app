@@ -141,6 +141,20 @@ class DbProvider {
     return await batch.commit(noResult: true);
   }
 
+  Future<int> createUserReservation(UserReservationModel model) async {
+    final db = await database;
+    final result = await db!.insert("user_reservations", model.toMap());
+
+    return result;
+  }
+
+  Future<int> createReservation(ReservationModel model) async {
+    final db = await database;
+    final result = await db!.insert("reservations", model.toMap());
+
+    return result;
+  }
+
   Future<List<Object?>> createAllReservations(
       List<ReservationModel> reservations,
       List<UserReservationModel> userReservations) async {

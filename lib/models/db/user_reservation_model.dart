@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class UserReservationModel {
-  int id;
+  int? id;
   int placeId;
   int tableId;
   int start;
