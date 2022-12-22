@@ -13,9 +13,10 @@ class PlaceItem extends StatelessWidget {
       onTap: () => onTap(place),
       child: Container(
           margin: const EdgeInsets.all(7.0),
-          width: 50.0,
-          height: 50.0,
+          // width: 50.0,
+          height: 150.0,
           decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
               image: DecorationImage(
                   opacity: 1,
                   image: AssetImage("assets/images/neft.jpg"),

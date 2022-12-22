@@ -65,6 +65,13 @@ class DbProvider {
     return res;
   }
 
+  Future<int> deleteAllTables() async {
+    final db = await database;
+    final res = await db!.rawDelete('DELETE FROM tables');
+
+    return res;
+  }
+
   Future<List<PlaceModel>> getAllPlaceModels() async {
     final db = await database;
     final res = await db!.rawQuery(

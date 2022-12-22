@@ -3,6 +3,7 @@ import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'widgets/widgets.dart';
@@ -37,19 +38,13 @@ class PlacesScreenState extends State<PlacesScreen> {
           } else if (state is PlacesError) {
             return Text(state.error);
           } else if (state is PlacesLoaded) {
-            return GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(20),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 2,
-              children: state.data.isNotEmpty
-                  ? state.data
-                      .map((place) =>
-                          PlaceItem(place: place, onTap: _onPlaceTap))
-                      .toList()
-                  : [],
-            );
+            return ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.data.length,
+                primary: false,
+                padding: const EdgeInsets.all(10),
+                itemBuilder: ((context, index) =>
+                    PlaceItem(place: state.data[index], onTap: _onPlaceTap)));
           } else {
             //если билдер не нашёл стейт в обработке ифов
             return SizedBox();
