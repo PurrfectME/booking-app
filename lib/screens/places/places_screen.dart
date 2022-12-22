@@ -24,6 +24,7 @@ class PlacesScreenState extends State<PlacesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       key: _formKey,
       appBar: AppBar(title: const Text("Рестораны")),
       body: BlocBuilder<PlacesBloc, PlacesState>(
