@@ -43,6 +43,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+          // primaryColor: Colors.black,
+          appBarTheme: AppBarTheme(backgroundColor: Colors.black),
+          // backgroundColor: Colors.black,
+          scaffoldBackgroundColor: Colors.black,
+          textTheme: Theme.of(context).textTheme.apply(
+                bodyColor: Colors.white,
+                displayColor: Colors.white,
+              )),
       navigatorKey: Navigation.navigatorKey,
       title: 'Давай заброним',
       initialRoute: '/',
