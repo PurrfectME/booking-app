@@ -31,12 +31,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         child: Container(
           // margin: const EdgeInsets.fromLTRB(16, 0, 16, 36),
           // padding: const EdgeInsets.symmetric(vertical: 4),
-          decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-            BoxShadow(
-                color: Color.fromARGB(255, 198, 201, 198),
-                blurRadius: 15,
-                offset: Offset(0, 4))
-          ]),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 50, 50, 50),
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +54,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                             const SizedBox(height: 4),
                             DefaultTextStyle(
                               style: const TextStyle(
-                                  color: Colors.black, fontSize: 18),
+                                  color: Colors.white, fontSize: 18),
                               textAlign: TextAlign.center,
                               child: Text(e.label ?? ''),
                             )
@@ -72,21 +69,22 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   BottomNavigationBarItem _navItem(String iconName, String title) {
     Icon icon;
+    const inactiveIconColor = Color.fromARGB(255, 95, 95, 95);
 
     switch (iconName) {
       case "menu_places":
-        icon = const Icon(Icons.restaurant);
+        icon = const Icon(Icons.restaurant, color: inactiveIconColor);
         break;
       case "menu_profile":
-        icon = const Icon(Icons.account_box);
+        icon = const Icon(Icons.account_box, color: inactiveIconColor);
         break;
       default:
         //TODO: add default icon
-        icon = const Icon(Icons.add_box_sharp);
+        icon = const Icon(Icons.add_box_sharp, color: inactiveIconColor);
     }
 
     return BottomNavigationBarItem(
-      activeIcon: Icon(icon.icon, color: Colors.blue),
+      activeIcon: Icon(icon.icon, color: Colors.white),
       icon: icon,
       label: title,
     );

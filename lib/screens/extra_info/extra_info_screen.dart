@@ -32,55 +32,68 @@ class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
         appBar: AppBar(
           title: const Text('Регистрация'),
         ),
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("Как мне называть тебя?"),
-                TextFormField(
-                  keyboardType: TextInputType.name,
-                  onSaved: (newValue) {
-                    name = newValue;
-                  },
-                  // onChanged: phoneNumberOnChange,
-                  // The validator receives the text that the user has entered.
-                  // validator: validatePhoneNumber),
-                ),
-                SizedBox(height: 50),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: BlocBuilder<ExtraInfoBloc, ExtraInfoState>(
-                      buildWhen: (previous, current) {
-                    if (current is ExtraInfoSuccess) Navigation.toMain();
-                    if (current is ExtraInfoError) return false;
-                    return true;
-                  }, builder: (context, state) {
-                    if (state is ExtraInfoLoading) {
-                      return const ElevatedButton(
-                        onPressed: null,
-                        child: CupertinoActivityIndicator(),
-                      );
-                    } else {
-                      return ElevatedButton(
-                        onPressed: () {
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            context
-                                .read<ExtraInfoBloc>()
-                                .add(AddProfileName(name!));
-                          }
+        body: Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 30),
+            height: 200,
+            child: Card(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              color: const Color.fromARGB(255, 95, 95, 95),
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text("Как мне называть тебя?"),
+                      TextFormField(
+                        // decoration: InputDecoration(border: InputBorder()),
+                        keyboardType: TextInputType.name,
+                        onSaved: (newValue) {
+                          name = newValue;
                         },
-                        child: const Text('Продолжить'),
-                      );
-                    }
-                  }),
+                        // onChanged: phoneNumberOnChange,
+                        // The validator receives the text that the user has entered.
+                        // validator: validatePhoneNumber),
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: BlocBuilder<ExtraInfoBloc, ExtraInfoState>(
+                            buildWhen: (previous, current) {
+                          if (current is ExtraInfoSuccess) Navigation.toMain();
+                          if (current is ExtraInfoError) return false;
+                          return true;
+                        }, builder: (context, state) {
+                          if (state is ExtraInfoLoading) {
+                            return const ElevatedButton(
+                              onPressed: null,
+                              child: CupertinoActivityIndicator(),
+                            );
+                          } else {
+                            return ElevatedButton(
+                              onPressed: () {
+                                // Validate returns true if the form is valid, or false otherwise.
+                                if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
+                                  context
+                                      .read<ExtraInfoBloc>()
+                                      .add(AddProfileName(name!));
+                                }
+                              },
+                              child: const Text('Продолжить'),
+                            );
+                          }
+                        }),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           ),
         ),

@@ -12,31 +12,79 @@ class PlaceItem extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(place),
       child: Container(
-          margin: const EdgeInsets.all(7.0),
-          width: 50.0,
-          height: 50.0,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  opacity: 1,
-                  image: AssetImage("assets/images/neft.jpg"),
-                  fit: BoxFit.cover)),
-          child: Padding(
+        margin: const EdgeInsets.only(bottom: 20),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Stack(children: [
+            Container(
+              margin: const EdgeInsets.all(7.0),
+              // width: 310.0,
+              height: 250.0,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  image: DecorationImage(
+                      opacity: 1,
+                      image: AssetImage("assets/images/neft.jpg"),
+                      fit: BoxFit.cover)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20, right: 20),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[850], shape: BoxShape.circle),
+                  child: const Icon(
+                    Icons.favorite_border,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )
+          ]),
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  place.name,
-                  style: const TextStyle(color: Colors.white),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      place.name,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Text(
+                        "ID: ${place.id}",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  "ID: ${place.id}",
-                  style: const TextStyle(color: Colors.white),
+                Row(
+                  children: [
+                    Text(
+                      place.description,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: const [
+                    Text(
+                      "Категория",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
                 )
               ],
             ),
-          )),
+          )
+        ]),
+      ),
     );
   }
 }
