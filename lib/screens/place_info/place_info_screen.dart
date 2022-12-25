@@ -17,6 +17,7 @@ class PlaceInfoScreen extends StatefulWidget {
 class PlaceInfoScreenState extends State<PlaceInfoScreen> {
   late DateTime selectedDateTime;
   int? reservedTableId;
+  var currentGuestsCount = 1;
 
   @override
   void initState() {
@@ -63,30 +64,166 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         // }
       },
       child: Scaffold(
-          appBar: AppBar(title: const Text("Выбрать место")),
+          // appBar: AppBar(title: const Text("Выбрать место")),
           body: BlocBuilder<PlaceInfoBloc, PlaceInfoState>(
-            builder: (context, state) {
-              if (state is PlaceInfoLoading) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Center(child: CupertinoActivityIndicator(radius: 20)),
-                  ],
-                );
-              } else if (state is PlaceInfoError) {
-                return Text(state.error);
-              } else if (state is PlaceInfoLoaded) {
-                return TableWrapper(
-                    onDateTimeTap: _onDateTimeTap,
-                    selectedDateTime: selectedDateTime,
-                    data: state.data,
-                    showTableReserveDialog: showTableReserveDialog,
-                    reservedTableId: reservedTableId);
-              } else {
-                return const SizedBox();
-              }
-            },
-          )),
+        builder: (context, state) {
+          if (state is PlaceInfoLoading) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Center(child: CupertinoActivityIndicator(radius: 20)),
+              ],
+            );
+          } else if (state is PlaceInfoError) {
+            return Text(state.error);
+          } else if (state is PlaceInfoLoaded) {
+            // Widget tablesSheet;
+
+            // showModalBottomSheet(
+            //     context: context,
+            //     builder: (context) {
+            //       return Container();
+            //     }).then((value) {
+            //   tablesSheet = value;
+            // });
+
+            return Container(
+              child: Stack(children: [
+                Container(
+                  // width: 310.0,
+                  height: 350.0,
+                  foregroundDecoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(.3),
+                        Colors.black.withOpacity(1),
+                      ],
+                    ),
+                  ),
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          opacity: 1,
+                          image: AssetImage("assets/images/neft.jpg"),
+                          fit: BoxFit.cover)),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 35, right: 20),
+                      child: Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                            color: Colors.grey[850], shape: BoxShape.circle),
+                        child: const Icon(
+                          Icons.favorite_border,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                    child: DraggableScrollableSheet(
+                        initialChildSize: 0.6,
+                        minChildSize: 0.6,
+                        builder: (context, scrollController) => Container(
+                              decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.black),
+                              child: ListView.builder(
+                                controller: scrollController,
+                                itemCount: state.data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Card(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                      ),
+                                      color:
+                                          const Color.fromARGB(255, 95, 95, 95),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: 200,
+                                              decoration: const BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(20)),
+                                                  image: DecorationImage(
+                                                      opacity: 1,
+                                                      image: AssetImage(
+                                                          "assets/images/neft.jpg"),
+                                                      fit: BoxFit.cover)),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                  'Столик ${state.data[index]?.table.number}'),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                  'Мест: ${state.data[index]?.table.guests}'),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    IconButton(
+                                                        onPressed:
+                                                            currentGuestsCount >
+                                                                    1
+                                                                ? null
+                                                                : null,
+                                                        icon: const Icon(Icons
+                                                            .arrow_back_ios_new)),
+                                                    Text('$currentGuestsCount'),
+                                                    const IconButton(
+                                                        onPressed: null,
+                                                        icon: Icon(Icons
+                                                            .arrow_forward_ios))
+                                                  ],
+                                                ),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(Colors
+                                                                      .yellow)),
+                                                      onPressed: null,
+                                                      child: Text(
+                                                        'Забронировать',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                      )),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ));
+                                },
+                              ),
+                            )))
+              ]),
+            );
+            // return TableWrapper(
+            //     onDateTimeTap: _onDateTimeTap,
+            //     selectedDateTime: selectedDateTime,
+            //     data: state.data,
+            //     showTableReserveDialog: showTableReserveDialog,
+            //     reservedTableId: reservedTableId);
+          } else {
+            return const SizedBox();
+          }
+        },
+      )),
     );
   }
 
