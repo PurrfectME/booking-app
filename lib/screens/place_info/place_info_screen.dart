@@ -135,6 +135,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                       BorderRadius.all(Radius.circular(20)),
                                   color: Colors.black),
                               child: ListView.builder(
+                                padding: const EdgeInsets.all(0),
                                 controller: scrollController,
                                 itemCount: state.data.length,
                                 itemBuilder: (BuildContext context, int index) {
@@ -145,68 +146,87 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                       ),
                                       color:
                                           const Color.fromARGB(255, 95, 95, 95),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 200,
-                                              decoration: const BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(20)),
-                                                  image: DecorationImage(
-                                                      opacity: 1,
-                                                      image: AssetImage(
-                                                          "assets/images/neft.jpg"),
-                                                      fit: BoxFit.cover)),
-                                            ),
-                                            Container(
-                                              child: Text(
-                                                  'Столик ${state.data[index]?.table.number}'),
-                                            ),
-                                            Container(
-                                              child: Text(
-                                                  'Мест: ${state.data[index]?.table.guests}'),
-                                            ),
-                                            Row(
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: 200,
+                                            decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(20),
+                                                    topRight:
+                                                        Radius.circular(20)),
+                                                image: DecorationImage(
+                                                    opacity: 1,
+                                                    image: AssetImage(
+                                                        "assets/images/neft.jpg"),
+                                                    fit: BoxFit.cover)),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
+                                                Container(
+                                                  child: Text(
+                                                      'Столик ${state.data[index]?.table.number}'),
+                                                ),
+                                                Container(
+                                                  child: Text(
+                                                      'Мест: ${state.data[index]?.table.guests}'),
+                                                ),
                                                 Row(
                                                   children: [
-                                                    IconButton(
-                                                        onPressed:
-                                                            currentGuestsCount >
-                                                                    1
-                                                                ? null
-                                                                : null,
-                                                        icon: const Icon(Icons
-                                                            .arrow_back_ios_new)),
-                                                    Text('$currentGuestsCount'),
-                                                    const IconButton(
+                                                    Card(
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    20)),
+                                                      ),
+                                                      color: Color.fromARGB(
+                                                          255, 61, 58, 58),
+                                                      child: Row(
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed:
+                                                                  currentGuestsCount >
+                                                                          1
+                                                                      ? null
+                                                                      : null,
+                                                              icon: const Icon(
+                                                                  Icons
+                                                                      .remove)),
+                                                          Text(
+                                                              '$currentGuestsCount'),
+                                                          const IconButton(
+                                                              onPressed: null,
+                                                              icon: Icon(
+                                                                  Icons.add)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    ElevatedButton(
+                                                        style: ButtonStyle(
+                                                            backgroundColor:
+                                                                MaterialStateProperty
+                                                                    .all(Colors
+                                                                        .yellow)),
                                                         onPressed: null,
-                                                        icon: Icon(Icons
-                                                            .arrow_forward_ios))
+                                                        child: Text(
+                                                          'Забронировать',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                        )),
                                                   ],
                                                 ),
-                                                Expanded(
-                                                  child: ElevatedButton(
-                                                      style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty
-                                                                  .all(Colors
-                                                                      .yellow)),
-                                                      onPressed: null,
-                                                      child: Text(
-                                                        'Забронировать',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      )),
-                                                )
                                               ],
-                                            )
-                                          ],
-                                        ),
+                                            ),
+                                          )
+                                        ],
                                       ));
                                 },
                               ),
