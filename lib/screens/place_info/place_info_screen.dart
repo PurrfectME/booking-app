@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/place_info/widgets/widgets.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,161 +78,68 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
           } else if (state is PlaceInfoError) {
             return Text(state.error);
           } else if (state is PlaceInfoLoaded) {
-            final a = [
-              state.data[0],
-              state.data[0],
-              state.data[0],
-              state.data[0],
-              state.data[0]
-            ];
-
-            return Container(
-              child: Stack(children: [
-                Container(
-                  // width: 310.0,
-                  height: 350.0,
-                  foregroundDecoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(.3),
-                        Colors.black.withOpacity(1),
-                      ],
-                    ),
+            return Stack(children: [
+              Container(
+                // width: 310.0,
+                height: 350.0,
+                foregroundDecoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(.3),
+                      Colors.black.withOpacity(1),
+                    ],
                   ),
-                  decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          opacity: 1,
-                          image: AssetImage("assets/images/neft.jpg"),
-                          fit: BoxFit.cover)),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 35, right: 20),
-                      child: Container(
-                        width: 38,
-                        height: 38,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[850], shape: BoxShape.circle),
-                        child: const Icon(
-                          Icons.favorite_border,
-                          color: Colors.white,
-                        ),
+                ),
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        opacity: 1,
+                        image: AssetImage("assets/images/neft.jpg"),
+                        fit: BoxFit.cover)),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 35, right: 20),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[850], shape: BoxShape.circle),
+                      child: const Icon(
+                        Icons.favorite_border,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-                Container(
-                    child: DraggableScrollableSheet(
-                        initialChildSize: 0.6,
-                        minChildSize: 0.6,
-                        builder: (context, scrollController) => Container(
-                              decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: Colors.black),
-                              child: ListView.builder(
-                                padding: const EdgeInsets.all(0),
-                                controller: scrollController,
-                                itemCount: a.length,
-                                primary: false,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Card(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      color:
-                                          const Color.fromARGB(255, 95, 95, 95),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 200,
-                                            decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(20),
-                                                    topRight:
-                                                        Radius.circular(20)),
-                                                image: DecorationImage(
-                                                    opacity: 1,
-                                                    image: AssetImage(
-                                                        "assets/images/neft.jpg"),
-                                                    fit: BoxFit.cover)),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  child: Text(
-                                                      'Столик ${a[index]?.table.number}'),
-                                                ),
-                                                Container(
-                                                  child: Text(
-                                                      'Мест: ${a[index]?.table.guests}'),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Card(
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10)),
-                                                      ),
-                                                      color: Color.fromARGB(
-                                                          255, 61, 58, 58),
-                                                      child: Row(
-                                                        children: [
-                                                          IconButton(
-                                                              onPressed:
-                                                                  currentGuestsCount >
-                                                                          1
-                                                                      ? null
-                                                                      : null,
-                                                              icon: const Icon(
-                                                                  Icons
-                                                                      .remove)),
-                                                          Text(
-                                                              '$currentGuestsCount'),
-                                                          const IconButton(
-                                                              onPressed: null,
-                                                              icon: Icon(
-                                                                  Icons.add)),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    ElevatedButton(
-                                                        style: ButtonStyle(
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all(Colors
-                                                                        .yellow)),
-                                                        onPressed: null,
-                                                        child: Text(
-                                                          'Забронировать',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black),
-                                                        )),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ));
-                                },
-                              ),
-                            )))
-              ]),
-            );
+              ),
+              DraggableScrollableSheet(
+                  initialChildSize: 0.6,
+                  minChildSize: 0.6,
+                  builder: (context, scrollController) => Container(
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.black),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(0),
+                          controller: scrollController,
+                          itemCount: state.data.length,
+                          primary: false,
+                          itemBuilder: (BuildContext context, int index) {
+                            return state.data[index]?.table.id !=
+                                    reservedTableId
+                                ? TableCard(
+                                    model: state.data[index]!,
+                                    currentGuestsCount: currentGuestsCount,
+                                    increaseCallback: _onGuestsCountIncrease,
+                                    decreaseCallback: _onGuestsCountDecrease)
+                                : const SizedBox();
+                          },
+                        ),
+                      ))
+            ]);
             // return TableWrapper(
             //     onDateTimeTap: _onDateTimeTap,
             //     selectedDateTime: selectedDateTime,
@@ -244,6 +152,18 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         },
       )),
     );
+  }
+
+  void _onGuestsCountDecrease() {
+    setState(() {
+      currentGuestsCount--;
+    });
+  }
+
+  void _onGuestsCountIncrease() {
+    setState(() {
+      currentGuestsCount++;
+    });
   }
 
   _onDateTimeTap() async {

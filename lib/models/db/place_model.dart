@@ -7,6 +7,7 @@ class PlaceModel {
   String name;
   String description;
   int logo;
+  //TODO: у заведения только одно фото
   List<int> gallery;
   int updateDate;
   List<TableModel?> tables;
