@@ -77,15 +77,13 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
           } else if (state is PlaceInfoError) {
             return Text(state.error);
           } else if (state is PlaceInfoLoaded) {
-            // Widget tablesSheet;
-
-            // showModalBottomSheet(
-            //     context: context,
-            //     builder: (context) {
-            //       return Container();
-            //     }).then((value) {
-            //   tablesSheet = value;
-            // });
+            final a = [
+              state.data[0],
+              state.data[0],
+              state.data[0],
+              state.data[0],
+              state.data[0]
+            ];
 
             return Container(
               child: Stack(children: [
@@ -137,7 +135,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                               child: ListView.builder(
                                 padding: const EdgeInsets.all(0),
                                 controller: scrollController,
-                                itemCount: state.data.length,
+                                itemCount: a.length,
+                                primary: false,
                                 itemBuilder: (BuildContext context, int index) {
                                   return Card(
                                       shape: const RoundedRectangleBorder(
@@ -170,11 +169,11 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                               children: [
                                                 Container(
                                                   child: Text(
-                                                      'Столик ${state.data[index]?.table.number}'),
+                                                      'Столик ${a[index]?.table.number}'),
                                                 ),
                                                 Container(
                                                   child: Text(
-                                                      'Мест: ${state.data[index]?.table.guests}'),
+                                                      'Мест: ${a[index]?.table.guests}'),
                                                 ),
                                                 Row(
                                                   children: [
@@ -184,7 +183,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                                         borderRadius:
                                                             BorderRadius.all(
                                                                 Radius.circular(
-                                                                    20)),
+                                                                    10)),
                                                       ),
                                                       color: Color.fromARGB(
                                                           255, 61, 58, 58),
