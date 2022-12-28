@@ -24,22 +24,21 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         //мы сохраняем локально в бд резервации юзера, а просто таблицу со всеми резервациями нет
         //а как менеджить момент когда с одного телефона два юзера разных зайдут,(бд одна)
         //тогда помимо юзер резерваций нужно сохранять и в обычные
-
         //TODO: `get: /place/{event.placeId}/tables`
-        final reservedTablesResponse = [
-          ReservationModel(
-            2,
-            7,
-            DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
-            DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
-          ),
-          ReservationModel(
-            1,
-            5,
-            DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
-            DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
-          ),
-        ];
+        // final reservedTablesResponse = [
+        //   ReservationModel(
+        //     2,
+        //     7,
+        //     DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
+        //     DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
+        //   ),
+        //   ReservationModel(
+        //     1,
+        //     5,
+        //     DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
+        //     DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
+        //   ),
+        // ];
 
         //TODO: `get: /profile/tables`
         // final userReservedTablesResponse = [
@@ -52,7 +51,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         //       DateTime.now().millisecondsSinceEpoch)
         // ];
 
-        // final reservedTablesResponse = await DbProvider.db.getReservations();
+        final reservedTablesResponse = await DbProvider.db.getReservations();
 
         final userReservedTablesResponse =
             await DbProvider.db.getAllUserReservations();
@@ -86,7 +85,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                   null,
                   // userReservedTables[currentUserReservationIndex].from,
                   // userReservedTables[currentUserReservationIndex].to,
-                  true));
+                  true,
+                  place.name));
             }
           } else {
             availableTables.add(TableViewModel(
@@ -95,7 +95,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                 null,
                 // userReservedTables[currentUserReservationIndex].from,
                 // userReservedTables[currentUserReservationIndex].to,
-                false));
+                false,
+                place.name));
           }
         }
 
@@ -117,6 +118,13 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                   event.start.millisecondsSinceEpoch,
                   event.end.millisecondsSinceEpoch,
                   DateTime.now().millisecondsSinceEpoch));
+
+          final resId = await DbProvider.db.createReservation(ReservationModel(
+            null,
+            event.id,
+            event.start.millisecondsSinceEpoch,
+            event.end.millisecondsSinceEpoch,
+          ));
 
           final tableIndex =
               availableTables.indexWhere((table) => table.table.id == event.id);

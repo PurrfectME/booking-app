@@ -1,19 +1,26 @@
+import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/table_vm.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TableCard extends StatelessWidget {
+class TableCard extends StatefulWidget {
   final TableViewModel model;
-  final int currentGuestsCount;
-  final Function() increaseCallback;
-  final Function() decreaseCallback;
-
+  final DateTime selectedDateTime;
   const TableCard(
-      {super.key,
-      required this.model,
-      required this.currentGuestsCount,
-      required this.increaseCallback,
-      required this.decreaseCallback});
+      {super.key, required this.model, required this.selectedDateTime});
+
+  @override
+  State<TableCard> createState() => _TableCardState();
+}
+
+class _TableCardState extends State<TableCard> {
+  int currentGuestsCount = 1;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +34,7 @@ class TableCard extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        color: const Color.fromARGB(255, 95, 95, 95),
+        color: Color.fromARGB(255, 59, 59, 59),
         child: Column(
           children: [
             CarouselSlider.builder(
@@ -60,52 +67,69 @@ class TableCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    child: Text('Столик ${model.table.number}'),
-                  ),
-                  Container(
-                    child: Text('Мест: ${model.table.guests}'),
-                  ),
+                  Text('Столик ${widget.model.table.number}'),
+                  Text('Мест: ${widget.model.table.guests}'),
+                  Text('Депозит(VIP): 200руб.'),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
-                      Card(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        color: const Color.fromARGB(255, 61, 58, 58),
-                        child: Row(
-                          children: [
-                            IconButton(
-                                onPressed: _canDescrease(currentGuestsCount)
-                                    ? decreaseCallback
-                                    : null,
-                                icon: Icon(Icons.remove,
-                                    color: _canDescrease(currentGuestsCount)
-                                        ? Colors.white
-                                        : Colors.black)),
-                            Text('$currentGuestsCount'),
-                            IconButton(
-                                onPressed: _canIncrease(
-                                        currentGuestsCount, model.table.guests)
-                                    ? increaseCallback
-                                    : null,
-                                icon: Icon(Icons.add,
-                                    color: _canIncrease(currentGuestsCount,
-                                            model.table.guests)
-                                        ? Colors.white
-                                        : Colors.black)),
-                          ],
+                      SizedBox(
+                        height: 60,
+                        child: Card(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          color: const Color.fromARGB(255, 85, 85, 85),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                  splashColor: Color.fromARGB(160, 85, 85, 85),
+                                  onPressed: _canDescrease(currentGuestsCount)
+                                      ? _onGuestsCountDecrease
+                                      : null,
+                                  icon: Icon(Icons.remove,
+                                      color: _canDescrease(currentGuestsCount)
+                                          ? Colors.white
+                                          : Colors.black)),
+                              Text('$currentGuestsCount'),
+                              IconButton(
+                                  splashColor: Color.fromARGB(160, 85, 85, 85),
+                                  onPressed: _canIncrease(currentGuestsCount,
+                                          widget.model.table.guests)
+                                      ? _onGuestsCountIncrease
+                                      : null,
+                                  icon: Icon(Icons.add,
+                                      color: _canIncrease(currentGuestsCount,
+                                              widget.model.table.guests)
+                                          ? Colors.white
+                                          : Colors.black)),
+                            ],
+                          ),
                         ),
                       ),
-                      ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.yellow)),
-                          onPressed: null,
-                          child: const Text(
-                            'Забронировать',
-                            style: TextStyle(color: Colors.black),
-                          )),
+                      Expanded(
+                        child: SizedBox(
+                          height: 52,
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.yellow)),
+                              onPressed: () {
+                                context.read<PlaceInfoBloc>().add(
+                                    PlaceTableReserve(
+                                        widget.model.table.id!,
+                                        currentGuestsCount,
+                                        widget.model.table.placeId,
+                                        widget.selectedDateTime,
+                                        DateTime.now()
+                                            .add(const Duration(hours: 10))));
+                              },
+                              child: const Text(
+                                'Забронировать',
+                                style: TextStyle(color: Colors.black),
+                              )),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -119,4 +143,16 @@ class TableCard extends StatelessWidget {
       reservedGuests < maxGuests;
 
   bool _canDescrease(int reservedGuests) => reservedGuests > 1;
+
+  void _onGuestsCountDecrease() {
+    setState(() {
+      currentGuestsCount--;
+    });
+  }
+
+  void _onGuestsCountIncrease() {
+    setState(() {
+      currentGuestsCount++;
+    });
+  }
 }

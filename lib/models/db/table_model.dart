@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class TableModel extends Equatable {
-  int id;
+  int? id;
   int number;
   int image;
   int guests;
