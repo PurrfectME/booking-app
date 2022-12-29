@@ -26,28 +26,6 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         DateTime(now.year, now.month, now.day, now.hour, now.minute);
   }
 
-  // void showTableReserveDialog(TableModel table) {
-  //   final placeInfoBloc = context.read<PlaceInfoBloc>();
-
-  //   // show the dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return ReserveTableDialog(
-  //           table: table,
-  //           onReserveCallback: (guestsCount) {
-  //             Navigator.pop(context);
-  //             placeInfoBloc.add(PlaceTableReserve(
-  //                 table.id,
-  //                 guestsCount,
-  //                 table.placeId,
-  //                 selectedDateTime,
-  //                 DateTime.now().add(const Duration(hours: 10))));
-  //           });
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<PlaceInfoBloc, PlaceInfoState>(
@@ -107,11 +85,14 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                     ),
                     actions: [
                       IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.calendar_month,
+                          color: Colors.white,
+                        ),
+                        onPressed: _onDateTimeTap,
                       ),
                       IconButton(
-                        icon: const Icon(Icons.more_vert),
+                        icon: const Icon(Icons.search),
                         onPressed: () {},
                       ),
                     ],
@@ -131,7 +112,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                     child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Padding(
-                    padding: const EdgeInsets.all(18.0),
+                    padding: const EdgeInsets.only(left: 18.0, bottom: 25),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -217,12 +198,6 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                 }))
               ],
             );
-            // return TableWrapper(
-            //     onDateTimeTap: _onDateTimeTap,
-            //     selectedDateTime: selectedDateTime,
-            //     data: state.data,
-            //     showTableReserveDialog: showTableReserveDialog,
-            //     reservedTableId: reservedTableId);
           } else {
             return const SizedBox();
           }
