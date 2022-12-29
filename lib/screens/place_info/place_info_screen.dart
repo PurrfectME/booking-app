@@ -1,10 +1,9 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/models.dart';
-import 'package:booking_app/navigation.dart';
 import 'package:booking_app/screens/place_info/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sliver_header_delegate/sliver_header_delegate.dart';
 
 class PlaceInfoScreen extends StatefulWidget {
   const PlaceInfoScreen({super.key});
@@ -77,159 +76,147 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
           } else if (state is PlaceInfoError) {
             return Text(state.error);
           } else if (state is PlaceInfoLoaded) {
-            return Stack(children: [
-              Container(
-                // width: 310.0,
-                height: 250.0,
-                foregroundDecoration: BoxDecoration(
-                  // borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(.3),
-                      Colors.black.withOpacity(1),
+            return CustomScrollView(
+              slivers: [
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: FlexibleHeaderDelegate(
+                    expandedHeight: 190,
+                    statusBarHeight: MediaQuery.of(context).padding.top,
+                    background: MutableBackground(
+                      expandedWidget: Stack(children: [
+                        Container(
+                          foregroundDecoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withOpacity(.1),
+                                Colors.black.withOpacity(1),
+                              ],
+                            ),
+                          ),
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  opacity: 1,
+                                  image: AssetImage("assets/images/neft.jpg"),
+                                  fit: BoxFit.cover)),
+                        ),
+                      ]),
+                      collapsedColor: Colors.black,
+                    ),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.more_vert),
+                        onPressed: () {},
+                      ),
+                    ],
+                    children: [
+                      FlexibleTextItem(
+                        text: state.data[0]!.placeName,
+                        collapsedStyle: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            ?.copyWith(color: Colors.white),
+                        collapsedAlignment: Alignment.center,
+                      ),
                     ],
                   ),
                 ),
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        opacity: 1,
-                        image: AssetImage("assets/images/neft.jpg"),
-                        fit: BoxFit.cover)),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 35, left: 20, right: 20),
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                SliverToBoxAdapter(
+                    child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Align(
-                          alignment: Alignment.topLeft,
-                          child: Container(
-                            width: 38,
-                            height: 38,
-                            decoration: BoxDecoration(
-                                color: Colors.grey[850],
-                                shape: BoxShape.circle),
-                            child: const IconButton(
-                              onPressed: Navigation.toPlaces,
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                              ),
-                            ),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            state.data[0]!.placeName,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 30),
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            width: 38,
-                            height: 38,
-                            decoration: BoxDecoration(
-                                color: Colors.grey[850],
-                                shape: BoxShape.circle),
-                            child: const IconButton(
-                              onPressed: null,
-                              icon: Icon(
-                                Icons.favorite_border,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        state.data[0]!.placeName,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 50,
-                          child: Card(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                              color: const Color.fromARGB(255, 59, 59, 59),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  const Icon(Icons.star, color: Colors.white),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "5.0",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14),
-                                      ),
-                                      const Text("200+"),
-                                    ],
+                        Row(
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 50,
+                              child: Card(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
-                                ],
-                              )),
-                        ),
-                        Container(
-                          height: 50,
-                          child: Card(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                              color: const Color.fromARGB(255, 59, 59, 59),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.yellow)),
-                                child: const Text(
-                                  "Выбрать дату",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                onPressed: _onDateTimeTap,
-                              )),
+                                  color: const Color.fromARGB(255, 59, 59, 59),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      const Icon(Icons.star,
+                                          color: Colors.white),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "5.0",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14),
+                                          ),
+                                          const Text("200+"),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            Container(
+                              height: 50,
+                              child: Card(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  color: const Color.fromARGB(255, 59, 59, 59),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.yellow)),
+                                    child: const Text(
+                                      "Выбрать дату",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    onPressed: _onDateTimeTap,
+                                  )),
+                            )
+                          ],
                         )
                       ],
-                    )
-                  ],
-                ),
-              ),
-              DraggableScrollableSheet(
-                  initialChildSize: 0.7,
-                  minChildSize: 0.7,
-                  builder: (context, scrollController) => Container(
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Colors.black),
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(0),
-                          controller: scrollController,
-                          itemCount: state.data.length,
-                          primary: false,
-                          itemBuilder: (BuildContext context, int index) {
-                            return !state.data[index]!.isReservedByUser
-                                ? TableCard(
-                                    model: state.data[index]!,
-                                    selectedDateTime: selectedDateTime)
-                                : const SizedBox();
-                          },
-                        ),
-                      ))
-            ]);
+                    ),
+                  ),
+                )),
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        childCount: state.data.length, (context, index) {
+                  return Container(
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: Colors.black),
+                      child: !state.data[index]!.isReservedByUser
+                          ? TableCard(
+                              model: state.data[index]!,
+                              selectedDateTime: selectedDateTime)
+                          : const SizedBox());
+                }))
+              ],
+            );
             // return TableWrapper(
             //     onDateTimeTap: _onDateTimeTap,
             //     selectedDateTime: selectedDateTime,

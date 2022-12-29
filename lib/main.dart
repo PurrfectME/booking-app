@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           platform: TargetPlatform.iOS,
           // primaryColor: Colors.black,
-          appBarTheme: AppBarTheme(backgroundColor: Colors.black),
+          // appBarTheme: AppBarTheme(backgroundColor: Colors.black),
           // backgroundColor: Colors.black,
           scaffoldBackgroundColor: Colors.black,
           textTheme: Theme.of(context).textTheme.apply(
