@@ -12,8 +12,9 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   PlacesBloc() : super(PlacesLoading()) {
     on<PlacesEvent>((event, emit) async {
       if (event is PlacesLoad) {
-        // await DbProvider.db.deleteAllPlaceModels();
+        await DbProvider.db.deleteAllPlaceModels();
         // await DbProvider.db.deleteAllTables();
+
         emit(PlacesLoading());
 
         final lastUpdate = await DbProvider.db.getPlacesLastUpdateDate();
@@ -22,49 +23,22 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
         //TODO: `get: /places?update_date=date`
 
         final placesResponse = [
-          PlaceModel(16, "NEFT", "desc", Uint8List.fromList([1, 2]), 1,
+          PlaceModel(1, "NEFT", "desc", Uint8List.fromList([1, 2]), 1,
               DateTime(2022, 11, 30, 17, 20).millisecondsSinceEpoch, [
-            TableModel(15, 1, 1, 6, 16),
+            TableModel(1, 1, 1, 6, 1),
+            TableModel(2, 2, 1, 2, 1),
+            TableModel(3, 3, 1, 3, 1),
+            TableModel(4, 4, 1, 5, 1),
           ]),
-          PlaceModel(7, "NEFT", "desc", Uint8List.fromList([1, 2]), 1,
+          PlaceModel(2, "Flow", "desc", Uint8List.fromList([1, 2]), 1,
               DateTime.now().millisecondsSinceEpoch, [
-            TableModel(16, 1, 1, 6, 7),
+            TableModel(5, 2, 1, 2, 2),
+            TableModel(6, 3, 1, 3, 2),
+            TableModel(7, 4, 1, 5, 2),
           ]),
-          PlaceModel(
-              6,
-              "NEFT",
-              "desc",
-              Uint8List.fromList([1, 2]),
-              1,
-              DateTime.now().millisecondsSinceEpoch,
-              [TableModel(9, 1, 1, 6, 6)]),
-          PlaceModel(17, "NEFT", "desc", Uint8List.fromList([1, 2]), 1,
-              DateTime(2022, 11, 30, 17, 20).millisecondsSinceEpoch, [
-            TableModel(10, 1, 1, 6, 17),
-          ]),
-          PlaceModel(
-              18,
-              "NEFT",
-              "desc",
-              Uint8List.fromList([1, 2]),
-              1,
-              DateTime.now().millisecondsSinceEpoch,
-              [TableModel(11, 1, 1, 6, 18)]),
-          PlaceModel(9, "NEFT", "desc", Uint8List.fromList([1, 2]), 1,
-              DateTime(2022, 11, 30, 17, 20).millisecondsSinceEpoch, [
-            TableModel(12, 1, 1, 6, 9),
-          ]),
-          PlaceModel(
-              120,
-              "NEFT",
-              "desc",
-              Uint8List.fromList([1, 2]),
-              1,
-              DateTime.now().millisecondsSinceEpoch,
-              [TableModel(13, 1, 1, 6, 120)]),
         ];
 
-        // await DbProvider.db.createPlaceModels(placesResponse);
+        await DbProvider.db.createPlaceModels(placesResponse);
 
         final actualPlaces = await DbProvider.db.getAllPlaceModels();
 

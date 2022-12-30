@@ -8,4 +8,11 @@ class Constants {
   static const String getUserReservations = 'profile/tables';
   static const String signIn = 'signin';
   static const String setUserName = 'profile';
+
+  static const String updatePlace = 'profile/places/%i';
+  static const String createTable = 'profile/places/%i/tables';
+  static const String updateTable = 'profile/places/%i/tables/%i';
+  static const String deleteTable = 'profile/places/%i/tables/%i';
+
+  static const String getBookedTables = 'profile/places/%i/manage';
 }

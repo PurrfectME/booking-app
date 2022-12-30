@@ -127,10 +127,11 @@ class PlacesScreenState extends State<PlacesScreen> {
                                   alignment: Alignment.bottomCenter,
                                   children: [
                                     ListView.builder(
+                                        // physics:
+                                        //     const NeverScrollableScrollPhysics(),
                                         scrollDirection: Axis.vertical,
                                         shrinkWrap: true,
                                         itemCount: filters.length,
-                                        primary: true,
                                         itemBuilder: ((context, index) =>
                                             filters[index])),
                                     SizedBox(

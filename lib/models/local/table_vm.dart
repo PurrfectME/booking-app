@@ -6,7 +6,9 @@ class TableViewModel {
   int? from;
   int? to;
   bool isReservedByUser;
-  TableViewModel(this.table, this.from, this.to, this.isReservedByUser);
+  String placeName;
+  TableViewModel(
+      this.table, this.from, this.to, this.isReservedByUser, this.placeName);
 
   TableViewModel copyWith({
     TableModel? table,
@@ -14,11 +16,7 @@ class TableViewModel {
     int? to,
     bool? isReservedByUser,
   }) {
-    return TableViewModel(
-      table ?? this.table,
-      from ?? this.from,
-      to ?? this.to,
-      isReservedByUser ?? this.isReservedByUser,
-    );
+    return TableViewModel(table ?? this.table, from ?? this.from, to ?? this.to,
+        isReservedByUser ?? this.isReservedByUser, placeName);
   }
 }
