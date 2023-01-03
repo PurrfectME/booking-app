@@ -78,6 +78,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
       case "menu_profile":
         icon = const Icon(Icons.account_box, color: inactiveIconColor);
         break;
+      case "menu_update_place":
+        icon = const Icon(Icons.add, color: inactiveIconColor);
+        break;
       default:
         //TODO: add default icon
         icon = const Icon(Icons.add_box_sharp, color: inactiveIconColor);

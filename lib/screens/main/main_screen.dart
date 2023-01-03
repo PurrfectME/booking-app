@@ -3,6 +3,7 @@ import 'package:booking_app/models/local/menu_tab.dart';
 import 'package:booking_app/models/local/nav_item.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
 import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +29,10 @@ class _MainScreenState extends State<MainScreen>
     const MenuTabWrapper(
       tab: MenuTab.profile,
       child: ExtraInfoScreen(key: Key('ProfileScreen')),
+    ),
+    const MenuTabWrapper(
+      tab: MenuTab.updatePlace,
+      child: UpdatePlaceScreen(key: Key('UpdatePlaceScreen')),
     ),
   ];
 
@@ -62,6 +67,11 @@ class _MainScreenState extends State<MainScreen>
                 iconName: 'menu_profile',
                 title: "Профиль",
                 tab: MenuTab.profile,
+              ),
+              NavItem(
+                iconName: 'menu_update_place',
+                title: "Редактировать стол",
+                tab: MenuTab.updatePlace,
               )
             ],
           ),

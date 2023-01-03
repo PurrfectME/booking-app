@@ -111,6 +111,13 @@ class DbProvider {
     return places;
   }
 
+  Future<PlaceModel> getPlaceById(int id) async {
+    final db = await database;
+    final result = await db!.rawQuery('SELECT * FROM places WHERE id = $id');
+
+    return PlaceModel.fromMap(result.first);
+  }
+
   Future<int> getLastUpdateDate(String tableName) async {
     final db = await database;
     final result = await db!.rawQuery('SELECT updateDate FROM $tableName '

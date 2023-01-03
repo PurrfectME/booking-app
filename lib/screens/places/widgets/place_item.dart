@@ -1,5 +1,8 @@
+import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PlaceItem extends StatelessWidget {
   final PlaceModel place;
@@ -73,11 +76,21 @@ class PlaceItem extends StatelessWidget {
                   ],
                 ),
                 Row(
-                  children: const [
+                  children: [
                     Text(
                       "Категория",
                       style: TextStyle(color: Colors.white),
                     ),
+                    ElevatedButton(
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                      create: (context) => UpdatePlaceBloc()
+                                        ..add(UpdatePlaceLoad(id: place.id)),
+                                      child: const UpdatePlaceScreen(),
+                                    ))),
+                        child: Text("Апдейт")),
                   ],
                 )
               ],

@@ -39,4 +39,11 @@ class Navigation {
     return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(ExtraInfoScreen.pageRoute, (route) => false);
   }
+
+  /// Navigate to [UpdatePlaceScreen]
+  static Future<void> toUpdatePlace() {
+    // beforeNavigate();
+    return navigatorKey.currentState!
+        .pushNamedAndRemoveUntil(UpdatePlaceScreen.pageRoute, (route) => false);
+  }
 }

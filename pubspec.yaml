@@ -49,6 +49,7 @@ dependencies:
   dio: ^4.0.6
   sprintf: ^7.0.0
   sliver_header_delegate: ^0.0.5
+  image_picker: ^0.8.6
 
 dev_dependencies:
 
