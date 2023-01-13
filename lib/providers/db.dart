@@ -41,6 +41,15 @@ class DbProvider {
     });
   }
 
+  Future updatePlace(PlaceModel place) async {
+    final db = await database;
+
+    final result = await db!.update("places", place.toMap(),
+        where: 'id = ?', whereArgs: [place.id]);
+
+    return result;
+  }
+
   // Insert PlaceModels in database
   Future<List<Object?>> createPlaceModels(List<PlaceModel> models) async {
     final db = await database;

@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
-import 'package:equatable/equatable.dart';
 
 part 'update_place_event.dart';
 part 'update_place_state.dart';
@@ -15,6 +16,11 @@ class UpdatePlaceBloc extends Bloc<UpdatePlaceEvent, UpdatePlaceState> {
         final place = await DbProvider.db.getPlaceById(event.id);
 
         emit(UpdatePlaceLoaded(place));
+      } else if (event is UpdatePlace) {
+        event.data.updateDate = DateTime.now().millisecondsSinceEpoch;
+        await DbProvider.db.updatePlace(event.data);
+
+        emit(UpdatePlaceSuccess());
       }
     });
   }

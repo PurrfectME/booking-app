@@ -1,5 +1,9 @@
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:booking_app/models/models.dart';
+import 'package:booking_app/navigation.dart';
+import 'package:booking_app/screens/places/places_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +24,8 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
   XFile? _imageFile;
   dynamic _pickImageError;
   String? _retrieveDataError;
+  bool _isBlurredImageVisible = false;
+  late PlaceModel localObj;
 
   final ImagePicker _picker = ImagePicker();
   final TextEditingController maxWidthController = TextEditingController();
@@ -40,37 +46,15 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
       listener: (context, state) {
         if (state is UpdatePlaceSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Стол изменён')),
+            const SnackBar(content: Text('Заведение сохранено')),
           );
+
+          context.read<PlacesBloc>().add(PlacesLoad());
+          Navigator.pop(context);
         }
       },
       child: Scaffold(
-        floatingActionButton:
-            Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-          Semantics(
-            label: 'image_picker_example_from_gallery',
-            child: FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(ImageSource.gallery, context: context);
-              },
-              heroTag: 'image0',
-              tooltip: 'Pick Image from gallery',
-              child: const Icon(Icons.photo),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(ImageSource.camera, context: context);
-              },
-              heroTag: 'image2',
-              tooltip: 'Take a Photo',
-              child: const Icon(Icons.camera_alt),
-            ),
-          ),
-        ]),
-        appBar: AppBar(title: Text("Редактирование ресторана")),
+        appBar: AppBar(title: const Text("Редактирование ресторана")),
         body: BlocBuilder<UpdatePlaceBloc, UpdatePlaceState>(
           builder: (context, state) {
             if (state is UpdatePlaceLoading) {
@@ -83,82 +67,69 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
             } else if (state is UpdatePlaceError) {
               return Text(state.error);
             } else if (state is UpdatePlaceLoaded) {
+              localObj = state.data;
               return Form(
                 key: _formKey,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            TextFormField(
+                              initialValue: state.data.name,
+                              decoration: const InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  labelText: 'Название',
+                                  labelStyle: TextStyle(color: Colors.white)),
+                              keyboardType: TextInputType.text,
+                              onSaved: (newValue) {
+                                localObj.name = newValue!;
+                              },
+                              onChanged: (value) => localObj.name = value,
+                              // The validator receives the text that the user has entered.
+                              // validator: validatePhoneNumber),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            TextFormField(
+                              initialValue: state.data.description,
+                              onSaved: (newValue) {
+                                localObj.description = newValue!;
+                              },
+                              onChanged: (value) =>
+                                  localObj.description = value,
+                              decoration: const InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  labelText: 'Описание',
+                                  labelStyle: TextStyle(color: Colors.white)),
+                              keyboardType: TextInputType.text,
                             ),
-                            labelText: 'Название',
-                            labelStyle: TextStyle(color: Colors.white)),
-                        keyboardType: TextInputType.text,
-                        // onSaved: (newValue) {
-                        //   phoneNumber = newValue!;
-                        // },
-                        // onChanged: phoneNumberOnChange,
-                        // The validator receives the text that the user has entered.
-                        // validator: validatePhoneNumber),
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                            Center(child: _handlePreview()),
+                          ],
+                        ),
+                        Center(
+                          child: Expanded(
+                            child: ElevatedButton(
+                              child: Text("Сохранить"),
+                              onPressed: () => context
+                                  .read<UpdatePlaceBloc>()
+                                  .add(UpdatePlace(localObj)),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            labelText: 'Описание',
-                            labelStyle: TextStyle(color: Colors.white)),
-                        keyboardType: TextInputType.text,
-                      ),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () async => _onImageButtonPressed,
-                            child: Text("Фото"),
                           ),
-                          Center(
-                              child: FutureBuilder<void>(
-                            future: retrieveLostData(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<void> snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:
-                                  return const Text(
-                                    'You have not yet picked an image.',
-                                    textAlign: TextAlign.center,
-                                  );
-                                case ConnectionState.done:
-                                  return _handlePreview();
-                                default:
-                                  if (snapshot.hasError) {
-                                    return Text(
-                                      'Pick image/video error: ${snapshot.error}}',
-                                      textAlign: TextAlign.center,
-                                    );
-                                  } else {
-                                    return const Text(
-                                      'You have not yet picked an image.',
-                                      textAlign: TextAlign.center,
-                                    );
-                                  }
-                              }
-                            },
-                          )),
-                        ],
-                      ),
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -172,6 +143,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
   }
 
   Widget _handlePreview() => _previewImages();
+
   Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
       final Text result = Text(_retrieveDataError!);
@@ -187,11 +159,54 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
       return retrieveError;
     }
     if (_imageFile != null) {
-      return Expanded(
-        child: Semantics(
-          label: 'image_picker_example_picked_image',
-          child: Image.file(File(_imageFile!.path)),
-        ),
+      return GestureDetector(
+        onTap: () => setState(() {
+          _isBlurredImageVisible = !_isBlurredImageVisible;
+        }),
+        child: !_isBlurredImageVisible
+            ? Container(
+                margin: const EdgeInsets.symmetric(vertical: 20),
+                height: 300,
+                width: 400,
+                child: Image.file(
+                  File(_imageFile!.path),
+                  fit: BoxFit.cover,
+                ),
+              )
+            : Container(
+                margin: const EdgeInsets.symmetric(vertical: 20),
+                height: 300,
+                width: 400,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: Image.file(
+                      File(_imageFile!.path),
+                      fit: BoxFit.cover,
+                      height: 300,
+                      width: 400,
+                    ).image,
+                  ),
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                  child: Container(
+                    height: 300,
+                    width: 400,
+                    decoration:
+                        BoxDecoration(color: Colors.white.withOpacity(0.0)),
+                    child: Center(
+                        child: IconButton(
+                            onPressed: () async =>
+                                _displayPickImageDialog(context),
+                            icon: const Icon(
+                              Icons.photo_camera_back_outlined,
+                              color: Colors.white,
+                              size: 70,
+                            ))),
+                  ),
+                ),
+              ),
       );
     } else if (_pickImageError != null) {
       return Text(
@@ -199,88 +214,65 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
         textAlign: TextAlign.center,
       );
     } else {
-      return const Text(
-        'You have not yet picked an image.',
-        textAlign: TextAlign.center,
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        color: Colors.grey,
+        height: 300,
+        child: Center(
+            child: IconButton(
+                onPressed: () async => _displayPickImageDialog(context),
+                icon: const Icon(
+                  Icons.photo_camera_back_outlined,
+                  color: Colors.white,
+                ))),
       );
     }
   }
 
-  Future<void> _onImageButtonPressed(ImageSource source,
-      {BuildContext? context}) async {
-    await _displayPickImageDialog(context!,
-        (double? maxWidth, double? maxHeight, int? quality) async {
-      try {
-        final XFile? pickedFile = await _picker.pickImage(
-          source: source,
-          maxWidth: maxWidth,
-          maxHeight: maxHeight,
-          imageQuality: quality,
-        );
-        setState(() {
-          _imageFile = pickedFile ?? null;
-        });
-      } catch (e) {
-        setState(() {
-          _pickImageError = e;
-        });
-      }
-    });
+  Future _onImageButtonPressed(ImageSource source, BuildContext context) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: source);
+      setState(() {
+        _imageFile = pickedFile ?? null;
+        _isBlurredImageVisible = false;
+      });
+      Navigator.of(context).pop();
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+      Navigator.of(context).pop();
+    }
   }
 
-  Future<void> _displayPickImageDialog(
-      BuildContext context, OnPickImageCallback onPick) async {
-    return showDialog(
+  Future _displayPickImageDialog(BuildContext context) async {
+    return await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Add optional parameters'),
+            title: const Text(
+              'Загрузить фото из:',
+              style: TextStyle(color: Colors.black),
+            ),
             content: Column(
               children: <Widget>[
-                TextField(
-                  controller: maxWidthController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                      hintText: 'Enter maxWidth if desired'),
-                ),
-                TextField(
-                  controller: maxHeightController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                      hintText: 'Enter maxHeight if desired'),
-                ),
-                TextField(
-                  controller: qualityController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      hintText: 'Enter quality if desired'),
-                ),
+                ElevatedButton(
+                    onPressed: () =>
+                        _onImageButtonPressed(ImageSource.gallery, context),
+                    child: const Text("Галерея")),
+                ElevatedButton(
+                    onPressed: () =>
+                        _onImageButtonPressed(ImageSource.camera, context),
+                    child: const Text("Камера")),
               ],
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('CANCEL'),
+                child: const Text('Отмена'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              TextButton(
-                  child: const Text('PICK'),
-                  onPressed: () {
-                    final double? width = maxWidthController.text.isNotEmpty
-                        ? double.parse(maxWidthController.text)
-                        : null;
-                    final double? height = maxHeightController.text.isNotEmpty
-                        ? double.parse(maxHeightController.text)
-                        : null;
-                    final int? quality = qualityController.text.isNotEmpty
-                        ? int.parse(qualityController.text)
-                        : null;
-                    onPick(width, height, quality);
-                    Navigator.of(context).pop();
-                  }),
             ],
           );
         });
