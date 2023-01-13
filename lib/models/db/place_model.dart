@@ -10,7 +10,7 @@ class PlaceModel {
   //TODO: у заведения только одно фото
   List<int> gallery;
   int updateDate;
-  List<TableModel?> tables;
+  List<TableModel> tables;
 
   PlaceModel(this.id, this.name, this.description, this.gallery, this.logo,
       this.updateDate, this.tables);

@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/navigation.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,7 +122,16 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                         Center(
                           child: Expanded(
                             child: ElevatedButton(
-                              child: Text("Сохранить"),
+                              child: const Text("Столы"),
+                              onPressed: () =>
+                                  _onTablesUpdateTap(state.data.tables),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Expanded(
+                            child: ElevatedButton(
+                              child: const Text("Сохранить"),
                               onPressed: () => context
                                   .read<UpdatePlaceBloc>()
                                   .add(UpdatePlace(localObj)),
@@ -160,54 +170,48 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
     }
     if (_imageFile != null) {
       return GestureDetector(
-        onTap: () => setState(() {
-          _isBlurredImageVisible = !_isBlurredImageVisible;
-        }),
-        child: !_isBlurredImageVisible
-            ? Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                height: 300,
-                width: 400,
-                child: Image.file(
-                  File(_imageFile!.path),
-                  fit: BoxFit.cover,
-                ),
-              )
-            : Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                height: 300,
-                width: 400,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: Image.file(
+          onTap: () => setState(() {
+                _isBlurredImageVisible = !_isBlurredImageVisible;
+              }),
+          child: !_isBlurredImageVisible
+              ? Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20),
+                  height: 300,
+                  width: 400,
+                  child: Image.file(
+                    File(_imageFile!.path),
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Stack(
+                  children: [
+                    Image.file(
                       File(_imageFile!.path),
                       fit: BoxFit.cover,
                       height: 300,
                       width: 400,
-                    ).image,
-                  ),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                  child: Container(
-                    height: 300,
-                    width: 400,
-                    decoration:
-                        BoxDecoration(color: Colors.white.withOpacity(0.0)),
-                    child: Center(
-                        child: IconButton(
-                            onPressed: () async =>
-                                _displayPickImageDialog(context),
-                            icon: const Icon(
-                              Icons.photo_camera_back_outlined,
-                              color: Colors.white,
-                              size: 70,
-                            ))),
-                  ),
-                ),
-              ),
-      );
+                    ),
+                    Container(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                        child: Container(
+                          height: 300,
+                          width: 400,
+                          decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.0)),
+                          child: Center(
+                              child: IconButton(
+                                  onPressed: () async =>
+                                      _displayPickImageDialog(context),
+                                  icon: const Icon(
+                                    Icons.photo_camera_back_outlined,
+                                    color: Colors.white,
+                                  ))),
+                        ),
+                      ),
+                    ),
+                  ],
+                ));
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
@@ -290,6 +294,17 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
     } else {
       _retrieveDataError = response.exception!.code;
     }
+  }
+
+  void _onTablesUpdateTap(List<TableModel> tables) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                  create: (context) =>
+                      UpdateTablesBloc()..add(UpdateTablesLoad(tables)),
+                  child: const UpdateTablesScreen(),
+                )));
   }
 }
 

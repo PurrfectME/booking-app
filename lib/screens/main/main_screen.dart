@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen>
               ),
               NavItem(
                 iconName: 'menu_update_place',
-                title: "Редактировать стол",
+                title: "Заведение",
                 tab: MenuTab.updatePlace,
               )
             ],
