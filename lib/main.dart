@@ -21,7 +21,7 @@ void main() {
           BlocProvider(create: (context) => PlacesBloc()),
           BlocProvider(create: (context) => MenuBloc()),
           BlocProvider(create: (context) => ExtraInfoBloc()),
-          BlocProvider(create: (context) => UpdatePlaceBloc())
+          BlocProvider(create: (context) => UpdatePlaceBloc()),
         ],
         child: BlocListener<ExtraInfoBloc, ExtraInfoState>(
           listener: (context, state) {

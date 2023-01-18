@@ -302,8 +302,8 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
         MaterialPageRoute(
             builder: (context) => BlocProvider(
                   create: (context) =>
-                      UpdateTablesBloc()..add(UpdateTablesLoad(tables)),
-                  child: const UpdateTablesScreen(),
+                      TablesBloc(tables: tables)..add(TablesLoad()),
+                  child: const TablesScreen(),
                 )));
   }
 }
