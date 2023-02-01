@@ -126,40 +126,27 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                             // ),
                             Center(
                                 child: ElevatedButton(
-                              onPressed: () => null,
+                              onPressed: () => _displayPickImageDialog(context),
                               child: Text("Добавить фото",
                                   style: TextStyle(color: Colors.white)),
                             )),
-                            images.isNotEmpty
+                            _imageFiles.isNotEmpty
                                 ? Container(
                                     decoration:
                                         BoxDecoration(color: Colors.amber),
                                     height: 280,
                                     child: GridView.count(
-                                        mainAxisSpacing: 10,
-                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 5,
+                                        crossAxisSpacing: 5,
                                         shrinkWrap: true,
                                         physics: const ScrollPhysics(),
                                         crossAxisCount: images.length >= 3
                                             ? 3
                                             : images.length,
                                         primary: false,
-                                        children: images
-                                            .map((image) => Container(
-                                                  decoration: const BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                      image: DecorationImage(
-                                                          opacity: 1,
-                                                          image: AssetImage(
-                                                              "assets/images/neft.jpg"),
-                                                          fit: BoxFit.cover)),
-                                                ))
-                                            .toList()),
+                                        children: _previewImages()),
                                   )
-                                : SizedBox()
+                                : const SizedBox()
                           ],
                         ),
                         Center(
@@ -195,73 +182,81 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
     return null;
   }
 
-  Widget _previewImages() {
+  _previewImages() {
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
-    if (_imageFiles != null) {
-      return GestureDetector(
-          onTap: () => setState(() {
-                _isBlurredImageVisible = !_isBlurredImageVisible;
-              }),
-          child: !_isBlurredImageVisible
-              ? Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  // height: 300,
-                  // width: 400,
-                  child: Image.file(
-                    File(_imageFile!.path),
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : Stack(
-                  children: [
-                    Image.file(
-                      File(_imageFile!.path),
-                      fit: BoxFit.cover,
-                      // height: 300,
-                      // width: 400,
-                    ),
-                    Container(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                        child: Container(
-                          height: 300,
-                          width: 400,
-                          decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.0)),
-                          child: Center(
-                              child: IconButton(
-                                  onPressed: () async =>
-                                      _displayPickImageDialog(context),
-                                  icon: const Icon(
-                                    Icons.photo_camera_back_outlined,
-                                    color: Colors.white,
-                                  ))),
-                        ),
+    if (_imageFiles.isNotEmpty) {
+      return _imageFiles
+          .map((image) => GestureDetector(
+                onTap: () => setState(() {
+                  _isBlurredImageVisible = !_isBlurredImageVisible;
+                }),
+                child: !_isBlurredImageVisible
+                    ? Container(
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                            image: DecorationImage(
+                                opacity: 1,
+                                image: Image.file(
+                                  File(image.path),
+                                  fit: BoxFit.cover,
+                                ).image)),
+                      )
+                    : Stack(
+                        children: [
+                          Image.file(
+                            File(image.path),
+                            fit: BoxFit.cover,
+                            // height: 300,
+                            // width: 400,
+                          ),
+                          Container(
+                            child: BackdropFilter(
+                              filter:
+                                  ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                              child: Container(
+                                height: 300,
+                                width: 400,
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.0)),
+                                child: Center(
+                                    child: IconButton(
+                                        onPressed: () async =>
+                                            _displayPickImageDialog(context),
+                                        icon: const Icon(
+                                          Icons.photo_camera_back_outlined,
+                                          color: Colors.white,
+                                        ))),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ));
+              ))
+          .toList();
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
         textAlign: TextAlign.center,
       );
     } else {
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 20),
-        color: Colors.grey,
-        height: 300,
-        child: Center(
-            child: IconButton(
-                onPressed: () async => _displayPickImageDialog(context),
-                icon: const Icon(
-                  Icons.photo_camera_back_outlined,
-                  color: Colors.white,
-                ))),
-      );
+      return [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 20),
+          color: Colors.grey,
+          height: 300,
+          child: Center(
+              child: IconButton(
+                  onPressed: () async => _displayPickImageDialog(context),
+                  icon: const Icon(
+                    Icons.photo_camera_back_outlined,
+                    color: Colors.white,
+                  ))),
+        )
+      ];
     }
   }
 
