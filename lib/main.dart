@@ -47,10 +47,10 @@ class MyApp extends StatelessWidget {
           // primaryColor: Colors.black,
           // appBarTheme: AppBarTheme(backgroundColor: Colors.black),
           // backgroundColor: Colors.black,
-          scaffoldBackgroundColor: Colors.black,
+          scaffoldBackgroundColor: Colors.white,
           textTheme: Theme.of(context).textTheme.apply(
-                bodyColor: Colors.white,
-                displayColor: Colors.white,
+                bodyColor: Colors.black,
+                displayColor: Colors.black,
               )),
       navigatorKey: Navigation.navigatorKey,
       title: 'Давай заброним',

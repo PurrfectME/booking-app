@@ -12,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../services/services.dart';
+
 class UpdatePlaceScreen extends StatefulWidget {
   static const pageRoute = '/update-place';
   const UpdatePlaceScreen({super.key});
@@ -73,73 +75,80 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                 key: _formKey,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          TextFormField(
+                            initialValue: state.data.name,
+                            decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                labelText: 'Название',
+                                labelStyle: TextStyle(color: Colors.black)),
+                            keyboardType: TextInputType.text,
+                            onSaved: (newValue) {
+                              localObj.name = newValue!;
+                            },
+                            onChanged: (value) => localObj.name = value,
+                            // The validator receives the text that the user has entered.
+                            // validator: validatePhoneNumber),
+                          ),
+                          TextFormField(
+                            initialValue: state.data.description,
+                            onSaved: (newValue) {
+                              localObj.description = newValue!;
+                            },
+                            onChanged: (value) => localObj.description = value,
+                            decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                labelText: 'Описание',
+                                labelStyle: TextStyle(color: Colors.black)),
+                            keyboardType: TextInputType.text,
+                          ),
+                          Center(child: _handlePreview()),
+                          Center(
+                            child: Expanded(
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.black)),
+                                child: const Text("Столы"),
+                                onPressed: () =>
+                                    _onTablesUpdateTap(state.data.tables),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Center(
+                        child: Row(
                           children: [
-                            TextFormField(
-                              initialValue: state.data.name,
-                              decoration: const InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  labelText: 'Название',
-                                  labelStyle: TextStyle(color: Colors.white)),
-                              keyboardType: TextInputType.text,
-                              onSaved: (newValue) {
-                                localObj.name = newValue!;
-                              },
-                              onChanged: (value) => localObj.name = value,
-                              // The validator receives the text that the user has entered.
-                              // validator: validatePhoneNumber),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.black)),
+                                child: const Text("Сохранить"),
+                                onPressed: () => context
+                                    .read<UpdatePlaceBloc>()
+                                    .add(UpdatePlace(localObj)),
+                              ),
                             ),
-                            TextFormField(
-                              initialValue: state.data.description,
-                              onSaved: (newValue) {
-                                localObj.description = newValue!;
-                              },
-                              onChanged: (value) =>
-                                  localObj.description = value,
-                              decoration: const InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  labelText: 'Описание',
-                                  labelStyle: TextStyle(color: Colors.white)),
-                              keyboardType: TextInputType.text,
-                            ),
-                            Center(child: _handlePreview()),
                           ],
                         ),
-                        Center(
-                          child: Expanded(
-                            child: ElevatedButton(
-                              child: const Text("Столы"),
-                              onPressed: () =>
-                                  _onTablesUpdateTap(state.data.tables),
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Expanded(
-                            child: ElevatedButton(
-                              child: const Text("Сохранить"),
-                              onPressed: () => context
-                                  .read<UpdatePlaceBloc>()
-                                  .add(UpdatePlace(localObj)),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                 ),
               );
@@ -201,8 +210,9 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                               color: Colors.white.withOpacity(0.0)),
                           child: Center(
                               child: IconButton(
-                                  onPressed: () async =>
-                                      _displayPickImageDialog(context),
+                                  onPressed: () async => await ImageService()
+                                      .displayImagePickerBox(
+                                          context, _onImageButtonPressed),
                                   icon: const Icon(
                                     Icons.photo_camera_back_outlined,
                                     color: Colors.white,
@@ -224,7 +234,8 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
         height: 300,
         child: Center(
             child: IconButton(
-                onPressed: () async => _displayPickImageDialog(context),
+                onPressed: () async => await ImageService()
+                    .displayImagePickerBox(context, _onImageButtonPressed),
                 icon: const Icon(
                   Icons.photo_camera_back_outlined,
                   color: Colors.white,
@@ -247,39 +258,6 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
       });
       Navigator.of(context).pop();
     }
-  }
-
-  Future _displayPickImageDialog(BuildContext context) async {
-    return await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text(
-              'Загрузить фото из:',
-              style: TextStyle(color: Colors.black),
-            ),
-            content: Column(
-              children: <Widget>[
-                ElevatedButton(
-                    onPressed: () =>
-                        _onImageButtonPressed(ImageSource.gallery, context),
-                    child: const Text("Галерея")),
-                ElevatedButton(
-                    onPressed: () =>
-                        _onImageButtonPressed(ImageSource.camera, context),
-                    child: const Text("Камера")),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Отмена'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
   }
 
   Future<void> retrieveLostData() async {

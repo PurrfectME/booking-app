@@ -37,7 +37,7 @@ class _TablesScreenState extends State<TablesScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                             ),
-                            color: const Color.fromARGB(255, 59, 59, 59),
+                            color: Colors.black,
                             child: Column(children: [
                               Container(
                                 margin: const EdgeInsets.all(7.0),
@@ -52,7 +52,10 @@ class _TablesScreenState extends State<TablesScreen> {
                                             "assets/images/neft.jpg"),
                                         fit: BoxFit.cover)),
                               ),
-                              Text('Стол: ${table.number}')
+                              Text(
+                                'Стол: ${table.number}',
+                                style: TextStyle(color: Colors.white),
+                              )
                             ]),
                           ),
                         ))

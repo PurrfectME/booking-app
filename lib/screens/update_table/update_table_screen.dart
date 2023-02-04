@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/db/table_model.dart';
+import 'package:booking_app/services/image/image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -52,115 +53,130 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                 key: _formKey,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          TextFormField(
+                            initialValue: state.data.number.toString(),
+                            decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                labelText: 'Номер стола',
+                                labelStyle: TextStyle(color: Colors.black)),
+                            keyboardType: TextInputType.text,
+                            onSaved: (newValue) {
+                              // localObj.name = newValue!;
+                            },
+                            // onChanged: (value) => localObj.name = value,
+                            // The validator receives the text that the user has entered.
+                            // validator: validatePhoneNumber),
+                          ),
+                          TextFormField(
+                            initialValue: state.data.guests.toString(),
+                            onSaved: (newValue) {
+                              // localObj.description = newValue!;
+                            },
+                            // onChanged: (value) =>
+                            // localObj.description = value,
+                            decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                labelText: 'Количество гостей',
+                                labelStyle: TextStyle(color: Colors.black)),
+                            keyboardType: TextInputType.text,
+                          ),
+                          TextFormField(
+                            // initialValue: state.data.,
+                            onSaved: (newValue) {
+                              // localObj.description = newValue!;
+                            },
+                            // onChanged: (value) =>
+                            // localObj.description = value,
+                            decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                labelText: 'Депозит',
+                                labelStyle: TextStyle(color: Colors.black)),
+                            keyboardType: TextInputType.text,
+                          ),
+                          // Card(
+                          //   shape: const RoundedRectangleBorder(
+                          //     borderRadius:
+                          //         BorderRadius.all(Radius.circular(10)),
+                          //   ),
+                          //   color: const Color.fromARGB(255, 59, 59, 59),
+                          //   child: GridView.count(
+                          //       crossAxisCount: 3,
+                          //       primary: false,
+                          //       children: images),
+                          // ),
+                          Center(
+                              child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.black)),
+                            onPressed: () async => await ImageService()
+                                .displayImagePickerBox(
+                                    context, _onImageButtonPressed),
+                            child: Text("Добавить фото",
+                                style: TextStyle(color: Colors.white)),
+                          )),
+                          _imageFiles.isNotEmpty
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Color.fromARGB(255, 169, 181, 178)),
+                                  height: 280,
+                                  child: GridView.count(
+                                      mainAxisSpacing: 5,
+                                      crossAxisSpacing: 5,
+                                      shrinkWrap: true,
+                                      physics: const ScrollPhysics(),
+                                      crossAxisCount: images.length >= 3
+                                          ? 3
+                                          : images.length,
+                                      primary: false,
+                                      children: _previewImages()),
+                                )
+                              : const SizedBox()
+                        ],
+                      ),
+                      Center(
+                        child: Row(
                           children: [
-                            TextFormField(
-                              initialValue: state.data.number.toString(),
-                              decoration: const InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  labelText: 'Номер стола',
-                                  labelStyle: TextStyle(color: Colors.white)),
-                              keyboardType: TextInputType.text,
-                              onSaved: (newValue) {
-                                // localObj.name = newValue!;
-                              },
-                              // onChanged: (value) => localObj.name = value,
-                              // The validator receives the text that the user has entered.
-                              // validator: validatePhoneNumber),
-                            ),
-                            TextFormField(
-                              initialValue: state.data.guests.toString(),
-                              onSaved: (newValue) {
-                                // localObj.description = newValue!;
-                              },
-                              // onChanged: (value) =>
-                              // localObj.description = value,
-                              decoration: const InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  labelText: 'Количество гостей',
-                                  labelStyle: TextStyle(color: Colors.white)),
-                              keyboardType: TextInputType.text,
-                            ),
-                            TextFormField(
-                              // initialValue: state.data.,
-                              onSaved: (newValue) {
-                                // localObj.description = newValue!;
-                              },
-                              // onChanged: (value) =>
-                              // localObj.description = value,
-                              decoration: const InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  labelText: 'Депозит',
-                                  labelStyle: TextStyle(color: Colors.white)),
-                              keyboardType: TextInputType.text,
-                            ),
-                            // Card(
-                            //   shape: const RoundedRectangleBorder(
-                            //     borderRadius:
-                            //         BorderRadius.all(Radius.circular(10)),
-                            //   ),
-                            //   color: const Color.fromARGB(255, 59, 59, 59),
-                            //   child: GridView.count(
-                            //       crossAxisCount: 3,
-                            //       primary: false,
-                            //       children: images),
-                            // ),
-                            Center(
+                            Expanded(
+                              child: Container(
+                                height: 60,
                                 child: ElevatedButton(
-                              onPressed: () => _displayPickImageDialog(context),
-                              child: Text("Добавить фото",
-                                  style: TextStyle(color: Colors.white)),
-                            )),
-                            _imageFiles.isNotEmpty
-                                ? Container(
-                                    decoration:
-                                        BoxDecoration(color: Colors.amber),
-                                    height: 280,
-                                    child: GridView.count(
-                                        mainAxisSpacing: 5,
-                                        crossAxisSpacing: 5,
-                                        shrinkWrap: true,
-                                        physics: const ScrollPhysics(),
-                                        crossAxisCount: images.length >= 3
-                                            ? 3
-                                            : images.length,
-                                        primary: false,
-                                        children: _previewImages()),
-                                  )
-                                : const SizedBox()
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.black)),
+                                  child: const Text("Сохранить"),
+                                  onPressed: () => context
+                                      .read<UpdatePlaceBloc>()
+                                      .add(UpdatePlace(null!)),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        Center(
-                          child: Expanded(
-                            child: ElevatedButton(
-                              child: const Text("Сохранить"),
-                              onPressed: () => context
-                                  .read<UpdatePlaceBloc>()
-                                  .add(UpdatePlace(null!)),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                 ),
               );
@@ -189,52 +205,15 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
     }
     if (_imageFiles.isNotEmpty) {
       return _imageFiles
-          .map((image) => GestureDetector(
-                onTap: () => setState(() {
-                  _isBlurredImageVisible = !_isBlurredImageVisible;
-                }),
-                child: !_isBlurredImageVisible
-                    ? Container(
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20)),
-                            image: DecorationImage(
-                                opacity: 1,
-                                image: Image.file(
-                                  File(image.path),
-                                  fit: BoxFit.cover,
-                                ).image)),
-                      )
-                    : Stack(
-                        children: [
-                          Image.file(
-                            File(image.path),
-                            fit: BoxFit.cover,
-                            // height: 300,
-                            // width: 400,
-                          ),
-                          Container(
-                            child: BackdropFilter(
-                              filter:
-                                  ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                              child: Container(
-                                height: 300,
-                                width: 400,
-                                decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.0)),
-                                child: Center(
-                                    child: IconButton(
-                                        onPressed: () async =>
-                                            _displayPickImageDialog(context),
-                                        icon: const Icon(
-                                          Icons.photo_camera_back_outlined,
-                                          color: Colors.white,
-                                        ))),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+          .map((image) => Container(
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    image: DecorationImage(
+                        opacity: 1,
+                        image: Image.file(
+                          File(image.path),
+                          fit: BoxFit.cover,
+                        ).image)),
               ))
           .toList();
     } else if (_pickImageError != null) {
@@ -250,7 +229,8 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
           height: 300,
           child: Center(
               child: IconButton(
-                  onPressed: () async => _displayPickImageDialog(context),
+                  onPressed: () async => await ImageService()
+                      .displayImagePickerBox(context, _onImageButtonPressed),
                   icon: const Icon(
                     Icons.photo_camera_back_outlined,
                     color: Colors.white,
@@ -260,44 +240,18 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
     }
   }
 
-  Future _displayPickImageDialog(BuildContext context) async {
-    return await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text(
-              'Загрузить фото из:',
-              style: TextStyle(color: Colors.black),
-            ),
-            content: Column(
-              children: <Widget>[
-                ElevatedButton(
-                    onPressed: () =>
-                        _onImageButtonPressed(ImageSource.gallery, context),
-                    child: const Text("Галерея")),
-                ElevatedButton(
-                    onPressed: () =>
-                        _onImageButtonPressed(ImageSource.camera, context),
-                    child: const Text("Камера")),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Отмена'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
+  // Future _displayPickImageDialog(BuildContext context) async {
+  //   return await
+  // }
 
   Future _onImageButtonPressed(ImageSource source, BuildContext context) async {
     try {
-      final List<XFile> pickedFile = await _picker.pickMultiImage();
+      final List<XFile> pickedFiles = await _picker.pickMultiImage();
+      final resultImages = <XFile>[];
+      resultImages.addAll(pickedFiles);
+      resultImages.addAll(_imageFiles);
       setState(() {
-        _imageFiles = pickedFile;
+        _imageFiles = resultImages;
         _isBlurredImageVisible = false;
       });
       Navigator.of(context).pop();

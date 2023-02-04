@@ -67,9 +67,18 @@ class _TableCardState extends State<TableCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Столик ${widget.model.table.number}'),
-                  Text('Мест: ${widget.model.table.guests}'),
-                  Text('Депозит(VIP): 200руб.'),
+                  Text(
+                    'Столик ${widget.model.table.number}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    'Мест: ${widget.model.table.guests}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    'Депозит(VIP): 200руб.',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   const SizedBox(height: 10),
                   Row(
                     children: [
