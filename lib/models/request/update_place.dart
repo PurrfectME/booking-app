@@ -3,13 +3,13 @@ import 'dart:convert';
 class UpdatePlaceRequest {
   int id;
   String name;
-  int logo;
+  int logoId;
   String description;
   List<int> gallery;
   UpdatePlaceRequest({
     required this.id,
     required this.name,
-    required this.logo,
+    required this.logoId,
     required this.description,
     required this.gallery,
   });
@@ -18,7 +18,7 @@ class UpdatePlaceRequest {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'logo': logo,
+      'logoId': logoId,
       'description': description,
       'gallery': gallery,
     };
@@ -28,7 +28,7 @@ class UpdatePlaceRequest {
     return UpdatePlaceRequest(
         id: map['id'] as int,
         name: map['name'] as String,
-        logo: map['logo'] as int,
+        logoId: map['logoId'] as int,
         description: map['description'] as String,
         gallery: List<int>.from(
           (map['gallery'] as List<int>),

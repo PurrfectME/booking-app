@@ -1,5 +1,5 @@
 const String places =
-    "CREATE TABLE IF NOT EXISTS places(id INTEGER PRIMARY KEY, name TEXT, description TEXT, logo INTEGER, gallery BLOB, updateDate INTEGER)";
+    "CREATE TABLE IF NOT EXISTS places(id INTEGER PRIMARY KEY, name TEXT, description TEXT, logoId INTEGER, updateDate INTEGER)";
 
 const String tables = 'CREATE TABLE IF NOT EXISTS tables('
     'id INTEGER PRIMARY KEY,'

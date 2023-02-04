@@ -5,7 +5,7 @@ class GetPlaceResponse {
   int id;
   String name;
   String description;
-  int logo;
+  int logoId;
   List<int> gallery;
   int updateDate;
   List<TableResponse>? tables;
@@ -14,7 +14,7 @@ class GetPlaceResponse {
     required this.id,
     required this.name,
     required this.description,
-    required this.logo,
+    required this.logoId,
     required this.gallery,
     required this.updateDate,
     this.tables,
@@ -25,7 +25,7 @@ class GetPlaceResponse {
       'id': id,
       'name': name,
       'description': description,
-      'logo': logo,
+      'logoId': logoId,
       'gallery': gallery,
       'updateDate': updateDate,
       'tables': tables?.map((x) => x.toMap()).toList(),
@@ -37,7 +37,7 @@ class GetPlaceResponse {
         id: map['id'] as int,
         name: map['name'] as String,
         description: map['description'] as String,
-        logo: map['logo'] as int,
+        logoId: map['logoId'] as int,
         gallery: List<int>.from((map['gallery'] as List<int>)),
         updateDate: map['updateDate'] as int,
         tables: map['tables'] != null

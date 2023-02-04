@@ -6,25 +6,22 @@ class PlaceModel {
   int id;
   String name;
   String description;
-  int logo;
-  //TODO: у заведения только одно фото
-  List<int> gallery;
+  int logoId;
   int updateDate;
   List<TableModel> tables;
 
-  PlaceModel(this.id, this.name, this.description, this.gallery, this.logo,
-      this.updateDate, this.tables);
+  PlaceModel(this.id, this.name, this.description, this.logoId, this.updateDate,
+      this.tables);
 
   List<Object?> get props =>
-      [id, name, description, gallery, logo, updateDate, tables];
+      [id, name, description, logoId, updateDate, tables];
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'name': name,
       'description': description,
-      'logo': logo,
-      'gallery': gallery,
+      'logoId': logoId,
       'updateDate': updateDate,
       // 'tables': tables.map((x) => x.toMap()).toList(),
     };
@@ -35,8 +32,7 @@ class PlaceModel {
         map['id'] as int,
         map['name'] as String,
         map['description'] as String,
-        List<int>.from((map['gallery'] as List<int>)),
-        map['logo'] as int,
+        map['logoId'] as int,
         map['updateDate'] as int, []);
   }
 
