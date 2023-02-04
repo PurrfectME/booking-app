@@ -1,10 +1,8 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
-import 'package:booking_app/screens/login/login_screen.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
-import 'package:booking_app/screens/places/places_screen.dart';
-import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -22,7 +20,8 @@ void main() {
           BlocProvider(create: (context) => LoginBloc()),
           BlocProvider(create: (context) => PlacesBloc()),
           BlocProvider(create: (context) => MenuBloc()),
-          BlocProvider(create: (context) => ExtraInfoBloc())
+          BlocProvider(create: (context) => ExtraInfoBloc()),
+          BlocProvider(create: (context) => UpdatePlaceBloc()),
         ],
         child: BlocListener<ExtraInfoBloc, ExtraInfoState>(
           listener: (context, state) {
@@ -48,10 +47,10 @@ class MyApp extends StatelessWidget {
           // primaryColor: Colors.black,
           // appBarTheme: AppBarTheme(backgroundColor: Colors.black),
           // backgroundColor: Colors.black,
-          scaffoldBackgroundColor: Colors.black,
+          scaffoldBackgroundColor: Colors.white,
           textTheme: Theme.of(context).textTheme.apply(
-                bodyColor: Colors.white,
-                displayColor: Colors.white,
+                bodyColor: Colors.black,
+                displayColor: Colors.black,
               )),
       navigatorKey: Navigation.navigatorKey,
       title: 'Давай заброним',
@@ -69,6 +68,8 @@ class MyApp extends StatelessWidget {
           builder = (context) => const ExtraInfoScreen();
         } else if (path == MainScreen.pageRoute) {
           builder = (context) => const MainScreen();
+        } else if (path == UpdatePlaceScreen.pageRoute) {
+          builder = (context) => const UpdatePlaceScreen();
         } else {
           builder ??= (context) => const LoginScreen();
         }

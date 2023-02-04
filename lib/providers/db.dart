@@ -41,6 +41,15 @@ class DbProvider {
     });
   }
 
+  Future updatePlace(PlaceModel place) async {
+    final db = await database;
+
+    final result = await db!.update("places", place.toMap(),
+        where: 'id = ?', whereArgs: [place.id]);
+
+    return result;
+  }
+
   // Insert PlaceModels in database
   Future<List<Object?>> createPlaceModels(List<PlaceModel> models) async {
     final db = await database;
@@ -109,6 +118,23 @@ class DbProvider {
     }
 
     return places;
+  }
+
+  Future<PlaceModel> getPlaceById(int id) async {
+    final db = await database;
+    final result = await db!
+        .rawQuery('SELECT tables.id as tableId, tables.number, tables.image, '
+            'tables.guests, tables.placeId, places.* FROM places '
+            'LEFT JOIN tables on tables.placeId = $id WHERE places.id = $id');
+
+    PlaceModel place = PlaceModel.fromMap(result[0]);
+
+    for (var map in result) {
+      place.tables.add(TableModel(map['tableId'] as int, map['number'] as int,
+          map['image'] as int, map['guests'] as int, map['placeId'] as int));
+    }
+
+    return place;
   }
 
   Future<int> getLastUpdateDate(String tableName) async {

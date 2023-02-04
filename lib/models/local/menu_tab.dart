@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-enum MenuTab { places, profile }
+enum MenuTab { places, profile, updatePlace }
 
 class MenuTabWrapper {
   final MenuTab tab;
