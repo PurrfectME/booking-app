@@ -38,14 +38,16 @@ class DbProvider {
       await db.execute(tables);
       await db.execute(reservations);
       await db.execute(userReservations);
+      await db.execute(tableImages);
     });
   }
 
   Future updatePlace(PlaceModel place) async {
     final db = await database;
-
     final result = await db!.update("places", place.toMap(),
-        where: 'id = ?', whereArgs: [place.id]);
+        where: 'id = ?',
+        whereArgs: [place.id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
 
     return result;
   }
@@ -59,7 +61,7 @@ class DbProvider {
       batch.insert("places", place.toMap());
 
       for (var table in place.tables) {
-        batch.insert("tables", table!.toMap());
+        batch.insert("tables", table.toMap());
       }
     }
 
@@ -84,7 +86,7 @@ class DbProvider {
   Future<List<PlaceModel>> getAllPlaceModels() async {
     final db = await database;
     final res = await db!.rawQuery(
-        'SELECT tables.id as tableId, tables.number, tables.image, '
+        'SELECT tables.id as tableId, tables.number, '
         'tables.guests, tables.placeId, places.* FROM places LEFT JOIN tables on tables.placeId = places.id');
 
     if (res.isEmpty) {
@@ -98,20 +100,12 @@ class DbProvider {
 
       var index = places.indexWhere((x) => x.id == placeId);
       if (index != -1) {
-        places[index].tables.add(TableModel(
-            map['tableId'] as int,
-            map['number'] as int,
-            map['image'] as int,
-            map['guests'] as int,
-            map['placeId'] as int));
+        places[index].tables.add(TableModel(map['tableId'] as int,
+            map['number'] as int, map['guests'] as int, map['placeId'] as int));
       } else {
         final placeToAdd = PlaceModel.fromMap(map);
-        placeToAdd.tables.add(TableModel(
-            map['tableId'] as int,
-            map['number'] as int,
-            map['image'] as int,
-            map['guests'] as int,
-            map['placeId'] as int));
+        placeToAdd.tables.add(TableModel(map['tableId'] as int,
+            map['number'] as int, map['guests'] as int, map['placeId'] as int));
 
         places.add(placeToAdd);
       }
@@ -122,8 +116,8 @@ class DbProvider {
 
   Future<PlaceModel> getPlaceById(int id) async {
     final db = await database;
-    final result = await db!
-        .rawQuery('SELECT tables.id as tableId, tables.number, tables.image, '
+    final result =
+        await db!.rawQuery('SELECT tables.id as tableId, tables.number, '
             'tables.guests, tables.placeId, places.* FROM places '
             'LEFT JOIN tables on tables.placeId = $id WHERE places.id = $id');
 
@@ -131,7 +125,7 @@ class DbProvider {
 
     for (var map in result) {
       place.tables.add(TableModel(map['tableId'] as int, map['number'] as int,
-          map['image'] as int, map['guests'] as int, map['placeId'] as int));
+          map['guests'] as int, map['placeId'] as int));
     }
 
     return place;

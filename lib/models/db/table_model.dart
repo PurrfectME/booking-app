@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
@@ -5,18 +6,17 @@ import 'package:equatable/equatable.dart';
 class TableModel extends Equatable {
   int? id;
   int number;
-  int image;
   int guests;
   int placeId;
 
-  TableModel(this.id, this.number, this.image, this.guests, this.placeId);
+  TableModel(this.id, this.number, this.guests, this.placeId);
 
   @override
-  List<Object?> get props => [id, number, image, guests, placeId];
+  List<Object?> get props => [id, number, guests, placeId];
 
   TableModel copyWith(
-      {int? id, int? number, int? image, int? guests, int? placeId}) {
-    return TableModel(id ?? this.id, number ?? this.number, image ?? this.image,
+      {int? id, int? number, List<int>? images, int? guests, int? placeId}) {
+    return TableModel(id ?? this.id, number ?? this.number,
         guests ?? this.guests, placeId ?? this.placeId);
   }
 
@@ -24,17 +24,15 @@ class TableModel extends Equatable {
     return <String, dynamic>{
       'id': id,
       'number': number,
-      'image': image,
       'guests': guests,
-      'placeId': placeId
+      'placeId': placeId,
     };
   }
 
   factory TableModel.fromMap(Map<String, dynamic> map) {
     return TableModel(
-      map['id'] as int,
+      map['id'] != null ? map['id'] as int : null,
       map['number'] as int,
-      map['image'] as int,
       map['guests'] as int,
       map['placeId'] as int,
     );

@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/screens.dart';
+import 'package:booking_app/services/image/image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,11 +23,15 @@ class PlaceItem extends StatelessWidget {
               margin: const EdgeInsets.all(7.0),
               // width: 310.0,
               height: 250.0,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   image: DecorationImage(
                       opacity: 1,
-                      image: AssetImage("assets/images/neft.jpg"),
+                      image: place.base64Logo != null
+                          ? ImageService.imageFromBase64String(
+                                  place.base64Logo!)
+                              .image
+                          : const AssetImage("assets/images/neft.jpg"),
                       fit: BoxFit.cover)),
             ),
             Padding(

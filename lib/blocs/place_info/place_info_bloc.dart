@@ -1,7 +1,9 @@
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
+import 'package:booking_app/models/local/place_info_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/services/image/image_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -64,10 +66,6 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         //     reservedTablesResponse, userReservedTablesResponse);
 
         for (var table in place.tables) {
-          if (table == null) {
-            continue;
-          }
-
           //TODO: add date validation
           final reserved = reservedTablesResponse
               .any((reservation) => table.id == reservation.tableId);
@@ -102,7 +100,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
         final a = await DbProvider.db.getUserReservationsLastUpdateDate();
 
-        emit(PlaceInfoLoaded(availableTables));
+        emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
+            ImageService.imageFromBase64String(place.base64Logo!))));
       } else if (event is PlaceTableReserve) {
         // api call
         // final response = await api.reserveTable(id: event.id)
@@ -137,7 +136,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         } else {
           //TODO: RESERVE ERROR IN MODal
         }
-        emit(PlaceInfoLoaded(availableTables));
+        emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
+            ImageService.imageFromBase64String(place.base64Logo!))));
       }
     });
   }

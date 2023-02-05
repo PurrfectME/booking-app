@@ -75,11 +75,10 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                   ],
                                 ),
                               ),
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                   image: DecorationImage(
                                       opacity: 1,
-                                      image:
-                                          AssetImage("assets/images/neft.jpg"),
+                                      image: state.data.logo.image,
                                       fit: BoxFit.cover)),
                             ),
                           ]),
@@ -100,7 +99,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                         ],
                         children: [
                           FlexibleTextItem(
-                            text: state.data[0]!.placeName,
+                            text: state.data.tables[0].placeName,
                             collapsedStyle: Theme.of(context)
                                 .textTheme
                                 .headline6
@@ -121,7 +120,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                state.data[0]!.placeName,
+                                state.data.tables[0].placeName,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 30,
@@ -149,14 +148,14 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                           Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children: [
-                                              const Text(
+                                            children: const [
+                                              Text(
                                                 "5.0",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14),
                                               ),
-                                              const Text("200+"),
+                                              Text("200+"),
                                             ],
                                           ),
                                         ],
@@ -191,15 +190,16 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                     )),
                     SliverList(
                         delegate: SliverChildBuilderDelegate(
-                            childCount: state.data.length, (context, index) {
+                            childCount: state.data.tables.length,
+                            (context, index) {
                       return Container(
                           decoration: const BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
                               color: Colors.black),
-                          child: !state.data[index]!.isReservedByUser
+                          child: !state.data.tables[index].isReservedByUser
                               ? TableCard(
-                                  model: state.data[index]!,
+                                  model: state.data.tables[index],
                                   selectedDateTime: selectedDateTime)
                               : const SizedBox());
                     }))

@@ -116,7 +116,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                                 labelStyle: TextStyle(color: Colors.black)),
                             keyboardType: TextInputType.text,
                           ),
-                          Center(child: _handlePreview()),
+                          Center(child: _previewImages(state.data.base64Logo)),
                           Center(
                             child: Expanded(
                               child: ElevatedButton(
@@ -161,8 +161,6 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
     );
   }
 
-  Widget _handlePreview() => _previewImages();
-
   Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
       final Text result = Text(_retrieveDataError!);
@@ -172,7 +170,19 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
     return null;
   }
 
-  Widget _previewImages() {
+  Widget _previewImages(String? base64Logo) {
+    if (base64Logo != null) {
+      return GestureDetector(
+          onTap: () => setState(() {
+                _isBlurredImageVisible = !_isBlurredImageVisible;
+              }),
+          child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              height: 300,
+              width: 400,
+              child: ImageService.imageFromBase64String(base64Logo)));
+    }
+
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -247,9 +257,14 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
   Future _onImageButtonPressed(ImageSource source, BuildContext context) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: source);
+      final imageBytes = await pickedFile?.readAsBytes();
       setState(() {
-        _imageFile = pickedFile ?? null;
+        _imageFile = pickedFile;
         _isBlurredImageVisible = false;
+
+        if (imageBytes != null) {
+          localObj.base64Logo = ImageService.base64String(imageBytes);
+        }
       });
       Navigator.of(context).pop();
     } catch (e) {

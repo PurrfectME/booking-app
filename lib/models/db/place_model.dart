@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:booking_app/models/models.dart';
@@ -7,14 +8,35 @@ class PlaceModel {
   String name;
   String description;
   int logoId;
+  String? base64Logo;
   int updateDate;
   List<TableModel> tables;
 
-  PlaceModel(this.id, this.name, this.description, this.logoId, this.updateDate,
-      this.tables);
+  PlaceModel(this.id, this.name, this.description, this.logoId, this.base64Logo,
+      this.updateDate, this.tables);
 
   List<Object?> get props =>
-      [id, name, description, logoId, updateDate, tables];
+      [id, name, description, logoId, base64Logo, updateDate, tables];
+
+  PlaceModel copyWith({
+    int? id,
+    String? name,
+    String? description,
+    int? logoId,
+    String? base64Logo,
+    int? updateDate,
+    List<TableModel>? tables,
+  }) {
+    return PlaceModel(
+      id ?? this.id,
+      name ?? this.name,
+      description ?? this.description,
+      logoId ?? this.logoId,
+      base64Logo ?? this.base64Logo,
+      updateDate ?? this.updateDate,
+      tables ?? this.tables,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -22,8 +44,8 @@ class PlaceModel {
       'name': name,
       'description': description,
       'logoId': logoId,
+      'base64Logo': base64Logo,
       'updateDate': updateDate,
-      // 'tables': tables.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -33,6 +55,7 @@ class PlaceModel {
         map['name'] as String,
         map['description'] as String,
         map['logoId'] as int,
+        map['base64Logo'] as String?,
         map['updateDate'] as int, []);
   }
 
