@@ -5,6 +5,7 @@ import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/services/image/image_service.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'place_info_event.dart';
@@ -65,28 +66,15 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         // await DbProvider.db.createAllReservations(
         //     reservedTablesResponse, userReservedTablesResponse);
 
+        final tableIds = <int>[];
+
         for (var table in place.tables) {
           //TODO: add date validation
           final reserved = reservedTablesResponse
               .any((reservation) => table.id == reservation.tableId);
 
-          if (reserved) {
-            final currentUserReservationIndex =
-                userReservedTablesResponse.indexWhere((userTable) =>
-                    userTable.tableId == table.id &&
-                    userTable.placeId == table.placeId);
-
-            if (currentUserReservationIndex != -1) {
-              availableTables.add(TableViewModel(
-                  table,
-                  null,
-                  null,
-                  // userReservedTables[currentUserReservationIndex].from,
-                  // userReservedTables[currentUserReservationIndex].to,
-                  true,
-                  place.name));
-            }
-          } else {
+          if (!reserved) {
+            tableIds.add(table.id!);
             availableTables.add(TableViewModel(
                 table,
                 null,
@@ -94,11 +82,56 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                 // userReservedTables[currentUserReservationIndex].from,
                 // userReservedTables[currentUserReservationIndex].to,
                 false,
-                place.name));
+                place.name,
+                []));
           }
         }
+        // final currentUserReservationIndex =
+        //     userReservedTablesResponse.indexWhere((userTable) =>
+        //         userTable.tableId == table.id &&
+        //         userTable.placeId == table.placeId);
+
+        // if (currentUserReservationIndex != -1) {
+        //   availableTables.add(TableViewModel(
+        //       table,
+        //       null,
+        //       null,
+        //       // userReservedTables[currentUserReservationIndex].from,
+        //       // userReservedTables[currentUserReservationIndex].to,
+        //       true,
+        //       place.name,
+        //       []));
+        // }
+        // } else {
+        //   tableIds.add(table.id!);
+        //   availableTables.add(TableViewModel(
+        //       table,
+        //       null,
+        //       null,
+        //       // userReservedTables[currentUserReservationIndex].from,
+        //       // userReservedTables[currentUserReservationIndex].to,
+        //       false,
+        //       place.name,
+        //       []));
+        // }
 
         final a = await DbProvider.db.getUserReservationsLastUpdateDate();
+
+        final tableImages = await DbProvider.db.getTableImages(tableIds);
+
+        //TODO: better performance when sorted tableImages, availableTables?
+        // tableImages.sort((a, b) => a.tableId.compareTo(b.tableId));
+
+        if (tableImages.isNotEmpty) {
+          for (var i = 0; i < availableTables.length; i++) {
+            final imageToAdd = ImageService.imageFromBase64String(tableImages
+                .firstWhere((tableImage) =>
+                    availableTables[i].table.id == tableImage.tableId)
+                .base64Images);
+
+            availableTables[i].images.add(imageToAdd);
+          }
+        }
 
         emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
             ImageService.imageFromBase64String(place.base64Logo!))));

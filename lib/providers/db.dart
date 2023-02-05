@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:booking_app/models/db/table_image_model.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/scripts/scripts.dart';
@@ -231,5 +232,26 @@ class DbProvider {
     }
 
     return reservations;
+  }
+
+  Future<List<TableImageModel>> getTableImages(List<int> tableIds) async {
+    final db = await database;
+    final result = await db!.query(
+      'tableImages',
+      where: "id IN (${tableIds.map((_) => '?').join(', ')})",
+      whereArgs: tableIds,
+    );
+
+    if (result.isEmpty) {
+      return [];
+    }
+
+    final tableImageModels = <TableImageModel>[];
+
+    for (var tableImage in result) {
+      tableImageModels.add(TableImageModel.fromMap(tableImage));
+    }
+
+    return tableImageModels;
   }
 }
