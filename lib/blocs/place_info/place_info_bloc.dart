@@ -16,7 +16,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
   PlaceInfoBloc({required this.place}) : super(PlaceInfoLoading()) {
     //TODO: спросить у андрея норм ли держать эту переменную здесь
-    List<TableViewModel> availableTables = <TableViewModel>[];
+    List<TableReservationViewModel> availableTables =
+        <TableReservationViewModel>[];
 
     on<PlaceInfoEvent>((event, emit) async {
       if (event is PlaceInfoLoad) {
@@ -75,7 +76,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
           if (!reserved) {
             tableIds.add(table.id!);
-            availableTables.add(TableViewModel(
+            availableTables.add(TableReservationViewModel(
                 table,
                 null,
                 null,
@@ -122,6 +123,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         //TODO: better performance when sorted tableImages, availableTables?
         // tableImages.sort((a, b) => a.tableId.compareTo(b.tableId));
 
+//TODO: optimize here
         if (tableImages.isNotEmpty) {
           for (var i = 0; i < availableTables.length; i++) {
             final imageToAdd = ImageService.imageFromBase64String(tableImages
@@ -134,7 +136,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         }
 
         emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
-            ImageService.imageFromBase64String(place.base64Logo!))));
+            ImageService.imageFromBase64String(place.base64Logo))));
       } else if (event is PlaceTableReserve) {
         // api call
         // final response = await api.reserveTable(id: event.id)
@@ -170,7 +172,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           //TODO: RESERVE ERROR IN MODal
         }
         emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
-            ImageService.imageFromBase64String(place.base64Logo!))));
+            ImageService.imageFromBase64String(place.base64Logo))));
       }
     });
   }

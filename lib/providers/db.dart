@@ -53,6 +53,24 @@ class DbProvider {
     return result;
   }
 
+  Future updateTable(TableModel table, String imageAsString) async {
+    final db = await database;
+    final batch = db!.batch();
+
+    batch.update("tables", table.toMap(),
+        where: 'id = ?',
+        whereArgs: [table.id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
+
+    batch.insert(
+      "tableImages", TableImageModel(2, table.id!, "", imageAsString).toMap(),
+      // where: 'id = ?',
+      // whereArgs: [table.id],
+    );
+
+    return await batch.commit(noResult: true);
+  }
+
   // Insert PlaceModels in database
   Future<List<Object?>> createPlaceModels(List<PlaceModel> models) async {
     final db = await database;

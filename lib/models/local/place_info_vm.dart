@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:booking_app/models/local/table_vm.dart';
+import 'package:booking_app/models/local/table_reservation_vm.dart';
 import 'package:flutter/material.dart';
 
 class PlaceInfoViewModel {
-  List<TableViewModel> tables;
+  List<TableReservationViewModel> tables;
   Image logo;
   PlaceInfoViewModel(
     this.tables,
@@ -12,7 +12,7 @@ class PlaceInfoViewModel {
   );
 
   PlaceInfoViewModel copyWith({
-    List<TableViewModel>? table,
+    List<TableReservationViewModel>? table,
     Image? logo,
   }) {
     return PlaceInfoViewModel(

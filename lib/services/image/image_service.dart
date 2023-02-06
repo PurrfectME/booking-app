@@ -41,9 +41,13 @@ class ImageService {
         });
   }
 
-  static Image imageFromBase64String(String base64String) {
+  static Image imageFromBase64String(String? base64String) {
+    if (base64String == null) {
+      //TODO: add default image
+      return Image.asset("assets/images/neft.jpg");
+    }
     return Image.memory(
-      base64Decode(base64String),
+      base64Decode(base64String!),
       fit: BoxFit.fill,
     );
   }

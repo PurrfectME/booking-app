@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/navigation.dart';
 import 'package:booking_app/screens/places/places_screen.dart';
@@ -124,8 +125,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                                     backgroundColor: MaterialStateProperty.all(
                                         Colors.black)),
                                 child: const Text("Столы"),
-                                onPressed: () =>
-                                    _onTablesUpdateTap(state.data.tables),
+                                onPressed: () => _onTablesUpdateTap(state.data),
                               ),
                             ),
                           ),
@@ -289,13 +289,15 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
     }
   }
 
-  void _onTablesUpdateTap(List<TableModel> tables) {
+  void _onTablesUpdateTap(PlaceModel place) {
+    final tables =
+        place.tables.map((table) => TableViewModel(table, [], [])).toList();
+
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BlocProvider(
-                  create: (context) =>
-                      TablesBloc(tables: tables)..add(TablesLoad()),
+                  create: (context) => TablesBloc(tables)..add(TablesLoad()),
                   child: const TablesScreen(),
                 )));
   }

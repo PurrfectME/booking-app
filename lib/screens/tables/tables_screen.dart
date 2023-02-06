@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/db/table_model.dart';
+import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,17 +44,19 @@ class _TablesScreenState extends State<TablesScreen> {
                                 margin: const EdgeInsets.all(7.0),
                                 // width: 310.0,
                                 height: 150.0,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(20)),
                                     image: DecorationImage(
                                         opacity: 1,
-                                        image: AssetImage(
-                                            "assets/images/neft.jpg"),
+                                        image: table.images.isNotEmpty
+                                            ? table.images.last.image
+                                            : AssetImage(
+                                                "assets/images/neft.jpg"),
                                         fit: BoxFit.cover)),
                               ),
                               Text(
-                                'Стол: ${table.number}',
+                                'Стол: ${table.table.number}',
                                 style: TextStyle(color: Colors.white),
                               )
                             ]),
@@ -70,7 +73,7 @@ class _TablesScreenState extends State<TablesScreen> {
     );
   }
 
-  _onTableUpdatePress(TableModel table) {
+  _onTableUpdatePress(TableViewModel table) {
     Navigator.push(
         context,
         MaterialPageRoute(

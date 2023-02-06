@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'dart:ui';
+import 'dart:typed_data';
 
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/db/table_model.dart';
+import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/services/image/image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,9 +21,8 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
   List<XFile> _imageFiles = [];
   dynamic _pickImageError;
   String? _retrieveDataError;
-  bool _isBlurredImageVisible = false;
 
-  late TableModel localObj;
+  late TableViewModel localObj;
 
   final ImagePicker _picker = ImagePicker();
   final TextEditingController maxWidthController = TextEditingController();
@@ -49,6 +48,7 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
         body: BlocBuilder<UpdateTableBloc, UpdateTableState>(
           builder: (context, state) {
             if (state is UpdateTableLoaded) {
+              localObj = state.data;
               return Form(
                 key: _formKey,
                 child: Padding(
@@ -59,31 +59,35 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                       Column(
                         children: [
                           TextFormField(
-                            initialValue: state.data.number.toString(),
-                            decoration: const InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                                labelText: 'Номер стола',
-                                labelStyle: TextStyle(color: Colors.black)),
-                            keyboardType: TextInputType.text,
-                            onSaved: (newValue) {
-                              // localObj.name = newValue!;
-                            },
-                            // onChanged: (value) => localObj.name = value,
-                            // The validator receives the text that the user has entered.
-                            // validator: validatePhoneNumber),
-                          ),
+                              initialValue: state.data.table.number.toString(),
+                              decoration: const InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black),
+                                  ),
+                                  labelText: 'Номер стола',
+                                  labelStyle: TextStyle(color: Colors.black)),
+                              keyboardType: TextInputType.text,
+                              onSaved: (value) {
+                                final val = int.tryParse(value!);
+                                localObj.table.number = val ?? 0;
+                              },
+                              onChanged: (value) {
+                                final val = int.tryParse(value);
+                                localObj.table.number = val ?? 0;
+                              }
+                              // The validator receives the text that the user has entered.
+                              // validator: validatePhoneNumber),
+                              ),
                           TextFormField(
-                            initialValue: state.data.guests.toString(),
-                            onSaved: (newValue) {
-                              // localObj.description = newValue!;
+                            initialValue: state.data.table.guests.toString(),
+                            onSaved: (value) {
+                              localObj.table.guests = int.tryParse(value!) ?? 0;
                             },
-                            // onChanged: (value) =>
-                            // localObj.description = value,
+                            onChanged: (value) => localObj.table.guests =
+                                int.tryParse(value) ?? 0,
                             decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black),
@@ -159,7 +163,7 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                         child: Row(
                           children: [
                             Expanded(
-                              child: Container(
+                              child: SizedBox(
                                 height: 60,
                                 child: ElevatedButton(
                                   style: ButtonStyle(
@@ -168,8 +172,8 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                                               Colors.black)),
                                   child: const Text("Сохранить"),
                                   onPressed: () => context
-                                      .read<UpdatePlaceBloc>()
-                                      .add(UpdatePlace(null!)),
+                                      .read<UpdateTableBloc>()
+                                      .add(UpdateTable(localObj)),
                                 ),
                               ),
                             ),
@@ -240,19 +244,18 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
     }
   }
 
-  // Future _displayPickImageDialog(BuildContext context) async {
-  //   return await
-  // }
-
   Future _onImageButtonPressed(ImageSource source, BuildContext context) async {
     try {
       final List<XFile> pickedFiles = await _picker.pickMultiImage();
-      final resultImages = <XFile>[];
-      resultImages.addAll(pickedFiles);
-      resultImages.addAll(_imageFiles);
+      final resultFiles = <XFile>[];
+      resultFiles.addAll(pickedFiles);
+      resultFiles.addAll(_imageFiles);
       setState(() {
-        _imageFiles = resultImages;
-        _isBlurredImageVisible = false;
+        _imageFiles = resultFiles;
+
+        for (var file in resultFiles) {
+          file.readAsBytes().then((value) => localObj.imagesBytes!.add(value));
+        }
       });
       Navigator.of(context).pop();
     } catch (e) {

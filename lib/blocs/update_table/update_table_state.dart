@@ -19,7 +19,7 @@ class UpdateTableError extends UpdateTableState {
 }
 
 class UpdateTableLoaded extends UpdateTableState {
-  final TableModel data;
+  final TableViewModel data;
 
   const UpdateTableLoaded(this.data);
 

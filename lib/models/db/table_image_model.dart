@@ -6,26 +6,12 @@ class TableImageModel {
   int tableId;
   String images;
   String base64Images;
-  TableImageModel({
-    required this.id,
-    required this.tableId,
-    required this.images,
-    required this.base64Images,
-  });
-
-  TableImageModel copyWith({
-    int? id,
-    int? tableId,
-    String? images,
-    String? base64Images,
-  }) {
-    return TableImageModel(
-      id: id ?? this.id,
-      tableId: tableId ?? this.tableId,
-      images: images ?? this.images,
-      base64Images: base64Images ?? this.base64Images,
-    );
-  }
+  TableImageModel(
+    this.id,
+    this.tableId,
+    this.images,
+    this.base64Images,
+  );
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -38,10 +24,10 @@ class TableImageModel {
 
   factory TableImageModel.fromMap(Map<String, dynamic> map) {
     return TableImageModel(
-      id: map['id'] as int,
-      tableId: map['tableId'] as int,
-      images: map['images'] as String,
-      base64Images: map['base64Images'] as String,
+      map['id'] as int,
+      map['tableId'] as int,
+      map['images'] as String,
+      map['base64Images'] as String,
     );
   }
 
@@ -49,4 +35,18 @@ class TableImageModel {
 
   factory TableImageModel.fromJson(String source) =>
       TableImageModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  TableImageModel copyWith({
+    int? id,
+    int? tableId,
+    String? images,
+    String? base64Images,
+  }) {
+    return TableImageModel(
+      id ?? this.id,
+      tableId ?? this.tableId,
+      images ?? this.images,
+      base64Images ?? this.base64Images,
+    );
+  }
 }

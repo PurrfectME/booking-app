@@ -8,7 +8,7 @@ abstract class UpdateTableEvent extends Equatable {
 }
 
 class UpdateTableLoad extends UpdateTableEvent {
-  final TableModel data;
+  final TableViewModel data;
 
   const UpdateTableLoad(this.data);
 
@@ -17,7 +17,7 @@ class UpdateTableLoad extends UpdateTableEvent {
 }
 
 class UpdateTable extends UpdateTableEvent {
-  final TableModel data;
+  final TableViewModel data;
 
   const UpdateTable(this.data);
 
