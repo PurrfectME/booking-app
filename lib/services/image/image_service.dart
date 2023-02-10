@@ -47,8 +47,8 @@ class ImageService {
       return Image.asset("assets/images/neft.jpg");
     }
     return Image.memory(
-      base64Decode(base64String!),
-      fit: BoxFit.fill,
+      base64Decode(base64String),
+      fit: BoxFit.cover,
     );
   }
 

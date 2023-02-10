@@ -53,8 +53,8 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
             const SnackBar(content: Text('Заведение сохранено')),
           );
 
-          context.read<PlacesBloc>().add(PlacesLoad());
-          Navigator.pop(context);
+          final a = context.read<PlacesBloc>();
+          Navigator.pop(context, a..add(PlacesLoad()));
         }
       },
       child: Scaffold(

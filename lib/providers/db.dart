@@ -50,6 +50,8 @@ class DbProvider {
         whereArgs: [place.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
 
+    // var a = await getAllPlaceModels();
+
     return result;
   }
 
@@ -62,11 +64,11 @@ class DbProvider {
         whereArgs: [table.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
 
-    batch.insert(
-      "tableImages", TableImageModel(2, table.id!, "", imageAsString).toMap(),
-      // where: 'id = ?',
-      // whereArgs: [table.id],
-    );
+    batch.update("tableImages",
+        TableImageModel(null, table.id!, "1", imageAsString).toMap(),
+        where: 'id = ?',
+        whereArgs: [table.id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
 
     return await batch.commit(noResult: true);
   }
@@ -256,7 +258,7 @@ class DbProvider {
     final db = await database;
     final result = await db!.query(
       'tableImages',
-      where: "id IN (${tableIds.map((_) => '?').join(', ')})",
+      where: "tableId IN (${tableIds.map((_) => '?').join(', ')})",
       whereArgs: tableIds,
     );
 

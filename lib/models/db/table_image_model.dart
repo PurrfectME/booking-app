@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class TableImageModel {
-  int id;
+  int? id;
   int tableId;
   String images;
   String base64Images;

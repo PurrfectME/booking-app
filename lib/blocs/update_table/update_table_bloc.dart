@@ -15,21 +15,46 @@ class UpdateTableBloc extends Bloc<UpdateTableEvent, UpdateTableState> {
 
         // final place = await DbProvider.db.getPlaceById(event.id);
 
-        final tableImages =
-            await DbProvider.db.getTableImages([event.data.table.id!]);
+        // final tableImages =
+        //     await DbProvider.db.getTableImages([event.data.table.id!]);
 
         //TODO: better performance when sorted tableImages, availableTables?
         // tableImages.sort((a, b) => a.tableId.compareTo(b.tableId));
 
         //TODO: optimize here
-        if (tableImages.isNotEmpty) {
-          final imageToAdd = ImageService.imageFromBase64String(tableImages
-              .firstWhere(
-                  (tableImage) => event.data.table.id == tableImage.tableId)
-              .base64Images);
+        // if (tableImages.isNotEmpty) {
+        //   for (var imageModel in tableImages) {
+        //     event.data.images.add(
+        //         ImageService.imageFromBase64String(imageModel.base64Images));
+        //   }
+        // tableImages[0].base64Images.split(',').map((e) =>
+        //     event.data.images.add(ImageService.imageFromBase64String(e)));
 
-          event.data.images.add(imageToAdd);
-        }
+        // final imageToAdd = ImageService.imageFromBase64String(tableImages
+        //     .firstWhere(
+        //         (tableImage) => event.data.table.id == tableImage.tableId)
+        //     .base64Images);
+
+        // event.data.images.add(imageToAdd);
+        // }
+
+        // if (tableImages.isNotEmpty) {
+        //   for (var i = 0; i < tables.length; i++) {
+        //     final imageModelIndex = tableImages.indexWhere(
+        //         (tableImage) => tables[i].table.id == tableImage.tableId);
+
+        //     if (imageModelIndex != -1) {
+        //       final allTableImages =
+        //           tableImages[imageModelIndex].base64Images.split(',');
+
+        //       for (var imageString in allTableImages) {
+        //         tables[i]
+        //             .images
+        //             .add(ImageService.imageFromBase64String(imageString));
+        //       }
+        //     }
+        //   }
+        // }
 
         emit(UpdateTableLoaded(event.data));
       } else if (event is UpdateTable) {

@@ -27,14 +27,19 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
         if (tableImages.isNotEmpty) {
           for (var i = 0; i < tables.length; i++) {
             //TODO: indexWhere
-            final tableImageModel = tableImages.firstWhere(
+            final imageModelIndex = tableImages.indexWhere(
                 (tableImage) => tables[i].table.id == tableImage.tableId);
 
-            final allTableImages = tableImageModel.base64Images.split(',');
+            if (imageModelIndex != -1) {
+              final allTableImages =
+                  tableImages[imageModelIndex].base64Images.split(',');
 
-            tables[i]
-                .images
-                .add(ImageService.imageFromBase64String(allTableImages.last));
+              for (var imageString in allTableImages) {
+                tables[i]
+                    .images
+                    .add(ImageService.imageFromBase64String(imageString));
+              }
+            }
           }
         }
 

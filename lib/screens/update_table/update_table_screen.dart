@@ -17,8 +17,7 @@ class UpdateTableScreen extends StatefulWidget {
 
 class _UpdateTableScreenState extends State<UpdateTableScreen> {
   final _formKey = GlobalKey<FormState>();
-  final List<int> images = [1, 2, 3];
-  List<XFile> _imageFiles = [];
+  List<Image> _imageFiles = [];
   dynamic _pickImageError;
   String? _retrieveDataError;
 
@@ -48,6 +47,7 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
         body: BlocBuilder<UpdateTableBloc, UpdateTableState>(
           builder: (context, state) {
             if (state is UpdateTableLoaded) {
+              _imageFiles = state.data.images;
               localObj = state.data;
               return Form(
                 key: _formKey,
@@ -136,12 +136,12 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                             onPressed: () async => await ImageService()
                                 .displayImagePickerBox(
                                     context, _onImageButtonPressed),
-                            child: Text("Добавить фото",
+                            child: const Text("Добавить фото",
                                 style: TextStyle(color: Colors.white)),
                           )),
                           _imageFiles.isNotEmpty
                               ? Container(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color:
                                           Color.fromARGB(255, 169, 181, 178)),
                                   height: 280,
@@ -150,9 +150,9 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                                       crossAxisSpacing: 5,
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics(),
-                                      crossAxisCount: images.length >= 3
+                                      crossAxisCount: _imageFiles.length >= 3
                                           ? 3
-                                          : images.length,
+                                          : _imageFiles.length,
                                       primary: false,
                                       children: _previewImages()),
                                 )
@@ -212,12 +212,7 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
           .map((image) => Container(
                 decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    image: DecorationImage(
-                        opacity: 1,
-                        image: Image.file(
-                          File(image.path),
-                          fit: BoxFit.cover,
-                        ).image)),
+                    image: DecorationImage(opacity: 1, image: image.image)),
               ))
           .toList();
     } else if (_pickImageError != null) {
@@ -249,9 +244,13 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
       final List<XFile> pickedFiles = await _picker.pickMultiImage();
       final resultFiles = <XFile>[];
       resultFiles.addAll(pickedFiles);
-      resultFiles.addAll(_imageFiles);
       setState(() {
-        _imageFiles = resultFiles;
+        _imageFiles = resultFiles
+            .map((e) => Image.file(
+                  File(e.path),
+                  fit: BoxFit.cover,
+                ))
+            .toList();
 
         for (var file in resultFiles) {
           file.readAsBytes().then((value) => localObj.imagesBytes!.add(value));
