@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdateTableScreen extends StatefulWidget {
+  static const pageRoute = '/update-table';
   const UpdateTableScreen({super.key});
 
   @override
@@ -40,7 +41,14 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
   Widget build(BuildContext context) {
     return BlocListener<UpdateTableBloc, UpdateTableState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state is UpdateTableSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Стол обновлён')),
+          );
+
+          Navigator.pop(context);
+          context.read<TablesBloc>().add(TablesLoad(placeId: state.placeId));
+        }
       },
       child: Scaffold(
         appBar: AppBar(title: const Text("Редактирование стола")),
@@ -146,8 +154,8 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                                           Color.fromARGB(255, 169, 181, 178)),
                                   height: 280,
                                   child: GridView.count(
-                                      mainAxisSpacing: 5,
-                                      crossAxisSpacing: 5,
+                                      mainAxisSpacing: 3,
+                                      crossAxisSpacing: 3,
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics(),
                                       crossAxisCount: _imageFiles.length >= 3
@@ -245,12 +253,10 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
       final resultFiles = <XFile>[];
       resultFiles.addAll(pickedFiles);
       setState(() {
-        _imageFiles = resultFiles
-            .map((e) => Image.file(
-                  File(e.path),
-                  fit: BoxFit.cover,
-                ))
-            .toList();
+        _imageFiles.addAll(resultFiles.map((e) => Image.file(
+              File(e.path),
+              fit: BoxFit.cover,
+            )));
 
         for (var file in resultFiles) {
           file.readAsBytes().then((value) => localObj.imagesBytes!.add(value));

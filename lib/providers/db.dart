@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:booking_app/models/db/table_image_model.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/db/user_reservation_model.dart';
+import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/scripts/scripts.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -57,20 +58,27 @@ class DbProvider {
 
   Future updateTable(TableModel table, String imageAsString) async {
     final db = await database;
-    final batch = db!.batch();
 
-    batch.update("tables", table.toMap(),
+    final tableResult = await db!.update("tables", table.toMap(),
         where: 'id = ?',
         whereArgs: [table.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
 
-    batch.update("tableImages",
+    final imageResult = await db.update("tableImages",
         TableImageModel(null, table.id!, "1", imageAsString).toMap(),
         where: 'id = ?',
         whereArgs: [table.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
 
-    return await batch.commit(noResult: true);
+    var res = 0;
+    if (imageResult == 0) {
+      //insert
+      res = await db.insert("tableImages",
+          TableImageModel(null, table.id!, "1", imageAsString).toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+
+    return res;
   }
 
   // Insert PlaceModels in database
@@ -273,5 +281,24 @@ class DbProvider {
     }
 
     return tableImageModels;
+  }
+
+  Future<List<TableModel>> getTables(int placeId) async {
+    final db = await database;
+
+    final result = await db!
+        .rawQuery("SELECT * FROM tables WHERE tables.placeId = $placeId");
+
+    if (result.isEmpty) {
+      return [];
+    }
+
+    final tables = <TableModel>[];
+
+    for (var table in result) {
+      tables.add(TableModel.fromMap(table));
+    }
+
+    return tables;
   }
 }

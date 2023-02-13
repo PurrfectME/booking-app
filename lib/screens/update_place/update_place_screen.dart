@@ -3,8 +3,6 @@ import 'dart:ui';
 
 import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/models/models.dart';
-import 'package:booking_app/navigation.dart';
-import 'package:booking_app/screens/places/places_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -297,7 +295,8 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => BlocProvider(
-                  create: (context) => TablesBloc(tables)..add(TablesLoad()),
+                  create: (context) =>
+                      TablesBloc()..add(TablesLoad(tables: tables)),
                   child: const TablesScreen(),
                 )));
   }

@@ -22,6 +22,8 @@ void main() {
           BlocProvider(create: (context) => MenuBloc()),
           BlocProvider(create: (context) => ExtraInfoBloc()),
           BlocProvider(create: (context) => UpdatePlaceBloc()),
+          BlocProvider(create: (context) => UpdateTableBloc()),
+          BlocProvider(create: (context) => TablesBloc()),
         ],
         child: BlocListener<ExtraInfoBloc, ExtraInfoState>(
           listener: (context, state) {
@@ -70,6 +72,10 @@ class MyApp extends StatelessWidget {
           builder = (context) => const MainScreen();
         } else if (path == UpdatePlaceScreen.pageRoute) {
           builder = (context) => const UpdatePlaceScreen();
+        } else if (path == UpdateTableScreen.pageRoute) {
+          builder = (context) => const UpdateTableScreen();
+        } else if (path == TablesScreen.pageRoute) {
+          builder = (context) => const TablesScreen();
         } else {
           builder ??= (context) => const LoginScreen();
         }

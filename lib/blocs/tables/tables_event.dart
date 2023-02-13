@@ -8,4 +8,11 @@ abstract class TablesEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class TablesLoad extends TablesEvent {}
+class TablesLoad extends TablesEvent {
+  List<TableViewModel>? tables;
+  int? placeId;
+  TablesLoad({this.tables, this.placeId});
+
+  @override
+  List<Object?> get props => [tables, placeId];
+}

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/services/image/image_service.dart';
@@ -64,6 +65,8 @@ class UpdateTableBloc extends Bloc<UpdateTableEvent, UpdateTableState> {
 
         final result =
             await DbProvider.db.updateTable(event.data.table, imagesAsString);
+
+        emit(UpdateTableSuccess(event.data.table.placeId));
       }
     });
   }

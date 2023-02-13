@@ -1,5 +1,4 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/db/table_model.dart';
 import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TablesScreen extends StatefulWidget {
+  static const pageRoute = '/tables';
   const TablesScreen({super.key});
 
   @override
@@ -16,59 +16,65 @@ class TablesScreen extends StatefulWidget {
 class _TablesScreenState extends State<TablesScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Выберите стол'),
-      ),
-      body: BlocBuilder<TablesBloc, TablesState>(
-        builder: (context, state) {
-          if (state is TablesLoading) {
-            return const Center(child: CupertinoActivityIndicator(radius: 20));
-          } else if (state is TablesLoaded) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.count(
-                crossAxisCount: 2,
-                primary: false,
-                children: state.data
-                    .map((table) => InkWell(
-                          onTap: () => _onTableUpdatePress(table),
-                          child: Card(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            color: Colors.black,
-                            child: Column(children: [
-                              Container(
-                                margin: const EdgeInsets.all(7.0),
-                                // width: 310.0,
-                                height: 150.0,
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20)),
-                                    image: DecorationImage(
-                                        opacity: 1,
-                                        image: table.images.isNotEmpty
-                                            ? table.images.last.image
-                                            : AssetImage(
-                                                "assets/images/neft.jpg"),
-                                        fit: BoxFit.cover)),
+    return BlocListener<TablesBloc, TablesState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Выберите стол'),
+        ),
+        body: BlocBuilder<TablesBloc, TablesState>(
+          builder: (context, state) {
+            if (state is TablesLoading) {
+              return const Center(
+                  child: CupertinoActivityIndicator(radius: 20));
+            } else if (state is TablesLoaded) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  primary: false,
+                  children: state.data
+                      .map((table) => InkWell(
+                            onTap: () => _onTableUpdatePress(table),
+                            child: Card(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                               ),
-                              Text(
-                                'Стол: ${table.table.number}',
-                                style: TextStyle(color: Colors.white),
-                              )
-                            ]),
-                          ),
-                        ))
-                    .toList(),
-              ),
-            );
-          } else {
-            return const SizedBox();
-          }
-        },
+                              color: Colors.black,
+                              child: Column(children: [
+                                Container(
+                                  margin: const EdgeInsets.all(7.0),
+                                  // width: 310.0,
+                                  height: 150.0,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      image: DecorationImage(
+                                          opacity: 1,
+                                          image: table.images.isNotEmpty
+                                              ? table.images.last.image
+                                              : AssetImage(
+                                                  "assets/images/neft.jpg"),
+                                          fit: BoxFit.cover)),
+                                ),
+                                Text(
+                                  'Стол: ${table.table.number}',
+                                  style: TextStyle(color: Colors.white),
+                                )
+                              ]),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              );
+            } else {
+              return const SizedBox();
+            }
+          },
+        ),
       ),
     );
   }

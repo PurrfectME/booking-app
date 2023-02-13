@@ -12,8 +12,8 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   PlacesBloc() : super(PlacesLoading()) {
     on<PlacesEvent>((event, emit) async {
       if (event is PlacesLoad) {
-        // await DbProvider.db.deleteAllPlaceModels();
-        // await DbProvider.db.deleteAllTables();
+        await DbProvider.db.deleteAllPlaceModels();
+        await DbProvider.db.deleteAllTables();
 
         emit(PlacesLoading());
 
@@ -38,7 +38,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
           ]),
         ];
 
-        // await DbProvider.db.createPlaceModels(placesResponse);
+        await DbProvider.db.createPlaceModels(placesResponse);
 
         final actualPlaces = await DbProvider.db.getAllPlaceModels();
 

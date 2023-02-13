@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:booking_app/models/db/table_model.dart';
 
-class TableViewModel {
+class TableViewModel extends Equatable {
   TableModel table;
   List<Image> images;
   List<Uint8List>? imagesBytes;
@@ -34,4 +35,19 @@ class TableViewModel {
 
   factory TableViewModel.fromJson(String source) =>
       TableViewModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  List<Object?> get props => [table, images, imagesBytes];
+
+  TableViewModel copyWith({
+    TableModel? table,
+    List<Image>? images,
+    List<Uint8List>? imagesBytes,
+  }) {
+    return TableViewModel(
+      table ?? this.table,
+      images ?? this.images,
+      imagesBytes ?? this.imagesBytes,
+    );
+  }
 }
