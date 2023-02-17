@@ -288,4 +288,22 @@ class DbProvider {
 
     return tables;
   }
+
+  Future<List<TableModel>> getTablesByPlaceId(int placeId) async {
+    final db = await database;
+    final res =
+        await db!.rawQuery("SELECT * FROM tables WHERE placeId = $placeId");
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final tables = <TableModel>[];
+
+    for (var table in res) {
+      tables.add(TableModel.fromMap(table));
+    }
+
+    return tables;
+  }
 }
