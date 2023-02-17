@@ -106,7 +106,7 @@ class PlaceItem extends StatelessWidget {
                         child: const Text('Апдейт'),
                       ),
                       ElevatedButton(
-                          onPressed: () => Navigator.push(
+                          onPressed: () => Navigator.push<void>(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => BlocProvider(
