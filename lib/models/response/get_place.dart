@@ -1,11 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class GetPlaceResponse {
   int id;
   String name;
   String description;
-  int logo;
+  int logoId;
   List<int> gallery;
   int updateDate;
   List<TableResponse>? tables;
@@ -14,36 +13,38 @@ class GetPlaceResponse {
     required this.id,
     required this.name,
     required this.description,
-    required this.logo,
+    required this.logoId,
     required this.gallery,
     required this.updateDate,
     this.tables,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'description': description,
-      'logo': logo,
-      'gallery': gallery,
-      'updateDate': updateDate,
-      'tables': tables?.map((x) => x.toMap()).toList(),
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'description': description,
+        'logoId': logoId,
+        'gallery': gallery,
+        'updateDate': updateDate,
+        'tables': tables?.map((x) => x.toMap()).toList(),
+      };
 
-  factory GetPlaceResponse.fromMap(Map<String, dynamic> map) {
-    return GetPlaceResponse(
+  factory GetPlaceResponse.fromMap(Map<String, dynamic> map) =>
+      GetPlaceResponse(
         id: map['id'] as int,
         name: map['name'] as String,
         description: map['description'] as String,
-        logo: map['logo'] as int,
-        gallery: List<int>.from((map['gallery'] as List<int>)),
+        logoId: map['logoId'] as int,
+        gallery: List<int>.from(map['gallery'] as List<int>),
         updateDate: map['updateDate'] as int,
         tables: map['tables'] != null
-            ? List<TableResponse>.from(map['tables'])
-            : []);
-  }
+            ? List<TableResponse>.from(
+                (map['tables'] as List<int>).map<TableResponse?>(
+                  (x) => TableResponse.fromMap(x as Map<String, dynamic>),
+                ),
+              )
+            : null,
+      );
 
   String toJson() => json.encode(toMap());
 
@@ -65,25 +66,21 @@ class TableResponse {
     this.placeId,
   );
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'number': number,
-      'image': image,
-      'guests': guests,
-      'placeId': placeId,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'number': number,
+        'image': image,
+        'guests': guests,
+        'placeId': placeId,
+      };
 
-  factory TableResponse.fromMap(Map<String, dynamic> map) {
-    return TableResponse(
-      map['id'] as int,
-      map['number'] as int,
-      map['image'] as int,
-      map['guests'] as int,
-      map['placeId'] as int,
-    );
-  }
+  factory TableResponse.fromMap(Map<String, dynamic> map) => TableResponse(
+        map['id'] as int,
+        map['number'] as int,
+        map['image'] as int,
+        map['guests'] as int,
+        map['placeId'] as int,
+      );
 
   String toJson() => json.encode(toMap());
 

@@ -11,21 +11,18 @@ class CreateTableRequest {
     required this.guests,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'number': number,
-      'image': image,
-      'guests': guests,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'number': number,
+        'image': image,
+        'guests': guests,
+      };
 
-  factory CreateTableRequest.fromMap(Map<String, dynamic> map) {
-    return CreateTableRequest(
-      number: map['number'] as int,
-      image: map['image'] as int,
-      guests: map['guests'] as int,
-    );
-  }
+  factory CreateTableRequest.fromMap(Map<String, dynamic> map) =>
+      CreateTableRequest(
+        number: map['number'] as int,
+        image: map['image'] as int,
+        guests: map['guests'] as int,
+      );
 
   String toJson() => json.encode(toMap());
 

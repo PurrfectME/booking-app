@@ -19,7 +19,7 @@ class TablesError extends TablesState {
 }
 
 class TablesLoaded extends TablesState {
-  final List<TableModel> data;
+  final List<TableViewModel> data;
 
   const TablesLoaded(this.data);
 

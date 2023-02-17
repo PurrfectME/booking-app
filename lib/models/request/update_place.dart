@@ -3,37 +3,35 @@ import 'dart:convert';
 class UpdatePlaceRequest {
   int id;
   String name;
-  int logo;
+  int logoId;
   String description;
   List<int> gallery;
   UpdatePlaceRequest({
     required this.id,
     required this.name,
-    required this.logo,
+    required this.logoId,
     required this.description,
     required this.gallery,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'logo': logo,
-      'description': description,
-      'gallery': gallery,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'logoId': logoId,
+        'description': description,
+        'gallery': gallery,
+      };
 
-  factory UpdatePlaceRequest.fromMap(Map<String, dynamic> map) {
-    return UpdatePlaceRequest(
+  factory UpdatePlaceRequest.fromMap(Map<String, dynamic> map) =>
+      UpdatePlaceRequest(
         id: map['id'] as int,
         name: map['name'] as String,
-        logo: map['logo'] as int,
+        logoId: map['logoId'] as int,
         description: map['description'] as String,
         gallery: List<int>.from(
-          (map['gallery'] as List<int>),
-        ));
-  }
+          map['gallery'] as List<int>,
+        ),
+      );
 
   String toJson() => json.encode(toMap());
 

@@ -9,10 +9,7 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-          child: Text("Здесь должны отображаться активные брони клиента")),
-    );
-  }
+  Widget build(BuildContext context) => const Center(
+        child: Text('Здесь должны отображаться активные брони клиента'),
+      );
 }

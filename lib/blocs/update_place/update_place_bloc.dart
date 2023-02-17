@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:equatable/equatable.dart';
 
 part 'update_place_event.dart';
 part 'update_place_state.dart';

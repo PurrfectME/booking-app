@@ -9,9 +9,7 @@ class PlaceInfoScreen extends StatefulWidget {
   const PlaceInfoScreen({super.key});
 
   @override
-  PlaceInfoScreenState createState() {
-    return PlaceInfoScreenState();
-  }
+  PlaceInfoScreenState createState() => PlaceInfoScreenState();
 }
 
 class PlaceInfoScreenState extends State<PlaceInfoScreen> {
@@ -27,192 +25,201 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener<PlaceInfoBloc, PlaceInfoState>(
-      listener: (context, state) {
-        if (state is PlaceTableReserveSuccess) {
-          reservedTableId = state.id;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Стол ${state.id} забронирован!')),
-          );
-        }
-        // else if (state is Place) {
-        //   //TODO: error modal
-        // }
-      },
-      child: Scaffold(
-          backgroundColor: Colors.black,
-          // appBar: AppBar(title: const Text("Выбрать место")),
-          body: BlocBuilder<PlaceInfoBloc, PlaceInfoState>(
-            builder: (context, state) {
-              if (state is PlaceInfoLoading) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Center(child: CupertinoActivityIndicator(radius: 20)),
-                  ],
-                );
-              } else if (state is PlaceInfoError) {
-                return Text(state.error);
-              } else if (state is PlaceInfoLoaded) {
-                return CustomScrollView(
-                  slivers: [
-                    SliverPersistentHeader(
-                      pinned: true,
-                      delegate: FlexibleHeaderDelegate(
-                        expandedHeight: 190,
-                        statusBarHeight: MediaQuery.of(context).padding.top,
-                        background: MutableBackground(
-                          expandedWidget: Stack(children: [
-                            Container(
-                              foregroundDecoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withOpacity(.1),
-                                    Colors.black.withOpacity(1),
-                                  ],
-                                ),
-                              ),
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      opacity: 1,
-                                      image:
-                                          AssetImage("assets/images/neft.jpg"),
-                                      fit: BoxFit.cover)),
-                            ),
-                          ]),
-                          collapsedColor: Colors.black,
-                        ),
-                        actions: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.calendar_month,
-                              color: Colors.white,
-                            ),
-                            onPressed: _onDateTimeTap,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: () {},
-                          ),
-                        ],
-                        children: [
-                          FlexibleTextItem(
-                            text: state.data[0]!.placeName,
-                            collapsedStyle: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                ?.copyWith(color: Colors.white),
-                            collapsedAlignment: Alignment.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                        child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 18.0, bottom: 25),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                state.data[0]!.placeName,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 30,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            Row(
+  Widget build(BuildContext context) =>
+      BlocListener<PlaceInfoBloc, PlaceInfoState>(
+        listener: (context, state) {
+          if (state is PlaceTableReserveSuccess) {
+            reservedTableId = state.id;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Стол ${state.id} забронирован!')),
+            );
+          }
+          // else if (state is Place) {
+          //   //TODO: error modal
+          // }
+        },
+        child: Scaffold(
+            backgroundColor: Colors.black,
+            // appBar: AppBar(title: const Text("Выбрать место")),
+            body: BlocBuilder<PlaceInfoBloc, PlaceInfoState>(
+              builder: (context, state) {
+                if (state is PlaceInfoLoading) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Center(child: CupertinoActivityIndicator(radius: 20)),
+                    ],
+                  );
+                } else if (state is PlaceInfoError) {
+                  return Text(state.error);
+                } else if (state is PlaceInfoLoaded) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: FlexibleHeaderDelegate(
+                          expandedHeight: 190,
+                          statusBarHeight: MediaQuery.of(context).padding.top,
+                          background: MutableBackground(
+                            expandedWidget: Stack(
                               children: [
                                 Container(
-                                  width: 80,
-                                  height: 50,
-                                  child: Card(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      color:
-                                          const Color.fromARGB(255, 59, 59, 59),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          const Icon(Icons.star,
-                                              color: Colors.white),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              const Text(
-                                                "5.0",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14),
-                                              ),
-                                              const Text("200+"),
-                                            ],
-                                          ),
-                                        ],
-                                      )),
+                                  foregroundDecoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(.1),
+                                        Colors.black.withOpacity(1),
+                                      ],
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          opacity: 1,
+                                          image: state.data.logo.image,
+                                          fit: BoxFit.cover)),
                                 ),
-                                Container(
-                                  height: 50,
-                                  child: Card(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      color:
-                                          const Color.fromARGB(255, 59, 59, 59),
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.yellow)),
-                                        child: const Text(
-                                          "Выбрать дату",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                        onPressed: _onDateTimeTap,
-                                      )),
-                                )
                               ],
-                            )
+                            ),
+                            collapsedColor: Colors.black,
+                          ),
+                          actions: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.calendar_month,
+                                color: Colors.white,
+                              ),
+                              onPressed: _onDateTimeTap,
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.search),
+                              onPressed: () {},
+                            ),
+                          ],
+                          children: [
+                            FlexibleTextItem(
+                              text: state.data.tables[0].placeName,
+                              collapsedStyle: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  ?.copyWith(color: Colors.white),
+                              collapsedAlignment: Alignment.center,
+                            ),
                           ],
                         ),
                       ),
-                    )),
-                    SliverList(
+                      SliverToBoxAdapter(
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 18, bottom: 25),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    state.data.tables[0].placeName,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      height: 50,
+                                      child: Card(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                          ),
+                                          color: const Color.fromARGB(
+                                              255, 59, 59, 59),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              const Icon(Icons.star,
+                                                  color: Colors.white),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: const [
+                                                  Text(
+                                                    '5.0',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 14),
+                                                  ),
+                                                  Text('200+'),
+                                                ],
+                                              ),
+                                            ],
+                                          )),
+                                    ),
+                                    SizedBox(
+                                      height: 50,
+                                      child: Card(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                        ),
+                                        color: const Color.fromARGB(
+                                            255, 59, 59, 59),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.yellow),
+                                          ),
+                                          onPressed: _onDateTimeTap,
+                                          child: const Text(
+                                            'Выбрать дату',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SliverList(
                         delegate: SliverChildBuilderDelegate(
-                            childCount: state.data.length, (context, index) {
-                      return Container(
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              color: Colors.black),
-                          child: !state.data[index]!.isReservedByUser
-                              ? TableCard(
-                                  model: state.data[index]!,
-                                  selectedDateTime: selectedDateTime)
-                              : const SizedBox());
-                    }))
-                  ],
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          )),
-    );
-  }
+                          childCount: state.data.tables.length,
+                          (context, index) => Container(
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                color: Colors.black),
+                            child: !state.data.tables[index].isReservedByUser
+                                ? TableCard(
+                                    model: state.data.tables[index],
+                                    selectedDateTime: selectedDateTime)
+                                : const SizedBox(),
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            )),
+      );
 
+  // ignore: avoid_void_async
   void _onDateTimeTap() async {
     final date = await showDatePicker(
         context: context,
@@ -224,12 +231,10 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
       final time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
-        builder: (BuildContext context, Widget? child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!,
-          );
-        },
+        builder: (BuildContext context, Widget? child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        ),
       );
       if (time != null) {
         setState(() {

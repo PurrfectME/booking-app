@@ -15,8 +15,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  static const double iconSize = 24;
-
   late List<BottomNavigationBarItem> navItems;
 
   @override
@@ -34,35 +32,37 @@ class _BottomNavigationState extends State<BottomNavigation> {
           decoration: const BoxDecoration(
             color: Color.fromARGB(255, 50, 50, 50),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: navItems
-                .mapIndexed((e, index) => Expanded(
-                        child: InkWell(
-                      onTap: () => widget.onTap(widget.items[index].tab),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 4),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (widget.currentIndex == index)
-                              e.activeIcon
-                            else
-                              e.icon,
-                            const SizedBox(height: 4),
-                            DefaultTextStyle(
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 18),
-                              textAlign: TextAlign.center,
-                              child: Text(e.label ?? ''),
-                            )
-                          ],
+          child: SafeArea(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: navItems
+                  .mapIndexed((e, index) => Expanded(
+                          child: InkWell(
+                        onTap: () => widget.onTap(widget.items[index].tab),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 4),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (widget.currentIndex == index)
+                                e.activeIcon
+                              else
+                                e.icon,
+                              const SizedBox(height: 4),
+                              DefaultTextStyle(
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                                textAlign: TextAlign.center,
+                                child: Text(e.label ?? ''),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    )))
-                .toList(),
+                      )))
+                  .toList(),
+            ),
           ),
         ),
       );
@@ -72,13 +72,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
     const inactiveIconColor = Color.fromARGB(255, 95, 95, 95);
 
     switch (iconName) {
-      case "menu_places":
+      case 'menu_places':
         icon = const Icon(Icons.restaurant, color: inactiveIconColor);
         break;
-      case "menu_profile":
+      case 'menu_profile':
         icon = const Icon(Icons.account_box, color: inactiveIconColor);
         break;
-      case "menu_update_place":
+      case 'menu_update_place':
         icon = const Icon(Icons.add, color: inactiveIconColor);
         break;
       default:

@@ -13,23 +13,20 @@ class ReserveTableRequest {
     required this.to,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'placeId': placeId,
-      'tableId': tableId,
-      'from': from,
-      'to': to,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'placeId': placeId,
+        'tableId': tableId,
+        'from': from,
+        'to': to,
+      };
 
-  factory ReserveTableRequest.fromMap(Map<String, dynamic> map) {
-    return ReserveTableRequest(
-      placeId: map['placeId'] as int,
-      tableId: map['tableId'] as int,
-      from: map['from'] as DateTime,
-      to: map['to'] as DateTime,
-    );
-  }
+  factory ReserveTableRequest.fromMap(Map<String, dynamic> map) =>
+      ReserveTableRequest(
+        placeId: map['placeId'] as int,
+        tableId: map['tableId'] as int,
+        from: map['from'] as DateTime,
+        to: map['to'] as DateTime,
+      );
 
   String toJson() => json.encode(toMap());
 

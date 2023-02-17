@@ -12,8 +12,8 @@ class AuthService {
 
   Future<dynamic> signIn(SignInRequest request) async {
     final response =
-        await Api().dio.post(Constants.signIn, data: request.toJson());
+        await Api().dio.post<String>(Constants.signIn, data: request.toJson());
 
-    return SignInResponse.fromJson(response.data);
+    return SignInResponse.fromJson(response.data!);
   }
 }

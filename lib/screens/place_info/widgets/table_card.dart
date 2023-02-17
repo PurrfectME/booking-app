@@ -1,11 +1,11 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/local/table_vm.dart';
+import 'package:booking_app/models/local/table_reservation_vm.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TableCard extends StatefulWidget {
-  final TableViewModel model;
+  final TableReservationViewModel model;
   final DateTime selectedDateTime;
   const TableCard(
       {super.key, required this.model, required this.selectedDateTime});
@@ -25,43 +25,43 @@ class _TableCardState extends State<TableCard> {
   @override
   Widget build(BuildContext context) {
     final images = [
-      "assets/images/table1.PNG",
-      "assets/images/table2.PNG",
-      "assets/images/table3.PNG"
+      'assets/images/table1.PNG',
+      'assets/images/table2.PNG',
+      'assets/images/table3.PNG'
     ];
 
     return Card(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        color: Color.fromARGB(255, 59, 59, 59),
+        color: const Color.fromARGB(255, 59, 59, 59),
         child: Column(
           children: [
             CarouselSlider.builder(
-                itemCount: images.length,
-                itemBuilder: ((context, index, realIndex) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                        image: DecorationImage(
-                            opacity: 1,
-                            image: AssetImage(images[index]),
-                            fit: BoxFit.cover)),
-                  );
-                }),
-                options: CarouselOptions(
-                  aspectRatio: 5 / 3,
-                  viewportFraction: 1,
-                  initialPage: 0,
-                  enableInfiniteScroll: false,
-                  reverse: false,
-                  autoPlay: false,
-                  enlargeCenterPage: false,
-                  onPageChanged: null,
-                  scrollDirection: Axis.horizontal,
-                )),
+              itemCount: images.length,
+              itemBuilder: (context, index, realIndex) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  image: DecorationImage(
+                      opacity: 1,
+                      image: AssetImage(images[index]),
+                      fit: BoxFit.cover),
+                ),
+              ),
+              options: CarouselOptions(
+                aspectRatio: 5 / 3,
+                viewportFraction: 1,
+                initialPage: 0,
+                enableInfiniteScroll: false,
+                reverse: false,
+                autoPlay: false,
+                enlargeCenterPage: false,
+                onPageChanged: null,
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -69,13 +69,13 @@ class _TableCardState extends State<TableCard> {
                 children: [
                   Text(
                     'Столик ${widget.model.table.number}',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   Text(
                     'Мест: ${widget.model.table.guests}',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  Text(
+                  const Text(
                     'Депозит(VIP): 200руб.',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -92,7 +92,8 @@ class _TableCardState extends State<TableCard> {
                           child: Row(
                             children: [
                               IconButton(
-                                  splashColor: Color.fromARGB(160, 85, 85, 85),
+                                  splashColor:
+                                      const Color.fromARGB(160, 85, 85, 85),
                                   onPressed: _canDescrease(currentGuestsCount)
                                       ? _onGuestsCountDecrease
                                       : null,
@@ -102,16 +103,18 @@ class _TableCardState extends State<TableCard> {
                                           : Colors.black)),
                               Text('$currentGuestsCount'),
                               IconButton(
-                                  splashColor: Color.fromARGB(160, 85, 85, 85),
-                                  onPressed: _canIncrease(currentGuestsCount,
-                                          widget.model.table.guests)
-                                      ? _onGuestsCountIncrease
-                                      : null,
-                                  icon: Icon(Icons.add,
-                                      color: _canIncrease(currentGuestsCount,
-                                              widget.model.table.guests)
-                                          ? Colors.white
-                                          : Colors.black)),
+                                splashColor:
+                                    const Color.fromARGB(160, 85, 85, 85),
+                                onPressed: _canIncrease(currentGuestsCount,
+                                        widget.model.table.guests)
+                                    ? _onGuestsCountIncrease
+                                    : null,
+                                icon: Icon(Icons.add,
+                                    color: _canIncrease(currentGuestsCount,
+                                            widget.model.table.guests)
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
                             ],
                           ),
                         ),
@@ -120,23 +123,25 @@ class _TableCardState extends State<TableCard> {
                         child: SizedBox(
                           height: 52,
                           child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.yellow)),
-                              onPressed: () {
-                                context.read<PlaceInfoBloc>().add(
-                                    PlaceTableReserve(
-                                        widget.model.table.id!,
-                                        currentGuestsCount,
-                                        widget.model.table.placeId,
-                                        widget.selectedDateTime,
-                                        DateTime.now()
-                                            .add(const Duration(hours: 10))));
-                              },
-                              child: const Text(
-                                'Забронировать',
-                                style: TextStyle(color: Colors.black),
-                              )),
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.yellow),
+                            ),
+                            onPressed: () => context
+                                .read<PlaceInfoBloc>()
+                                .add(PlaceTableReserve(
+                                    widget.model.table.id,
+                                    currentGuestsCount,
+                                    widget.model.table.placeId,
+                                    widget.selectedDateTime,
+                                    DateTime.now().add(
+                                      const Duration(hours: 10),
+                                    ))),
+                            child: const Text(
+                              'Забронировать',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
                         ),
                       ),
                     ],

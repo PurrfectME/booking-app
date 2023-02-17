@@ -12,9 +12,9 @@ class ReserveTableDialog extends StatefulWidget {
 }
 
 class _ReserveTableDialogState extends State<ReserveTableDialog> {
-  var currentGuestsCount = 1;
+  int currentGuestsCount = 1;
   late DateTime selectedDateTime;
-  var isDateSelected = false;
+  bool isDateSelected = false;
 
   @override
   void initState() {
@@ -24,52 +24,51 @@ class _ReserveTableDialogState extends State<ReserveTableDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Center(child: Text("Бронирование стола")),
-      content: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Количество гостей'),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                    onPressed:
-                        currentGuestsCount > 1 ? _onGuestsCountDecrease : null,
-                    icon: const Icon(Icons.arrow_back_ios_new)),
-                Text('$currentGuestsCount'),
-                IconButton(
-                    onPressed: _onGuestsCountIncrease,
-                    icon: const Icon(Icons.arrow_forward_ios))
-              ],
-            )
-          ]),
-      actions: [
-        TextButton(
-          child: const Text("Закрыть"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        TextButton(
-          child: const Text("Подтвердить"),
-          onPressed: () {
-            widget.onReserveCallback(currentGuestsCount);
-          },
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => AlertDialog(
+        title: const Center(child: Text('Бронирование стола')),
+        content: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Количество гостей'),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                      onPressed: currentGuestsCount > 1
+                          ? _onGuestsCountDecrease
+                          : null,
+                      icon: const Icon(Icons.arrow_back_ios_new)),
+                  Text('$currentGuestsCount'),
+                  IconButton(
+                      onPressed: _onGuestsCountIncrease,
+                      icon: const Icon(Icons.arrow_forward_ios))
+                ],
+              )
+            ]),
+        actions: [
+          TextButton(
+            child: const Text('Закрыть'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text('Подтвердить'),
+            onPressed: () {
+              widget.onReserveCallback(currentGuestsCount);
+            },
+          ),
+        ],
+      );
 
-  _onGuestsCountDecrease() {
+  void _onGuestsCountDecrease() {
     setState(() {
       currentGuestsCount--;
     });
   }
 
-  _onGuestsCountIncrease() {
+  void _onGuestsCountIncrease() {
     setState(() {
       currentGuestsCount++;
     });

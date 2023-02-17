@@ -1,7 +1,9 @@
-import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
+import 'package:booking_app/models/db/user_reservation_model.dart';
+import 'package:booking_app/models/local/place_info_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/services/image/image_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,15 +12,11 @@ part 'place_info_state.dart';
 
 class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
   final PlaceModel place;
+  List<TableReservationViewModel> availableTables = [];
 
   PlaceInfoBloc({required this.place}) : super(PlaceInfoLoading()) {
-    //TODO: спросить у андрея норм ли держать эту переменную здесь
-    List<TableViewModel> availableTables = <TableViewModel>[];
-
     on<PlaceInfoEvent>((event, emit) async {
       if (event is PlaceInfoLoad) {
-        //TODO: хотя если каждый раз создаётся новый блок, то клеар не нужен
-        availableTables.clear();
         emit(PlaceInfoLoading());
 
         //мы сохраняем локально в бд резервации юзера, а просто таблицу со всеми резервациями нет
@@ -63,46 +61,76 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         // await DbProvider.db.createAllReservations(
         //     reservedTablesResponse, userReservedTablesResponse);
 
-        for (var table in place.tables) {
-          if (table == null) {
-            continue;
-          }
+        final tableIds = <int>[];
 
+        for (final table in place.tables) {
           //TODO: add date validation
           final reserved = reservedTablesResponse
               .any((reservation) => table.id == reservation.tableId);
 
-          if (reserved) {
-            final currentUserReservationIndex =
-                userReservedTablesResponse.indexWhere((userTable) =>
-                    userTable.tableId == table.id &&
-                    userTable.placeId == table.placeId);
-
-            if (currentUserReservationIndex != -1) {
-              availableTables.add(TableViewModel(
-                  table,
-                  null,
-                  null,
-                  // userReservedTables[currentUserReservationIndex].from,
-                  // userReservedTables[currentUserReservationIndex].to,
-                  true,
-                  place.name));
-            }
-          } else {
-            availableTables.add(TableViewModel(
+          if (!reserved) {
+            tableIds.add(table.id);
+            availableTables.add(TableReservationViewModel(
                 table,
                 null,
                 null,
                 // userReservedTables[currentUserReservationIndex].from,
                 // userReservedTables[currentUserReservationIndex].to,
                 false,
-                place.name));
+                place.name,
+                []));
           }
         }
+        // final currentUserReservationIndex =
+        //     userReservedTablesResponse.indexWhere((userTable) =>
+        //         userTable.tableId == table.id &&
+        //         userTable.placeId == table.placeId);
+
+        // if (currentUserReservationIndex != -1) {
+        //   availableTables.add(TableViewModel(
+        //       table,
+        //       null,
+        //       null,
+        //       // userReservedTables[currentUserReservationIndex].from,
+        //       // userReservedTables[currentUserReservationIndex].to,
+        //       true,
+        //       place.name,
+        //       []));
+        // }
+        // } else {
+        //   tableIds.add(table.id!);
+        //   availableTables.add(TableViewModel(
+        //       table,
+        //       null,
+        //       null,
+        //       // userReservedTables[currentUserReservationIndex].from,
+        //       // userReservedTables[currentUserReservationIndex].to,
+        //       false,
+        //       place.name,
+        //       []));
+        // }
 
         final a = await DbProvider.db.getUserReservationsLastUpdateDate();
 
-        emit(PlaceInfoLoaded(availableTables));
+        final tableImages = await DbProvider.db.getTableImages(tableIds);
+
+        //TODO: better performance when sorted tableImages, availableTables?
+        // tableImages.sort((a, b) => a.tableId.compareTo(b.tableId));
+
+//TODO: optimize here
+        if (tableImages.isNotEmpty) {
+          for (var i = 0; i < availableTables.length; i++) {
+            final imageToAdd = ImageService.imageFromBase64String(tableImages
+                .firstWhere((tableImage) =>
+                    availableTables[i].table.id == tableImage.tableId)
+                .base64Images);
+
+            availableTables[i].images.add(imageToAdd);
+          }
+        }
+
+        emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
+            ImageService.imageFromBase64String(place.base64Logo))));
       } else if (event is PlaceTableReserve) {
         // api call
         // final response = await api.reserveTable(id: event.id)
@@ -137,7 +165,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         } else {
           //TODO: RESERVE ERROR IN MODal
         }
-        emit(PlaceInfoLoaded(availableTables));
+        emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
+            ImageService.imageFromBase64String(place.base64Logo))));
       }
     });
   }

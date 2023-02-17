@@ -1,8 +1,6 @@
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/models/local/menu_tab.dart';
 import 'package:booking_app/models/local/nav_item.dart';
-import 'package:booking_app/screens/places/places_screen.dart';
-import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
@@ -42,11 +40,9 @@ class _MainScreenState extends State<MainScreen>
   }
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<MenuBloc, MenuState>(builder: (context, state) {
-        final a = state;
-        return Scaffold(
-          extendBody: true,
+  Widget build(BuildContext context) => BlocBuilder<MenuBloc, MenuState>(
+        builder: (context, state) => Scaffold(
+          // extendBody: true,
           backgroundColor: Colors.white,
           body: IndexedStack(
             index: pages.indexWhere((e) => e.tab == state.tab),
@@ -60,21 +56,21 @@ class _MainScreenState extends State<MainScreen>
             items: const [
               NavItem(
                 iconName: 'menu_places',
-                title: "Рестораны",
+                title: 'Рестораны',
                 tab: MenuTab.places,
               ),
               NavItem(
                 iconName: 'menu_profile',
-                title: "Профиль",
+                title: 'Профиль',
                 tab: MenuTab.profile,
               ),
               NavItem(
                 iconName: 'menu_update_place',
-                title: "Заведение",
+                title: 'Заведение',
                 tab: MenuTab.updatePlace,
               )
             ],
           ),
-        );
-      });
+        ),
+      );
 }

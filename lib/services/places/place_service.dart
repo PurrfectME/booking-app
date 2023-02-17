@@ -13,14 +13,15 @@ class PlaceService {
 
   Future<List<GetPlaceResponse>> getAllPlaces(DateTime updateDate) async {
     final response =
-        await Api().dio.get(sprintf(Constants.getPlaces, [updateDate]));
+        await Api().dio.get<String>(sprintf(Constants.getPlaces, [updateDate]));
 
     return List<GetPlaceResponse>.from((response.data as List)
-        .map((place) => GetPlaceResponse.fromJson(place)));
+        .map<GetPlaceResponse>(
+            (dynamic place) => GetPlaceResponse.fromJson(place as String)));
   }
 
   Future updatePlace(UpdatePlaceRequest request) async {
-    final response = await Api().dio.put(
+    final response = await Api().dio.put<String>(
         sprintf(Constants.updatePlace, [request.id]),
         data: request.toJson());
 

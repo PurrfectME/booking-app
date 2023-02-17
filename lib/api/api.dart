@@ -12,7 +12,7 @@ class Api {
   factory Api() => _singleton;
 
   static Dio createDio() {
-    var dio = Dio(BaseOptions(
+    final dio = Dio(BaseOptions(
       baseUrl: Constants.baseUrl,
       receiveTimeout: 15000, // 15 seconds
       connectTimeout: 15000,

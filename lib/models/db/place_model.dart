@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:booking_app/models/models.dart';
@@ -6,39 +7,52 @@ class PlaceModel {
   int id;
   String name;
   String description;
-  int logo;
-  //TODO: у заведения только одно фото
-  List<int> gallery;
+  int logoId;
+  String? base64Logo;
   int updateDate;
   List<TableModel> tables;
 
-  PlaceModel(this.id, this.name, this.description, this.gallery, this.logo,
+  PlaceModel(this.id, this.name, this.description, this.logoId, this.base64Logo,
       this.updateDate, this.tables);
 
   List<Object?> get props =>
-      [id, name, description, gallery, logo, updateDate, tables];
+      [id, name, description, logoId, base64Logo, updateDate, tables];
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'description': description,
-      'logo': logo,
-      'gallery': gallery,
-      'updateDate': updateDate,
-      // 'tables': tables.map((x) => x.toMap()).toList(),
-    };
-  }
+  PlaceModel copyWith({
+    int? id,
+    String? name,
+    String? description,
+    int? logoId,
+    String? base64Logo,
+    int? updateDate,
+    List<TableModel>? tables,
+  }) =>
+      PlaceModel(
+        id ?? this.id,
+        name ?? this.name,
+        description ?? this.description,
+        logoId ?? this.logoId,
+        base64Logo ?? this.base64Logo,
+        updateDate ?? this.updateDate,
+        tables ?? this.tables,
+      );
 
-  factory PlaceModel.fromMap(Map<String, dynamic> map) {
-    return PlaceModel(
-        map['id'] as int,
-        map['name'] as String,
-        map['description'] as String,
-        List<int>.from((map['gallery'] as List<int>)),
-        map['logo'] as int,
-        map['updateDate'] as int, []);
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'description': description,
+        'logoId': logoId,
+        'base64Logo': base64Logo,
+        'updateDate': updateDate,
+      };
+
+  factory PlaceModel.fromMap(Map<String, dynamic> map) => PlaceModel(
+      map['id'] as int,
+      map['name'] as String,
+      map['description'] as String,
+      map['logoId'] as int,
+      map['base64Logo'] as String?,
+      map['updateDate'] as int, []);
 
   String toJson() => json.encode(toMap());
 

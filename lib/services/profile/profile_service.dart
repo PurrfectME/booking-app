@@ -10,8 +10,10 @@ class ProfileService {
   ProfileService._();
 
   Future setUsername(UserRequest request) async {
-    final response =
-        await Api().dio.post(Constants.setUserName, data: request.toJson());
+    final response = await Api().dio.post<String>(
+          Constants.setUserName,
+          data: request.toJson(),
+        );
 
     return response.statusCode;
   }

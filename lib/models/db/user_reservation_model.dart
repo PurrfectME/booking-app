@@ -12,27 +12,24 @@ class UserReservationModel {
   UserReservationModel(this.id, this.placeId, this.tableId, this.start,
       this.end, this.updateDate);
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'placeId': placeId,
-      'tableId': tableId,
-      'start': start,
-      'end': end,
-      'updateDate': updateDate
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'placeId': placeId,
+        'tableId': tableId,
+        'start': start,
+        'end': end,
+        'updateDate': updateDate
+      };
 
-  factory UserReservationModel.fromMap(Map<String, dynamic> map) {
-    return UserReservationModel(
-      map['id'] as int,
-      map['placeId'] as int,
-      map['tableId'] as int,
-      map['start'] as int,
-      map['end'] as int,
-      map['updateDate'] as int,
-    );
-  }
+  factory UserReservationModel.fromMap(Map<String, dynamic> map) =>
+      UserReservationModel(
+        map['id'] as int,
+        map['placeId'] as int,
+        map['tableId'] as int,
+        map['start'] as int,
+        map['end'] as int,
+        map['updateDate'] as int,
+      );
 
   String toJson() => json.encode(toMap());
 

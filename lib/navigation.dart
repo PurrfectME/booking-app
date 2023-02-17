@@ -21,7 +21,7 @@ class Navigation {
 
   /// Navigate to [MainScreen]
   static Future<void> toMain() {
-    // beforeNavigate();
+    beforeNavigate();
     return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(MainScreen.pageRoute, (route) => false);
   }
@@ -35,14 +35,14 @@ class Navigation {
 
   /// Navigate to [ExtraInfoScreen]
   static Future<void> toProfile() {
-    // beforeNavigate();
+    beforeNavigate();
     return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(ExtraInfoScreen.pageRoute, (route) => false);
   }
 
   /// Navigate to [UpdatePlaceScreen]
   static Future<void> toUpdatePlace() {
-    // beforeNavigate();
+    beforeNavigate();
     return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(UpdatePlaceScreen.pageRoute, (route) => false);
   }
