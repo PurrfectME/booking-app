@@ -11,21 +11,18 @@ class GetReservationResponse {
     this.to,
   );
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'from': from,
-      'to': to,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'from': from,
+        'to': to,
+      };
 
-  factory GetReservationResponse.fromMap(Map<String, dynamic> map) {
-    return GetReservationResponse(
-      map['id'] as int,
-      map['from'] as DateTime,
-      map['to'] as DateTime,
-    );
-  }
+  factory GetReservationResponse.fromMap(Map<String, dynamic> map) =>
+      GetReservationResponse(
+        map['id'] as int,
+        map['from'] as DateTime,
+        map['to'] as DateTime,
+      );
 
   String toJson() => json.encode(toMap());
 

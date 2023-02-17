@@ -14,10 +14,9 @@ class PlaceInfoViewModel {
   PlaceInfoViewModel copyWith({
     List<TableReservationViewModel>? table,
     Image? logo,
-  }) {
-    return PlaceInfoViewModel(
-      table ?? tables,
-      logo ?? this.logo,
-    );
-  }
+  }) =>
+      PlaceInfoViewModel(
+        table ?? tables,
+        logo ?? this.logo,
+      );
 }

@@ -14,25 +14,22 @@ class GetUserReservationResponse {
     required this.guests,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'placeId': placeId,
-      'tableId': tableId,
-      'from': from.millisecondsSinceEpoch,
-      'to': to.millisecondsSinceEpoch,
-      'guests': guests,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'placeId': placeId,
+        'tableId': tableId,
+        'from': from.millisecondsSinceEpoch,
+        'to': to.millisecondsSinceEpoch,
+        'guests': guests,
+      };
 
-  factory GetUserReservationResponse.fromMap(Map<String, dynamic> map) {
-    return GetUserReservationResponse(
-      placeId: map['placeId'] as int,
-      tableId: map['tableId'] as int,
-      from: DateTime.fromMillisecondsSinceEpoch(map['from'] as int),
-      to: DateTime.fromMillisecondsSinceEpoch(map['to'] as int),
-      guests: map['guests'] as int,
-    );
-  }
+  factory GetUserReservationResponse.fromMap(Map<String, dynamic> map) =>
+      GetUserReservationResponse(
+        placeId: map['placeId'] as int,
+        tableId: map['tableId'] as int,
+        from: DateTime.fromMillisecondsSinceEpoch(map['from'] as int),
+        to: DateTime.fromMillisecondsSinceEpoch(map['to'] as int),
+        guests: map['guests'] as int,
+      );
 
   String toJson() => json.encode(toMap());
 

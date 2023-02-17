@@ -7,23 +7,20 @@ class ReservationModel {
   int end;
   ReservationModel(this.id, this.tableId, this.start, this.end);
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'tableId': tableId,
-      'start': start,
-      'end': end,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'tableId': tableId,
+        'start': start,
+        'end': end,
+      };
 
-  factory ReservationModel.fromMap(Map<String, dynamic> map) {
-    return ReservationModel(
-      map['id'] as int,
-      map['tableId'] as int,
-      map['start'] as int,
-      map['end'] as int,
-    );
-  }
+  factory ReservationModel.fromMap(Map<String, dynamic> map) =>
+      ReservationModel(
+        map['id'] as int,
+        map['tableId'] as int,
+        map['start'] as int,
+        map['end'] as int,
+      );
 
   String toJson() => json.encode(toMap());
 

@@ -1,11 +1,10 @@
-import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
+import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/local/place_info_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/services/image/image_service.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'place_info_event.dart';
@@ -13,16 +12,11 @@ part 'place_info_state.dart';
 
 class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
   final PlaceModel place;
+  List<TableReservationViewModel> availableTables = [];
 
   PlaceInfoBloc({required this.place}) : super(PlaceInfoLoading()) {
-    //TODO: спросить у андрея норм ли держать эту переменную здесь
-    List<TableReservationViewModel> availableTables =
-        <TableReservationViewModel>[];
-
     on<PlaceInfoEvent>((event, emit) async {
       if (event is PlaceInfoLoad) {
-        //TODO: хотя если каждый раз создаётся новый блок, то клеар не нужен
-        availableTables.clear();
         emit(PlaceInfoLoading());
 
         //мы сохраняем локально в бд резервации юзера, а просто таблицу со всеми резервациями нет
@@ -69,13 +63,13 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
         final tableIds = <int>[];
 
-        for (var table in place.tables) {
+        for (final table in place.tables) {
           //TODO: add date validation
           final reserved = reservedTablesResponse
               .any((reservation) => table.id == reservation.tableId);
 
           if (!reserved) {
-            tableIds.add(table.id!);
+            tableIds.add(table.id);
             availableTables.add(TableReservationViewModel(
                 table,
                 null,

@@ -13,23 +13,19 @@ class TableImageModel {
     this.base64Images,
   );
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'tableId': tableId,
-      'images': images,
-      'base64Images': base64Images,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'tableId': tableId,
+        'images': images,
+        'base64Images': base64Images,
+      };
 
-  factory TableImageModel.fromMap(Map<String, dynamic> map) {
-    return TableImageModel(
-      map['id'] as int,
-      map['tableId'] as int,
-      map['images'] as String,
-      map['base64Images'] as String,
-    );
-  }
+  factory TableImageModel.fromMap(Map<String, dynamic> map) => TableImageModel(
+        map['id'] as int,
+        map['tableId'] as int,
+        map['images'] as String,
+        map['base64Images'] as String,
+      );
 
   String toJson() => json.encode(toMap());
 
@@ -41,12 +37,11 @@ class TableImageModel {
     int? tableId,
     String? images,
     String? base64Images,
-  }) {
-    return TableImageModel(
-      id ?? this.id,
-      tableId ?? this.tableId,
-      images ?? this.images,
-      base64Images ?? this.base64Images,
-    );
-  }
+  }) =>
+      TableImageModel(
+        id ?? this.id,
+        tableId ?? this.tableId,
+        images ?? this.images,
+        base64Images ?? this.base64Images,
+      );
 }

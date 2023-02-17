@@ -26,38 +26,33 @@ class PlaceModel {
     String? base64Logo,
     int? updateDate,
     List<TableModel>? tables,
-  }) {
-    return PlaceModel(
-      id ?? this.id,
-      name ?? this.name,
-      description ?? this.description,
-      logoId ?? this.logoId,
-      base64Logo ?? this.base64Logo,
-      updateDate ?? this.updateDate,
-      tables ?? this.tables,
-    );
-  }
+  }) =>
+      PlaceModel(
+        id ?? this.id,
+        name ?? this.name,
+        description ?? this.description,
+        logoId ?? this.logoId,
+        base64Logo ?? this.base64Logo,
+        updateDate ?? this.updateDate,
+        tables ?? this.tables,
+      );
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'description': description,
-      'logoId': logoId,
-      'base64Logo': base64Logo,
-      'updateDate': updateDate,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'description': description,
+        'logoId': logoId,
+        'base64Logo': base64Logo,
+        'updateDate': updateDate,
+      };
 
-  factory PlaceModel.fromMap(Map<String, dynamic> map) {
-    return PlaceModel(
-        map['id'] as int,
-        map['name'] as String,
-        map['description'] as String,
-        map['logoId'] as int,
-        map['base64Logo'] as String?,
-        map['updateDate'] as int, []);
-  }
+  factory PlaceModel.fromMap(Map<String, dynamic> map) => PlaceModel(
+      map['id'] as int,
+      map['name'] as String,
+      map['description'] as String,
+      map['logoId'] as int,
+      map['base64Logo'] as String?,
+      map['updateDate'] as int, []);
 
   String toJson() => json.encode(toMap());
 

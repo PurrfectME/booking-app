@@ -14,26 +14,24 @@ class UpdatePlaceRequest {
     required this.gallery,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'logoId': logoId,
-      'description': description,
-      'gallery': gallery,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'logoId': logoId,
+        'description': description,
+        'gallery': gallery,
+      };
 
-  factory UpdatePlaceRequest.fromMap(Map<String, dynamic> map) {
-    return UpdatePlaceRequest(
+  factory UpdatePlaceRequest.fromMap(Map<String, dynamic> map) =>
+      UpdatePlaceRequest(
         id: map['id'] as int,
         name: map['name'] as String,
         logoId: map['logoId'] as int,
         description: map['description'] as String,
         gallery: List<int>.from(
-          (map['gallery'] as List<int>),
-        ));
-  }
+          map['gallery'] as List<int>,
+        ),
+      );
 
   String toJson() => json.encode(toMap());
 

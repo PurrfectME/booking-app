@@ -11,21 +11,17 @@ class SignInResponse {
     required this.refreshToken,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'firstSignin': firstSignin,
-      'accessToken': accessToken,
-      'refreshToken': refreshToken,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'firstSignin': firstSignin,
+        'accessToken': accessToken,
+        'refreshToken': refreshToken,
+      };
 
-  factory SignInResponse.fromMap(Map<String, dynamic> map) {
-    return SignInResponse(
-      firstSignin: map['first_signin'] as bool,
-      accessToken: map['access_token'] as String,
-      refreshToken: map['refresh_token'] as String,
-    );
-  }
+  factory SignInResponse.fromMap(Map<String, dynamic> map) => SignInResponse(
+        firstSignin: map['first_signin'] as bool,
+        accessToken: map['access_token'] as String,
+        refreshToken: map['refresh_token'] as String,
+      );
 
   String toJson() => json.encode(toMap());
 

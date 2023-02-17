@@ -6,17 +6,13 @@ class SignInRequest {
     required this.login,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'login': login,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'login': login,
+      };
 
-  factory SignInRequest.fromMap(Map<String, dynamic> map) {
-    return SignInRequest(
-      login: map['login'] as String,
-    );
-  }
+  factory SignInRequest.fromMap(Map<String, dynamic> map) => SignInRequest(
+        login: map['login'] as String,
+      );
 
   String toJson() => json.encode(toMap());
 

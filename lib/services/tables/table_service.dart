@@ -13,15 +13,17 @@ class TableService {
   TableService._();
 
   Future<List<GetReservationResponse>> getReservations(int placeId) async {
-    var response =
-        await Api().dio.get(sprintf(Constants.getReservations, [placeId]));
+    final response = await Api()
+        .dio
+        .get<String>(sprintf(Constants.getReservations, [placeId]));
 
     return List<GetReservationResponse>.from((response.data as List)
-        .map((reservation) => GetReservationResponse.fromJson(reservation)));
+        .map<GetReservationResponse>((dynamic reservation) =>
+            GetReservationResponse.fromJson(reservation as String)));
   }
 
   Future reserverTable(ReserveTableRequest request) async {
-    var response = await Api().dio.post(
+    final response = await Api().dio.post<String>(
         sprintf(Constants.reserveTable, [request.placeId, request.tableId]),
         data: request.toJson());
 
@@ -29,14 +31,15 @@ class TableService {
   }
 
   Future<List<GetUserReservationResponse>> getUserReservations() async {
-    var response = await Api().dio.get(Constants.getUserReservations);
+    final response = await Api().dio.get<String>(Constants.getUserReservations);
 
-    return List<GetUserReservationResponse>.from((response.data as List).map(
-        (reservation) => GetUserReservationResponse.fromJson(reservation)));
+    return List<GetUserReservationResponse>.from((response.data as List)
+        .map<GetUserReservationResponse>((dynamic reservation) =>
+            GetUserReservationResponse.fromJson(reservation as String)));
   }
 
   Future createTable(int placeId, CreateTableRequest request) async {
-    var response = await Api().dio.post(
+    final response = await Api().dio.post<String>(
         sprintf(Constants.createTable, [placeId]),
         data: request.toJson());
 
@@ -45,7 +48,7 @@ class TableService {
 
   Future updateTable(
       int placeId, int tableId, CreateTableRequest request) async {
-    var response = await Api().dio.put(
+    final response = await Api().dio.put<String>(
         sprintf(Constants.updateTable, [placeId, tableId]),
         data: request.toJson());
 
@@ -53,17 +56,17 @@ class TableService {
   }
 
   Future deleteTable(int placeId, int tableId) async {
-    var response = await Api()
+    final response = await Api()
         .dio
-        .delete(sprintf(Constants.updateTable, [placeId, tableId]));
+        .delete<String>(sprintf(Constants.updateTable, [placeId, tableId]));
 
     return response;
   }
 
   Future getBookedTables(int placeId, int tableId) async {
-    var response = await Api()
+    final response = await Api()
         .dio
-        .delete(sprintf(Constants.updateTable, [placeId, tableId]));
+        .delete<String>(sprintf(Constants.updateTable, [placeId, tableId]));
 
     return response;
   }

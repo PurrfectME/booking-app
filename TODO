@@ -1,0 +1,2 @@
+- all fields on data classes are final
+- move all Navigator methods to navigation.dart

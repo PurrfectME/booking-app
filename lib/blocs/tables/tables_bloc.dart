@@ -8,17 +8,22 @@ part 'tables_event.dart';
 part 'tables_state.dart';
 
 class TablesBloc extends Bloc<TablesEvent, TablesState> {
-  TablesBloc() : super(TablesLoading()) {
+  final List<TableViewModel> tables = [];
+
+  TablesBloc({required List<TableViewModel> initialTables})
+      : super(TablesLoading()) {
+    tables.addAll(initialTables);
+
     on<TablesEvent>((event, emit) async {
       if (event is TablesLoad) {
         emit(TablesLoading());
 
-        event.tables ??= (await DbProvider.db.getTables(event.placeId!))
-            .map((e) => TableViewModel(e, [], []))
-            .toList();
+        tables.addAll((await DbProvider.db.getTables(event.placeId))
+            .map((e) => TableViewModel(e, const [], const []))
+            .toList());
 
         final tableImages = await DbProvider.db
-            .getTableImages(event.tables!.map((e) => e.table.id!).toList());
+            .getTableImages(tables.map((e) => e.table.id).toList());
 
         //TODO: better performance when sorted tableImages, availableTables?
         // tableImages.sort((a, b) => a.tableId.compareTo(b.tableId));
@@ -26,23 +31,24 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
         //TODO: optimize here
 
         if (tableImages.isNotEmpty) {
-          for (var i = 0; i < event.tables!.length; i++) {
-            final imageModelIndex = tableImages.indexWhere((tableImage) =>
-                event.tables![i].table.id == tableImage.tableId);
+          for (var i = 0; i < tables.length; i++) {
+            final imageModelIndex = tableImages.indexWhere(
+                (tableImage) => tables[i].table.id == tableImage.tableId);
 
             if (imageModelIndex != -1) {
               final allTableImages =
                   tableImages[imageModelIndex].base64Images.split(',');
 
-              for (var imageString in allTableImages) {
-                event.tables![i].images
+              for (final imageString in allTableImages) {
+                tables[i]
+                    .images
                     .add(ImageService.imageFromBase64String(imageString));
               }
             }
           }
         }
 
-        emit(TablesLoaded(event.tables!));
+        emit(TablesLoaded(tables));
       }
     });
   }
