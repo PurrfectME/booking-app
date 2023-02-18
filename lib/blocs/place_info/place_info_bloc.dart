@@ -140,19 +140,20 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         if (true) {
           final resultId = await DbProvider.db.createUserReservation(
               UserReservationModel(
-                  null,
-                  event.placeId,
-                  event.id,
-                  event.start.millisecondsSinceEpoch,
-                  event.end.millisecondsSinceEpoch,
-                  DateTime.now().millisecondsSinceEpoch));
+                  id: null,
+                  placeId: event.placeId,
+                  tableId: event.id,
+                  start: event.start.millisecondsSinceEpoch,
+                  end: event.end.millisecondsSinceEpoch,
+                  updateDate: DateTime.now().millisecondsSinceEpoch,
+                  guests: event.guests));
 
           final resId = await DbProvider.db.createReservation(ReservationModel(
-            null,
-            event.id,
-            event.start.millisecondsSinceEpoch,
-            event.end.millisecondsSinceEpoch,
-          ));
+              id: null,
+              tableId: event.id,
+              start: event.start.millisecondsSinceEpoch,
+              end: event.end.millisecondsSinceEpoch,
+              guests: event.guests));
 
           final tableIndex =
               availableTables.indexWhere((table) => table.table.id == event.id);

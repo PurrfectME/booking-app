@@ -27,6 +27,7 @@ dependencies:
   sprintf: ^7.0.0
   sliver_header_delegate: ^0.0.5
   image_picker: ^0.8.6
+  collection: ^1.16.0
 
 dev_dependencies:
   flutter_test:
