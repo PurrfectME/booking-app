@@ -71,8 +71,9 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                             .firstWhereOrNull((res) {
                           var start =
                               DateTime.fromMillisecondsSinceEpoch(res.start);
-                          return selectedDateTime.difference(start) <=
-                              const Duration(minutes: 10);
+                          var dif =
+                              selectedDateTime.difference(start).inMinutes;
+                          return dif < 0;
                         });
 
                         if (reservation != null) {
@@ -81,10 +82,12 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                       }
 
                       return ReservationCard(
-                          tableModel: state.data[index].table,
-                          selectedDateTime: selectedDateTime,
-                          reservationModel: reservation,
-                          isReserved: isReserved);
+                        tableModel: state.data[index].table,
+                        selectedDateTime: selectedDateTime,
+                        currentReservation: reservation,
+                        isReserved: isReserved,
+                        allReservations: state.data[index].reservations,
+                      );
                     },
                   ),
                 ],

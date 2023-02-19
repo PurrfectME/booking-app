@@ -7,7 +7,6 @@ class TableReservationViewModel {
   int? from;
   int? to;
   bool isReservedByUser;
-  String placeName;
   List<Image> images;
 
   TableReservationViewModel(
@@ -15,7 +14,6 @@ class TableReservationViewModel {
     this.from,
     this.to,
     this.isReservedByUser,
-    this.placeName,
     this.images,
   );
 
@@ -32,7 +30,6 @@ class TableReservationViewModel {
         from ?? this.from,
         to ?? this.to,
         isReservedByUser ?? this.isReservedByUser,
-        placeName ?? this.placeName,
         images ?? this.images,
       );
 }

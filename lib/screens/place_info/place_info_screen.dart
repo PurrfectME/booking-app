@@ -100,7 +100,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                           ],
                           children: [
                             FlexibleTextItem(
-                              text: state.data.tables[0].placeName,
+                              text: state.data.placeName,
                               collapsedStyle: Theme.of(context)
                                   .textTheme
                                   .headline6
@@ -122,7 +122,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    state.data.tables[0].placeName,
+                                    state.data.placeName,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30,

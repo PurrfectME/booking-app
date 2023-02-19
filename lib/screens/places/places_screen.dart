@@ -149,6 +149,7 @@ class PlacesScreenState extends State<PlacesScreen> {
                 itemCount: filters.length,
                 itemBuilder: (context, index) => filters[index]),
             SizedBox(
+              //TODO: make expanded
               width: double.infinity,
               height: 100,
               child: Card(

@@ -77,7 +77,6 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                 // userReservedTables[currentUserReservationIndex].from,
                 // userReservedTables[currentUserReservationIndex].to,
                 false,
-                place.name,
                 []));
           }
         }
@@ -129,8 +128,10 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           }
         }
 
-        emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
-            ImageService.imageFromBase64String(place.base64Logo))));
+        emit(PlaceInfoLoaded(PlaceInfoViewModel(
+            tables: availableTables,
+            logo: ImageService.imageFromBase64String(place.base64Logo),
+            placeName: place.name)));
       } else if (event is PlaceTableReserve) {
         // api call
         // final response = await api.reserveTable(id: event.id)
@@ -166,8 +167,10 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         } else {
           //TODO: RESERVE ERROR IN MODal
         }
-        emit(PlaceInfoLoaded(PlaceInfoViewModel(availableTables,
-            ImageService.imageFromBase64String(place.base64Logo))));
+        emit(PlaceInfoLoaded(PlaceInfoViewModel(
+            tables: availableTables,
+            logo: ImageService.imageFromBase64String(place.base64Logo),
+            placeName: place.name)));
       }
     });
   }
