@@ -52,6 +52,9 @@ class MyApp extends StatelessWidget {
             platform: TargetPlatform.iOS,
             // primaryColor: Colors.black,
             appBarTheme: const AppBarTheme(
+              iconTheme: IconThemeData(
+                color: Colors.black, //change your color here
+              ),
               color: Colors.white,
               titleTextStyle: TextStyle(
                 color: Colors.black,

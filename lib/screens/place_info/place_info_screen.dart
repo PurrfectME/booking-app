@@ -3,6 +3,7 @@ import 'package:booking_app/screens/place_info/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:sliver_header_delegate/sliver_header_delegate.dart';
 
 class PlaceInfoScreen extends StatefulWidget {
@@ -186,7 +187,15 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
+                                    SizedBox(
+                                      child: Text(
+                                        DateFormat('E, d MMM yyyy HH:mm', 'RU')
+                                            .format(selectedDateTime),
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                    ),
                                   ],
                                 )
                               ],
