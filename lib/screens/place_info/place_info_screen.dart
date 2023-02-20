@@ -91,7 +91,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                 Icons.calendar_month,
                                 color: Colors.white,
                               ),
-                              onPressed: _onDateTimeTap,
+                              onPressed: () =>
+                                  _onDateTimeTap(state.data.placeId),
                             ),
                             IconButton(
                               icon: const Icon(Icons.search),
@@ -179,7 +180,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                                 MaterialStateProperty.all(
                                                     Colors.yellow),
                                           ),
-                                          onPressed: _onDateTimeTap,
+                                          onPressed: () => _onDateTimeTap(
+                                              state.data.placeId),
                                           child: const Text(
                                             'Выбрать дату',
                                             style:
@@ -228,8 +230,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
             )),
       );
 
-  // ignore: avoid_void_async
-  void _onDateTimeTap() async {
+  Future _onDateTimeTap(int placeId) async {
     final date = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
@@ -250,6 +251,10 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
           selectedDateTime =
               DateTime(date.year, date.month, date.day, time.hour, time.minute);
         });
+        context.read<PlaceInfoBloc>().add(PlaceInfoLoad(
+            placeId,
+            DateTime(date.year, date.month, date.day, time.hour, time.minute)
+                .millisecondsSinceEpoch));
       }
     }
   }

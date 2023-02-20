@@ -18,6 +18,9 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
     on<PlaceInfoEvent>((event, emit) async {
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
+        availableTables.clear();
+
+        //TODO: !!!!!!!!!!!!!отображать столы если выбрана другая дата
 
         //мы сохраняем локально в бд резервации юзера, а просто таблицу со всеми резервациями нет
         //а как менеджить момент когда с одного телефона два юзера разных зайдут,(бд одна)
@@ -51,8 +54,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
         final reservedTablesResponse = await DbProvider.db.getReservations();
 
-        final userReservedTablesResponse =
-            await DbProvider.db.getAllUserReservations();
+        // final userReservedTablesResponse =
+        //     await DbProvider.db.getAllUserReservations();
 
         //INSERT USER RESERVATIONS INTO DB?? add update_date to user reservations
 
@@ -63,51 +66,50 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
         final tableIds = <int>[];
 
-        for (final table in place.tables) {
-          //TODO: add date validation
-          final reserved = reservedTablesResponse
-              .any((reservation) => table.id == reservation.tableId);
+        if (reservedTablesResponse.isNotEmpty) {
+          for (final table in place.tables) {
+            //TODO: add date validation
+            final reserved = reservedTablesResponse.any((reservation) {
+              var start =
+                  DateTime.fromMillisecondsSinceEpoch(reservation.start);
+              var end = DateTime.fromMillisecondsSinceEpoch(reservation.end);
+              var selected =
+                  DateTime.fromMillisecondsSinceEpoch(event.dateInMilliseconds);
 
-          if (!reserved) {
-            tableIds.add(table.id);
-            availableTables.add(TableReservationViewModel(
-                table,
-                null,
-                null,
-                // userReservedTables[currentUserReservationIndex].from,
-                // userReservedTables[currentUserReservationIndex].to,
-                false,
-                []));
+              if (table.id == reservation.tableId &&
+                  ((selected.isAfter(start) && selected.isBefore(end)) ||
+                      selected
+                          .isAfter(start.subtract(const Duration(hours: 3))))) {
+                return true;
+              } else {
+                return false;
+              }
+            });
+
+            if (!reserved) {
+              tableIds.add(table.id);
+              availableTables.add(TableReservationViewModel(
+                  table,
+                  null,
+                  null,
+                  // userReservedTables[currentUserReservationIndex].from,
+                  // userReservedTables[currentUserReservationIndex].to,
+                  false,
+                  []));
+            }
           }
+        } else {
+          tableIds.addAll(place.tables.map((e) => e.id));
+          availableTables
+              .addAll(place.tables.map((e) => TableReservationViewModel(
+                  e,
+                  null,
+                  null,
+                  // userReservedTables[currentUserReservationIndex].from,
+                  // userReservedTables[currentUserReservationIndex].to,
+                  false,
+                  [])));
         }
-        // final currentUserReservationIndex =
-        //     userReservedTablesResponse.indexWhere((userTable) =>
-        //         userTable.tableId == table.id &&
-        //         userTable.placeId == table.placeId);
-
-        // if (currentUserReservationIndex != -1) {
-        //   availableTables.add(TableViewModel(
-        //       table,
-        //       null,
-        //       null,
-        //       // userReservedTables[currentUserReservationIndex].from,
-        //       // userReservedTables[currentUserReservationIndex].to,
-        //       true,
-        //       place.name,
-        //       []));
-        // }
-        // } else {
-        //   tableIds.add(table.id!);
-        //   availableTables.add(TableViewModel(
-        //       table,
-        //       null,
-        //       null,
-        //       // userReservedTables[currentUserReservationIndex].from,
-        //       // userReservedTables[currentUserReservationIndex].to,
-        //       false,
-        //       place.name,
-        //       []));
-        // }
 
         final a = await DbProvider.db.getUserReservationsLastUpdateDate();
 
@@ -129,6 +131,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         }
 
         emit(PlaceInfoLoaded(PlaceInfoViewModel(
+            placeId: place.id,
             tables: availableTables,
             logo: ImageService.imageFromBase64String(place.base64Logo),
             placeName: place.name)));
@@ -168,6 +171,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           //TODO: RESERVE ERROR IN MODal
         }
         emit(PlaceInfoLoaded(PlaceInfoViewModel(
+            placeId: place.id,
             tables: availableTables,
             logo: ImageService.imageFromBase64String(place.base64Logo),
             placeName: place.name)));

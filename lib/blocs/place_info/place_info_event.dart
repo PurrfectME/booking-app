@@ -10,11 +10,12 @@ abstract class PlaceInfoEvent extends Equatable {
 
 class PlaceInfoLoad extends PlaceInfoEvent {
   final int placeId;
+  final int dateInMilliseconds;
 
-  const PlaceInfoLoad(this.placeId);
+  const PlaceInfoLoad(this.placeId, this.dateInMilliseconds);
 
   @override
-  List<Object> get props => [placeId];
+  List<Object> get props => [placeId, dateInMilliseconds];
 }
 
 class PlaceTableReserve extends PlaceInfoEvent {
