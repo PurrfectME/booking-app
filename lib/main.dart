@@ -2,6 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
+import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +28,7 @@ void main() {
         BlocProvider(create: (context) => ExtraInfoBloc()),
         BlocProvider(create: (context) => UpdatePlaceBloc()),
         BlocProvider(create: (context) => UpdateTableBloc()),
+        BlocProvider(create: (context) => ReservationsBloc([])),
       ],
       child: BlocListener<ExtraInfoBloc, ExtraInfoState>(
         listener: (context, state) {
@@ -49,6 +51,9 @@ class MyApp extends StatelessWidget {
             platform: TargetPlatform.iOS,
             // primaryColor: Colors.black,
             appBarTheme: const AppBarTheme(
+              iconTheme: IconThemeData(
+                color: Colors.black, //change your color here
+              ),
               color: Colors.white,
               titleTextStyle: TextStyle(
                 color: Colors.black,
@@ -84,10 +89,6 @@ class MyApp extends StatelessWidget {
             builder = (context) => const MainScreen();
           } else if (path == UpdatePlaceScreen.pageRoute) {
             builder = (context) => const UpdatePlaceScreen();
-          } else if (path == UpdateTableScreen.pageRoute) {
-            builder = (context) => const UpdateTableScreen();
-          } else if (path == TablesScreen.pageRoute) {
-            builder = (context) => const TablesScreen();
           } else {
             builder ??= (context) => const LoginScreen();
           }

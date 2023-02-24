@@ -6,3 +6,4 @@ export 'local/table_reservation_vm.dart';
 export 'request/reserve_table.dart';
 export 'response/get_place.dart';
 export 'response/get_reservation.dart';
+export 'local/reservations_vm.dart';

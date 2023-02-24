@@ -149,6 +149,7 @@ class PlacesScreenState extends State<PlacesScreen> {
                 itemCount: filters.length,
                 itemBuilder: (context, index) => filters[index]),
             SizedBox(
+              //TODO: make expanded
               width: double.infinity,
               height: 100,
               child: Card(
@@ -175,8 +176,9 @@ class PlacesScreenState extends State<PlacesScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (context) =>
-              PlaceInfoBloc(place: place)..add(PlaceInfoLoad(place.id)),
+          create: (context) => PlaceInfoBloc(place: place)
+            ..add(
+                PlaceInfoLoad(place.id, DateTime.now().millisecondsSinceEpoch)),
           child: const PlaceInfoScreen(),
         ),
       ),

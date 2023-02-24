@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/services/image/image_service.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,17 @@ class PlaceItem extends StatelessWidget {
                         ),
                         child: const Text('Апдейт'),
                       ),
+                      ElevatedButton(
+                          onPressed: () => Navigator.push<void>(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                        create: (context) =>
+                                            ReservationsBloc(place.tables)
+                                              ..add(ReservationsLoad()),
+                                        child: const ReservationsScreen(),
+                                      ))),
+                          child: Text("Резервы")),
                     ],
                   )
                 ],

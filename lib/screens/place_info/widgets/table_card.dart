@@ -134,8 +134,9 @@ class _TableCardState extends State<TableCard> {
                                     currentGuestsCount,
                                     widget.model.table.placeId,
                                     widget.selectedDateTime,
-                                    DateTime.now().add(
-                                      const Duration(hours: 10),
+                                    //дефолтное время брони 3 часа
+                                    widget.selectedDateTime.add(
+                                      const Duration(hours: 3),
                                     ))),
                             child: const Text(
                               'Забронировать',

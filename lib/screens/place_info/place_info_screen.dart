@@ -3,6 +3,7 @@ import 'package:booking_app/screens/place_info/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:sliver_header_delegate/sliver_header_delegate.dart';
 
 class PlaceInfoScreen extends StatefulWidget {
@@ -90,7 +91,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                 Icons.calendar_month,
                                 color: Colors.white,
                               ),
-                              onPressed: _onDateTimeTap,
+                              onPressed: () =>
+                                  _onDateTimeTap(state.data.placeId),
                             ),
                             IconButton(
                               icon: const Icon(Icons.search),
@@ -99,7 +101,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                           ],
                           children: [
                             FlexibleTextItem(
-                              text: state.data.tables[0].placeName,
+                              text: state.data.placeName,
                               collapsedStyle: Theme.of(context)
                                   .textTheme
                                   .headline6
@@ -121,7 +123,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    state.data.tables[0].placeName,
+                                    state.data.placeName,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30,
@@ -178,7 +180,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                                 MaterialStateProperty.all(
                                                     Colors.yellow),
                                           ),
-                                          onPressed: _onDateTimeTap,
+                                          onPressed: () => _onDateTimeTap(
+                                              state.data.placeId),
                                           child: const Text(
                                             'Выбрать дату',
                                             style:
@@ -186,7 +189,15 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
+                                    SizedBox(
+                                      child: Text(
+                                        DateFormat('E, d MMM yyyy HH:mm', 'RU')
+                                            .format(selectedDateTime),
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                    ),
                                   ],
                                 )
                               ],
@@ -219,8 +230,7 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
             )),
       );
 
-  // ignore: avoid_void_async
-  void _onDateTimeTap() async {
+  Future _onDateTimeTap(int placeId) async {
     final date = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
@@ -241,6 +251,10 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
           selectedDateTime =
               DateTime(date.year, date.month, date.day, time.hour, time.minute);
         });
+        context.read<PlaceInfoBloc>().add(PlaceInfoLoad(
+            placeId,
+            DateTime(date.year, date.month, date.day, time.hour, time.minute)
+                .millisecondsSinceEpoch));
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'package:booking_app/screens/main/main_screen.dart';
+import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/screens.dart';
@@ -17,6 +18,13 @@ class Navigation {
     beforeNavigate();
     return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(PlacesScreen.pageRoute, (route) => false);
+  }
+
+  /// Navigate to [ReservationsScreen]
+  static Future<void> toReservations() {
+    beforeNavigate();
+    return navigatorKey.currentState!.pushNamedAndRemoveUntil(
+        ReservationsScreen.pageRoute, (route) => false);
   }
 
   /// Navigate to [MainScreen]
