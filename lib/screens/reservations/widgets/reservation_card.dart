@@ -72,6 +72,8 @@ class _ReservationCardState extends State<ReservationCard> {
                         Text(
                             'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.currentReservation!.start))}',
                             style: const TextStyle(color: Colors.white)),
+                        Text('Гость: ${widget.currentReservation?.guests}',
+                            style: const TextStyle(color: Colors.white)),
                       ],
                     )
                   else

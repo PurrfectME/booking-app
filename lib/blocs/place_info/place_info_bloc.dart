@@ -152,7 +152,6 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         if (true) {
           final resultId = await DbProvider.db.createUserReservation(
               UserReservationModel(
-                  id: null,
                   placeId: event.placeId,
                   tableId: event.id,
                   start: event.start.millisecondsSinceEpoch,
@@ -160,10 +159,13 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                   updateDate: DateTime.now().millisecondsSinceEpoch,
                   guests: event.guests));
 
+          final currentUser = await DbProvider.db.getCurrentUser();
+
           final resId = await DbProvider.db.createReservation(ReservationModel(
               id: null,
               tableId: event.id,
               placeId: event.placeId,
+              userId: currentUser.id!,
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
               guests: event.guests));

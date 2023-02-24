@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/navigation.dart';
+import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +39,16 @@ class LoginScreenState extends State<LoginScreen> {
             SnackBar(content: Text('Ошибка: ${state.error}')),
           );
         } else if (state is LoginSuccess) {
-          Navigation.toProfile();
+          Navigator.push<void>(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (context) =>
+                    ExtraInfoBloc()..add(ExtraInfoLoad(user: state.user)),
+                child: const ExtraInfoScreen(),
+              ),
+            ),
+          );
         }
       },
       child: Scaffold(
@@ -77,11 +87,6 @@ class LoginScreenState extends State<LoginScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: BlocBuilder<LoginBloc, LoginState>(
-                          buildWhen: (previous, current) {
-                            if (current is LoginSuccess) Navigation.toProfile();
-                            if (current is LoginError) return false;
-                            return true;
-                          },
                           builder: (context, state) {
                             if (state is LoginLoading) {
                               return const ElevatedButton(

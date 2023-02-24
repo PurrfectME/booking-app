@@ -32,7 +32,7 @@ void main() {
       ],
       child: BlocListener<ExtraInfoBloc, ExtraInfoState>(
         listener: (context, state) {
-          if (state is ExtraInfoSuccess) {
+          if (state is ExtraInfoUpdated) {
             context.read<PlacesBloc>().add(PlacesLoad());
           }
         },

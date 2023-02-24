@@ -7,11 +7,20 @@ abstract class ExtraInfoEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AddProfileName extends ExtraInfoEvent {
-  final String name;
+class ExtraInfoLoad extends ExtraInfoEvent {
+  final UserModel user;
 
-  const AddProfileName(this.name);
+  const ExtraInfoLoad({required this.user});
 
   @override
-  List<Object> get props => [name];
+  List<Object> get props => [user];
+}
+
+class UpdateProfileName extends ExtraInfoEvent {
+  final UserModel user;
+
+  const UpdateProfileName({required this.user});
+
+  @override
+  List<Object> get props => [user];
 }

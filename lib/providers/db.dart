@@ -1,5 +1,6 @@
 import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/db/table_image_model.dart';
+import 'package:booking_app/models/db/user_model.dart';
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/scripts/scripts.dart';
@@ -29,6 +30,7 @@ class DbProvider {
       await db.execute(reservations);
       await db.execute(userReservations);
       await db.execute(tableImages);
+      await db.execute(user);
     });
   }
 
@@ -300,7 +302,7 @@ class DbProvider {
 
     final tables = <TableModel>[];
 
-    for (var table in res) {
+    for (final table in res) {
       tables.add(TableModel.fromMap(table));
     }
 
@@ -313,5 +315,30 @@ class DbProvider {
         where: 'id = ? AND placeId = ?', whereArgs: [reservationId, placeId]);
 
     return res;
+  }
+
+  Future<int> createUser(UserModel user) async {
+    final db = await database;
+    final result = await db.insert('user', user.toMap());
+
+    return result;
+  }
+
+  Future<int> updateUser(UserModel user) async {
+    final db = await database;
+    final result = await db.update('user', user.toMap(),
+        where: 'id = ?',
+        whereArgs: [user.id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
+
+    return result;
+  }
+
+//TODO: учесть ситуацию, когда есть несколько аккаунтов на одном телефоне
+  Future<UserModel> getCurrentUser() async {
+    final db = await database;
+    final result = UserModel.fromMap((await db.query('user')).first);
+
+    return result;
   }
 }

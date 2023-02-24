@@ -7,8 +7,6 @@ abstract class ExtraInfoState extends Equatable {
   List<Object> get props => [];
 }
 
-class ExtraInfoInitial extends ExtraInfoState {}
-
 class ExtraInfoLoading extends ExtraInfoState {}
 
 class ExtraInfoError extends ExtraInfoState {
@@ -20,4 +18,13 @@ class ExtraInfoError extends ExtraInfoState {
   List<Object> get props => [error];
 }
 
-class ExtraInfoSuccess extends ExtraInfoState {}
+class ExtraInfoLoaded extends ExtraInfoState {
+  final UserModel user;
+
+  const ExtraInfoLoaded(this.user);
+
+  @override
+  List<Object> get props => [user];
+}
+
+class ExtraInfoUpdated extends ExtraInfoState {}
