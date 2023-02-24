@@ -1,6 +1,9 @@
 const String places =
     'CREATE TABLE IF NOT EXISTS places(id INTEGER PRIMARY KEY, name TEXT, description TEXT, logoId INTEGER, base64Logo TEXT, updateDate INTEGER)';
 
+const String user =
+    'CREATE TABLE IF NOT EXISTS user(id INTEGER PRIMARY KEY, token TEXT, login TEXT NOT NULL, firstSignin INTEGER NOT NULL, accessToken TEXT, refreshToken TEXT)';
+
 const String tables = 'CREATE TABLE IF NOT EXISTS tables('
     'id INTEGER PRIMARY KEY, '
     'placeId INTEGER NOT NULL, '

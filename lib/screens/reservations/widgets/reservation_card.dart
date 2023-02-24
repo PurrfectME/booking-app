@@ -3,6 +3,7 @@ import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ReservationCard extends StatefulWidget {
@@ -69,7 +70,7 @@ class _ReservationCardState extends State<ReservationCard> {
                         Text('Гостей: ${widget.currentReservation?.guests}',
                             style: const TextStyle(color: Colors.white)),
                         Text(
-                            'Время: ${DateTime.fromMillisecondsSinceEpoch(widget.currentReservation!.start).hour} : ${DateTime.fromMillisecondsSinceEpoch(widget.currentReservation!.start).minute}',
+                            'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.currentReservation!.start))}',
                             style: const TextStyle(color: Colors.white)),
                       ],
                     )
