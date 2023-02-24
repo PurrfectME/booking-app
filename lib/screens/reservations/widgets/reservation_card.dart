@@ -25,6 +25,7 @@ class ReservationCard extends StatefulWidget {
 
 class _ReservationCardState extends State<ReservationCard> {
   int currentGuestsCount = 1;
+  late List<ReservationModel> reservations;
 
   @override
   Widget build(BuildContext context) => Card(
@@ -36,7 +37,7 @@ class _ReservationCardState extends State<ReservationCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
-              onTap: () => _onCardTap(widget.allReservations),
+              onTap: () async => await _onCardTap(widget.allReservations),
               child: Container(
                 height: 150,
                 width: 150,
@@ -127,75 +128,95 @@ class _ReservationCardState extends State<ReservationCard> {
         ),
       );
 
-  void _onCardTap(List<ReservationModel> reservations) {
+  Future _onCardTap(List<ReservationModel> reservations) async {
     final filteredReservations = reservations
-        .where(
-            (reserv) => reserv.start >= DateTime.now().millisecondsSinceEpoch)
+        .where((reserv) =>
+            reserv.start >= widget.selectedDateTime.millisecondsSinceEpoch)
         .toList();
 
     filteredReservations.sort((a, b) => a.start.compareTo(b.start));
+    // filteredReservations.addAll([
+    //   filteredReservations[0],
+    //   filteredReservations[0],
+    //   filteredReservations[0],
+    //   filteredReservations[0],
+    //   filteredReservations[0]
+    // ]);
 
-    showBarModalBottomSheet<void>(
+    await showBarModalBottomSheet<void>(
         context: context,
         builder: (context) => filteredReservations.isNotEmpty
-            ? ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                itemCount: filteredReservations.length,
-                itemBuilder: (context, index) {
-                  final reservation = filteredReservations[index];
-                  return Card(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    color: const Color.fromARGB(255, 59, 59, 59),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Столик ${widget.tableModel.number}',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              const SizedBox(height: 10),
-                              Column(
+            ? SizedBox(
+                height: 500,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    itemCount: filteredReservations.length,
+                    itemBuilder: (context, index) {
+                      final reservation = filteredReservations[index];
+                      return Card(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        color: const Color.fromARGB(255, 59, 59, 59),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Гостей: ${reservation.guests}',
-                                      style:
-                                          const TextStyle(color: Colors.white)),
                                   Text(
-                                      'Время: ${DateTime.fromMillisecondsSinceEpoch(reservation.start).hour} : ${DateTime.fromMillisecondsSinceEpoch(reservation.start).minute}',
-                                      style:
-                                          const TextStyle(color: Colors.white)),
+                                    'Столик ${widget.tableModel.number}',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Гостей: ${reservation.guests}',
+                                          style: const TextStyle(
+                                              color: Colors.white)),
+                                      Text(
+                                          'Время: ${DateTime.fromMillisecondsSinceEpoch(reservation.start).hour} : ${DateTime.fromMillisecondsSinceEpoch(reservation.start).minute}',
+                                          style: const TextStyle(
+                                              color: Colors.white)),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 52,
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.yellow),
+                                      ),
+                                      onPressed: () {
+                                        _removeReservation(
+                                            reservation.id!,
+                                            reservation.placeId,
+                                            widget.tableModel.number);
+                                        // setState(() {
+                                        //   widget.allReservations =
+                                        // });
+                                        filteredReservations.removeAt(index);
+                                      },
+                                      child: const Text(
+                                        'Отменить бронь',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                  )
                                 ],
                               ),
-                              SizedBox(
-                                height: 52,
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.yellow),
-                                  ),
-                                  onPressed: () =>
-                                      _removeReservation(reservation.id!),
-                                  child: const Text(
-                                    'Отменить бронь',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                })
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+              )
             : const SizedBox(
                 height: 100,
                 width: 100,
@@ -218,7 +239,12 @@ class _ReservationCardState extends State<ReservationCard> {
         )));
   }
 
-  void _removeReservation(int reservationId) {}
+  void _removeReservation(int reservationId, int placeId, int tableNumber) {
+    context.read<ReservationsBloc>().add(RemoveReservation(
+        reservationId: reservationId,
+        placeId: placeId,
+        tableNumber: tableNumber));
+  }
 
   bool _canIncrease(int reservedGuests, int maxGuests) =>
       reservedGuests < maxGuests;

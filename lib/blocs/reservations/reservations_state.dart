@@ -29,3 +29,14 @@ class ReservationsLoaded extends ReservationsState {
   @override
   List<Object> get props => [data];
 }
+
+class RemoveReservationSuccess extends ReservationsState {
+  final int tableNumber;
+
+  const RemoveReservationSuccess({
+    required this.tableNumber,
+  });
+
+  @override
+  List<Object> get props => [tableNumber];
+}

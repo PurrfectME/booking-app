@@ -292,7 +292,7 @@ class DbProvider {
   Future<List<TableModel>> getTablesByPlaceId(int placeId) async {
     final db = await database;
     final res =
-        await db!.rawQuery("SELECT * FROM tables WHERE placeId = $placeId");
+        await db.rawQuery('SELECT * FROM tables WHERE placeId = $placeId');
 
     if (res.isEmpty) {
       return [];
@@ -305,5 +305,13 @@ class DbProvider {
     }
 
     return tables;
+  }
+
+  Future<int> deleteReservation(int reservationId, int placeId) async {
+    final db = await database;
+    final res = await db.delete('reservations',
+        where: 'id = ? AND placeId = ?', whereArgs: [reservationId, placeId]);
+
+    return res;
   }
 }

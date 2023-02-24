@@ -21,81 +21,93 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   DateTime selectedDateTime = DateTime.now();
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text("Резервации"),
-        ),
-        body: BlocBuilder<ReservationsBloc, ReservationsState>(
-          builder: (context, state) {
-            if (state is ReservationsLoading) {
-              return const Center(
-                  child: CupertinoActivityIndicator(radius: 20));
-            }
-            if (state is ReservationsLoaded) {
-              return Column(
-                children: [
-                  SizedBox(
-                    height: 50,
-                    child: Card(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      color: const Color.fromARGB(255, 59, 59, 59),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.black),
+  Widget build(BuildContext context) =>
+      BlocListener<ReservationsBloc, ReservationsState>(
+        listener: (context, state) {
+          if (state is RemoveReservationSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content:
+                      Text('Бронь на ${state.tableNumber} стол отменена!')),
+            );
+          }
+        },
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: const Text("Резервации"),
+          ),
+          body: BlocBuilder<ReservationsBloc, ReservationsState>(
+            builder: (context, state) {
+              if (state is ReservationsLoading) {
+                return const Center(
+                    child: CupertinoActivityIndicator(radius: 20));
+              }
+              if (state is ReservationsLoaded) {
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      child: Card(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
-                        onPressed: _onDateTimeTap,
-                        child: const Text(
-                          'Выбрать дату',
-                          style: TextStyle(color: Colors.white),
+                        color: const Color.fromARGB(255, 59, 59, 59),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.black),
+                          ),
+                          onPressed: _onDateTimeTap,
+                          child: const Text(
+                            'Выбрать дату',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    child: Text(DateFormat('E, d MMM yyyy HH:mm', 'RU')
-                        .format(selectedDateTime)),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    itemCount: state.data.length,
-                    itemBuilder: (context, index) {
-                      bool isReserved = false;
-                      ReservationModel? reservation;
-                      if (state.data[index].reservations.isNotEmpty) {
-                        reservation = state.data[index].reservations
-                            .firstWhereOrNull((res) {
-                          var start =
-                              DateTime.fromMillisecondsSinceEpoch(res.start);
-                          var dif =
-                              selectedDateTime.difference(start).inMinutes;
-                          return dif < 0;
-                        });
+                    SizedBox(
+                      child: Text(DateFormat('E, d MMM yyyy HH:mm', 'RU')
+                          .format(selectedDateTime)),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      itemCount: state.data.length,
+                      itemBuilder: (context, index) {
+                        bool isReserved = false;
+                        ReservationModel? reservation;
+                        if (state.data[index].reservations.isNotEmpty) {
+                          reservation = state.data[index].reservations
+                              .firstWhereOrNull((res) {
+                            var start =
+                                DateTime.fromMillisecondsSinceEpoch(res.start);
+                            var dif =
+                                selectedDateTime.difference(start).inMinutes;
+                            return dif < 0;
+                          });
 
-                        if (reservation != null) {
-                          isReserved = true;
+                          if (reservation != null) {
+                            isReserved = true;
+                          }
                         }
-                      }
 
-                      return ReservationCard(
-                        tableModel: state.data[index].table,
-                        selectedDateTime: selectedDateTime,
-                        currentReservation: reservation,
-                        isReserved: isReserved,
-                        allReservations: state.data[index].reservations,
-                      );
-                    },
-                  ),
-                ],
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
+                        return ReservationCard(
+                          tableModel: state.data[index].table,
+                          selectedDateTime: selectedDateTime,
+                          currentReservation: reservation,
+                          isReserved: isReserved,
+                          allReservations: state.data[index].reservations,
+                        );
+                      },
+                    ),
+                  ],
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
         ),
       );
 

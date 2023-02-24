@@ -17,10 +17,12 @@ const String tableImages = 'CREATE TABLE IF NOT EXISTS tableImages('
 
 const String reservations = 'CREATE TABLE IF NOT EXISTS reservations('
     'id INTEGER PRIMARY KEY, '
+    'placeId INTEGER NOT NULL, '
     'tableId INTEGER NOT NULL, '
     'start INTEGER NOT NULL, '
     'end INTEGER NOT NULL, '
     'guests INTEGER NOT NULL, '
+    'FOREIGN KEY (placeId) REFERENCES places (id) ON DELETE CASCADE, '
     'FOREIGN KEY (tableId) REFERENCES tables (id) ON DELETE CASCADE)';
 
 const String userReservations = 'CREATE TABLE IF NOT EXISTS user_reservations('

@@ -70,17 +70,25 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           for (final table in place.tables) {
             //TODO: add date validation
             final reserved = reservedTablesResponse.any((reservation) {
-              var start =
+              final start =
                   DateTime.fromMillisecondsSinceEpoch(reservation.start);
-              var end = DateTime.fromMillisecondsSinceEpoch(reservation.end);
-              var selected =
+              final end = DateTime.fromMillisecondsSinceEpoch(reservation.end);
+              final selected =
                   DateTime.fromMillisecondsSinceEpoch(event.dateInMilliseconds);
 
-              if (table.id == reservation.tableId &&
-                  ((selected.isAfter(start) && selected.isBefore(end)) ||
-                      selected
-                          .isAfter(start.subtract(const Duration(hours: 3))))) {
-                return true;
+              if (table.id == reservation.tableId) {
+                if (selected.isAfter(start) && selected.isBefore(end)) {
+                  return true;
+                }
+
+                if ((selected.isAfter(
+                            start.subtract(const Duration(hours: 3))) &&
+                        selected.isBefore(end)) ||
+                    selected.isAtSameMomentAs(end)) {
+                  return true;
+                } else {
+                  return false;
+                }
               } else {
                 return false;
               }
@@ -155,6 +163,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           final resId = await DbProvider.db.createReservation(ReservationModel(
               id: null,
               tableId: event.id,
+              placeId: event.placeId,
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
               guests: event.guests));

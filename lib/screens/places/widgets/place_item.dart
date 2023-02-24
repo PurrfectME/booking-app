@@ -110,9 +110,9 @@ class PlaceItem extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => BlocProvider(
-                                        create: (context) => ReservationsBloc()
-                                          ..add(ReservationsLoad(
-                                              tables: place.tables)),
+                                        create: (context) =>
+                                            ReservationsBloc(place.tables)
+                                              ..add(ReservationsLoad()),
                                         child: const ReservationsScreen(),
                                       ))),
                           child: Text("Резервы")),
