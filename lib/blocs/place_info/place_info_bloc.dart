@@ -52,7 +52,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         //       DateTime.now().millisecondsSinceEpoch)
         // ];
 
-        final reservedTablesResponse = await DbProvider.db.getReservations();
+        final reservedTablesResponse =
+            await DbProvider.db.getReservations(place.id);
 
         // final userReservedTablesResponse =
         //     await DbProvider.db.getAllUserReservations();
@@ -68,43 +69,45 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
         if (reservedTablesResponse.isNotEmpty) {
           for (final table in place.tables) {
-            //TODO: add date validation
-            final reserved = reservedTablesResponse.any((reservation) {
-              final start =
-                  DateTime.fromMillisecondsSinceEpoch(reservation.start);
-              final end = DateTime.fromMillisecondsSinceEpoch(reservation.end);
-              final selected =
-                  DateTime.fromMillisecondsSinceEpoch(event.dateInMilliseconds);
+            reservedTablesResponse.map((x) {
+              final reserved = x.reservations.any((reservation) {
+                final start =
+                    DateTime.fromMillisecondsSinceEpoch(reservation.start);
+                final end =
+                    DateTime.fromMillisecondsSinceEpoch(reservation.end);
+                final selected = DateTime.fromMillisecondsSinceEpoch(
+                    event.dateInMilliseconds);
 
-              if (table.id == reservation.tableId) {
-                if (selected.isAfter(start) && selected.isBefore(end)) {
-                  return true;
-                }
+                if (table.id == reservation.tableId) {
+                  if (selected.isAfter(start) && selected.isBefore(end)) {
+                    return true;
+                  }
 
-                if ((selected.isAfter(
-                            start.subtract(const Duration(hours: 3))) &&
-                        selected.isBefore(end)) ||
-                    selected.isAtSameMomentAs(end)) {
-                  return true;
+                  if ((selected.isAfter(
+                              start.subtract(const Duration(hours: 3))) &&
+                          selected.isBefore(end)) ||
+                      selected.isAtSameMomentAs(end)) {
+                    return true;
+                  } else {
+                    return false;
+                  }
                 } else {
                   return false;
                 }
-              } else {
-                return false;
+              });
+
+              if (!reserved) {
+                tableIds.add(table.id);
+                availableTables.add(TableReservationViewModel(
+                    table,
+                    null,
+                    null,
+                    // userReservedTables[currentUserReservationIndex].from,
+                    // userReservedTables[currentUserReservationIndex].to,
+                    false,
+                    []));
               }
             });
-
-            if (!reserved) {
-              tableIds.add(table.id);
-              availableTables.add(TableReservationViewModel(
-                  table,
-                  null,
-                  null,
-                  // userReservedTables[currentUserReservationIndex].from,
-                  // userReservedTables[currentUserReservationIndex].to,
-                  false,
-                  []));
-            }
           }
         } else {
           tableIds.addAll(place.tables.map((e) => e.id));
@@ -151,7 +154,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         // if (response.status == 200)
         if (true) {
           final resultId = await DbProvider.db.createUserReservation(
-              UserReservationModel(
+              LocalUserReservationModel(
                   placeId: event.placeId,
                   tableId: event.id,
                   start: event.start.millisecondsSinceEpoch,

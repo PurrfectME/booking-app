@@ -12,7 +12,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
     on<ReservationsEvent>((event, emit) async {
       emit(ReservationsLoading());
       if (event is ReservationsLoad) {
-        final result = await _initReservations(tables!);
+        final result = await _initReservations(tables!, event.placeId);
 
         emit(ReservationsLoaded(result));
       } else if (event is RemoveReservation) {
@@ -20,21 +20,35 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
             .deleteReservation(event.reservationId, event.placeId);
 
         emit(RemoveReservationSuccess(tableNumber: event.tableNumber));
-        emit(ReservationsLoaded(await _initReservations(tables!)));
+        emit(ReservationsLoaded(
+            await _initReservations(tables!, event.placeId)));
       }
     });
   }
 
   Future<List<ReservationViewModel>> _initReservations(
-      List<TableModel> tables) async {
-    final reservations = await DbProvider.db.getReservations();
+      List<TableModel> tables, int placeId) async {
+    final userReservations = await DbProvider.db.getReservations(placeId);
 
-    return tables
-        .map((table) => ReservationViewModel(
-            table: table,
-            reservations: reservations
-                .where((reserv) => reserv.tableId == table.id)
-                .toList()))
-        .toList();
+    final r = <ReservationModel>[];
+
+    for (final userReserv in userReservations) {
+      r.addAll(userReserv.reservations);
+    }
+
+    final result = <ReservationViewModel>[];
+
+    for (final table in tables) {
+      for (final reserv in userReservations) {
+        final a =
+            reserv.reservations.where((r) => r.tableId == table.id).toList();
+
+//TODO: засунуть юзера в резервации на конкретный стол
+        result.add(ReservationViewModel(
+            table: table, reservations: a, user: reserv.user));
+      }
+    }
+
+    return result;
   }
 }

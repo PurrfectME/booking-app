@@ -175,7 +175,7 @@ class DbProvider {
   }
 
   Future<List<Object?>> createUserReservations(
-      List<UserReservationModel> models) async {
+      List<LocalUserReservationModel> models) async {
     final db = await database;
     final batch = db.batch();
 
@@ -186,7 +186,7 @@ class DbProvider {
     return await batch.commit(noResult: true);
   }
 
-  Future<int> createUserReservation(UserReservationModel model) async {
+  Future<int> createUserReservation(LocalUserReservationModel model) async {
     final db = await database;
     final result = await db.insert('user_reservations', model.toMap());
 
@@ -202,7 +202,7 @@ class DbProvider {
 
   Future<List<Object?>> createAllReservations(
       List<ReservationModel> reservations,
-      List<UserReservationModel> userReservations) async {
+      List<LocalUserReservationModel> userReservations) async {
     final db = await database;
     final batch = db.batch();
 
@@ -217,24 +217,37 @@ class DbProvider {
     return await batch.commit(noResult: true);
   }
 
-  Future<List<ReservationModel>> getReservations() async {
+  Future<List<UserReservationsModel>> getReservations(int placeId) async {
     final db = await database;
-    final res = await db.rawQuery('SELECT * FROM reservations');
+    final res = await db.rawQuery(
+        'SELECT reservations.*, user.id as user_id, user.login, user.firstSignin, user.accessToken, user.refreshToken, user.name FROM reservations '
+        'LEFT JOIN user on user.id = reservations.userId AND reservations.placeId = $placeId');
 
     if (res.isEmpty) {
       return [];
     }
 
+    final userReservationsResult = <UserReservationsModel>[];
     final reservations = <ReservationModel>[];
+    final users = <UserModel>[];
 
-    for (final reservation in res) {
-      reservations.add(ReservationModel.fromMap(reservation));
+    for (final map in res) {
+      reservations.add(ReservationModel.fromMap(map));
+      users.add(UserModel.fromMap(map));
     }
 
-    return reservations;
+    for (final user in users) {
+      final userReservations =
+          reservations.where((x) => x.userId == user.id).toList();
+
+      userReservationsResult.add(
+          UserReservationsModel(user: user, reservations: userReservations));
+    }
+
+    return userReservationsResult;
   }
 
-  Future<List<UserReservationModel>> getAllUserReservations() async {
+  Future<List<LocalUserReservationModel>> getAllUserReservations() async {
     final db = await database;
     final res = await db.rawQuery('SELECT * FROM user_reservations');
 
@@ -242,10 +255,10 @@ class DbProvider {
       return [];
     }
 
-    final reservations = <UserReservationModel>[];
+    final reservations = <LocalUserReservationModel>[];
 
     for (final reservation in res) {
-      reservations.add(UserReservationModel.fromMap(reservation));
+      reservations.add(LocalUserReservationModel.fromMap(reservation));
     }
 
     return reservations;
@@ -337,8 +350,22 @@ class DbProvider {
 //TODO: учесть ситуацию, когда есть несколько аккаунтов на одном телефоне
   Future<UserModel> getCurrentUser() async {
     final db = await database;
-    final result = UserModel.fromMap((await db.query('user')).first);
+    final a = await db.query('user');
+    final result = UserModel.fromMap(a.last);
 
     return result;
+  }
+
+  Future<UserModel?> getUserById(int id) async {
+    final db = await database;
+    final result = await db.query('user', where: 'id = ?', whereArgs: [id]);
+
+    if (result.isEmpty) {
+      return null;
+    }
+
+    final user = UserModel.fromMap(result.first);
+
+    return user;
   }
 }

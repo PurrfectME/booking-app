@@ -2,7 +2,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
-import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,25 +19,15 @@ void main() {
   Bloc.transformer = sequential<dynamic>();
 
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => LoginBloc()),
-        BlocProvider(create: (context) => PlacesBloc()),
-        BlocProvider(create: (context) => MenuBloc()),
-        BlocProvider(create: (context) => ExtraInfoBloc()),
-        BlocProvider(create: (context) => UpdatePlaceBloc()),
-        BlocProvider(create: (context) => UpdateTableBloc()),
-        BlocProvider(create: (context) => ReservationsBloc([])),
-      ],
-      child: BlocListener<ExtraInfoBloc, ExtraInfoState>(
-        listener: (context, state) {
-          if (state is ExtraInfoUpdated) {
-            context.read<PlacesBloc>().add(PlacesLoad());
-          }
-        },
-        child: const MyApp(),
-      ),
-    ),
+    MultiBlocProvider(providers: [
+      BlocProvider(create: (context) => LoginBloc()),
+      BlocProvider(create: (context) => PlacesBloc()),
+      BlocProvider(create: (context) => MenuBloc()),
+      BlocProvider(create: (context) => ExtraInfoBloc()),
+      BlocProvider(create: (context) => UpdatePlaceBloc()),
+      BlocProvider(create: (context) => UpdateTableBloc()),
+      BlocProvider(create: (context) => ReservationsBloc([])),
+    ], child: const MyApp()),
   );
 }
 

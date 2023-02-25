@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,16 @@ class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Ошибка: ${state.error}')),
             );
+          } else if (state is ExtraInfoUpdated) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (context) => BlocProvider(
+                    create: (context) => PlacesBloc()..add(PlacesLoad()),
+                    child: const PlacesScreen(),
+                  ),
+                ),
+                (route) => false);
           }
         },
         child: Scaffold(

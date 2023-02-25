@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/navigation.dart';
 import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,16 +40,28 @@ class LoginScreenState extends State<LoginScreen> {
             SnackBar(content: Text('Ошибка: ${state.error}')),
           );
         } else if (state is LoginSuccess) {
-          Navigator.push<void>(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) =>
-                    ExtraInfoBloc()..add(ExtraInfoLoad(user: state.user)),
-                child: const ExtraInfoScreen(),
+          if (state.user.firstSignIn) {
+            Navigator.push<void>(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) =>
+                      ExtraInfoBloc()..add(ExtraInfoLoad(user: state.user)),
+                  child: const ExtraInfoScreen(),
+                ),
               ),
-            ),
-          );
+            );
+          } else {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (context) => BlocProvider(
+                    create: (context) => PlacesBloc()..add(PlacesLoad()),
+                    child: const PlacesScreen(),
+                  ),
+                ),
+                (route) => false);
+          }
         }
       },
       child: Scaffold(

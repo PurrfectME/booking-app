@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class UserReservationModel {
+class LocalUserReservationModel {
   int? id;
   int placeId;
   int tableId;
@@ -9,7 +9,7 @@ class UserReservationModel {
   int end;
   int updateDate;
   int guests;
-  UserReservationModel({
+  LocalUserReservationModel({
     this.id,
     required this.placeId,
     required this.tableId,
@@ -29,8 +29,8 @@ class UserReservationModel {
         'guests': guests,
       };
 
-  factory UserReservationModel.fromMap(Map<String, dynamic> map) =>
-      UserReservationModel(
+  factory LocalUserReservationModel.fromMap(Map<String, dynamic> map) =>
+      LocalUserReservationModel(
         id: map['id'] != null ? map['id'] as int : null,
         placeId: map['placeId'] as int,
         tableId: map['tableId'] as int,
@@ -42,10 +42,11 @@ class UserReservationModel {
 
   String toJson() => json.encode(toMap());
 
-  factory UserReservationModel.fromJson(String source) =>
-      UserReservationModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory LocalUserReservationModel.fromJson(String source) =>
+      LocalUserReservationModel.fromMap(
+          json.decode(source) as Map<String, dynamic>);
 
-  UserReservationModel copyWith({
+  LocalUserReservationModel copyWith({
     int? id,
     int? placeId,
     int? tableId,
@@ -54,7 +55,7 @@ class UserReservationModel {
     int? updateDate,
     int? guests,
   }) =>
-      UserReservationModel(
+      LocalUserReservationModel(
         id: id ?? this.id,
         placeId: placeId ?? this.placeId,
         tableId: tableId ?? this.tableId,
