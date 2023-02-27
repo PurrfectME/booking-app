@@ -264,7 +264,7 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
     }
   }
 
-  Future _onImageButtonPressed(ImageSource source, BuildContext context) async {
+  Future _onImageButtonPressed(BuildContext context) async {
     try {
       final pickedFiles = await _picker.pickMultiImage();
       final resultFiles = List<XFile>.from(pickedFiles);

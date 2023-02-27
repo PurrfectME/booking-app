@@ -69,45 +69,43 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
         if (reservedTablesResponse.isNotEmpty) {
           for (final table in place.tables) {
-            reservedTablesResponse.map((x) {
-              final reserved = x.reservations.any((reservation) {
-                final start =
-                    DateTime.fromMillisecondsSinceEpoch(reservation.start);
-                final end =
-                    DateTime.fromMillisecondsSinceEpoch(reservation.end);
-                final selected = DateTime.fromMillisecondsSinceEpoch(
-                    event.dateInMilliseconds);
+            final reserved = reservedTablesResponse.any((x) {
+              final start =
+                  DateTime.fromMillisecondsSinceEpoch(x.reservation.start);
+              final end =
+                  DateTime.fromMillisecondsSinceEpoch(x.reservation.end);
+              final selected =
+                  DateTime.fromMillisecondsSinceEpoch(event.dateInMilliseconds);
 
-                if (table.id == reservation.tableId) {
-                  if (selected.isAfter(start) && selected.isBefore(end)) {
-                    return true;
-                  }
+              if (table.id == x.reservation.tableId) {
+                if (selected.isAfter(start) && selected.isBefore(end)) {
+                  return true;
+                }
 
-                  if ((selected.isAfter(
-                              start.subtract(const Duration(hours: 3))) &&
-                          selected.isBefore(end)) ||
-                      selected.isAtSameMomentAs(end)) {
-                    return true;
-                  } else {
-                    return false;
-                  }
+                if ((selected.isAfter(
+                            start.subtract(const Duration(hours: 3))) &&
+                        selected.isBefore(end)) ||
+                    selected.isAtSameMomentAs(end)) {
+                  return true;
                 } else {
                   return false;
                 }
-              });
-
-              if (!reserved) {
-                tableIds.add(table.id);
-                availableTables.add(TableReservationViewModel(
-                    table,
-                    null,
-                    null,
-                    // userReservedTables[currentUserReservationIndex].from,
-                    // userReservedTables[currentUserReservationIndex].to,
-                    false,
-                    []));
+              } else {
+                return false;
               }
             });
+
+            if (!reserved) {
+              tableIds.add(table.id);
+              availableTables.add(TableReservationViewModel(
+                  table,
+                  null,
+                  null,
+                  // userReservedTables[currentUserReservationIndex].from,
+                  // userReservedTables[currentUserReservationIndex].to,
+                  false,
+                  []));
+            }
           }
         } else {
           tableIds.addAll(place.tables.map((e) => e.id));

@@ -217,7 +217,7 @@ class DbProvider {
     return await batch.commit(noResult: true);
   }
 
-  Future<List<UserReservationsModel>> getReservations(int placeId) async {
+  Future<List<UserReservationModel>> getReservations(int placeId) async {
     final db = await database;
     final res = await db.rawQuery(
         'SELECT reservations.*, user.id as user_id, user.login, user.firstSignin, user.accessToken, user.refreshToken, user.name FROM reservations '
@@ -227,21 +227,12 @@ class DbProvider {
       return [];
     }
 
-    final userReservationsResult = <UserReservationsModel>[];
-    final reservations = <ReservationModel>[];
-    final users = <UserModel>[];
+    final userReservationsResult = <UserReservationModel>[];
 
     for (final map in res) {
-      reservations.add(ReservationModel.fromMap(map));
-      users.add(UserModel.fromMap(map));
-    }
-
-    for (final user in users) {
-      final userReservations =
-          reservations.where((x) => x.userId == user.id).toList();
-
-      userReservationsResult.add(
-          UserReservationsModel(user: user, reservations: userReservations));
+      userReservationsResult.add(UserReservationModel(
+          user: UserModel.fromMap(map),
+          reservation: ReservationModel.fromMap(map)));
     }
 
     return userReservationsResult;

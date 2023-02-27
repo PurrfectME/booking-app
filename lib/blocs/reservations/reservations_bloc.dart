@@ -30,23 +30,17 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
       List<TableModel> tables, int placeId) async {
     final userReservations = await DbProvider.db.getReservations(placeId);
 
-    final r = <ReservationModel>[];
-
-    for (final userReserv in userReservations) {
-      r.addAll(userReserv.reservations);
-    }
-
     final result = <ReservationViewModel>[];
 
     for (final table in tables) {
-      for (final reserv in userReservations) {
-        final a =
-            reserv.reservations.where((r) => r.tableId == table.id).toList();
+      final reservations = userReservations
+          .where((x) => x.reservation.tableId == table.id)
+          .toList();
 
-//TODO: засунуть юзера в резервации на конкретный стол
-        result.add(ReservationViewModel(
-            table: table, reservations: a, user: reserv.user));
-      }
+      reservations
+          .sort((a, b) => a.reservation.start.compareTo(b.reservation.start));
+      result
+          .add(ReservationViewModel(table: table, reservations: reservations));
     }
 
     return result;

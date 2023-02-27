@@ -1,6 +1,6 @@
 import 'package:booking_app/blocs/reservations/reservations_state.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
-import 'package:booking_app/screens/reservations/widgets/reservation_card.dart';
+import 'package:booking_app/screens/reservations/widgets/table_reservation_card.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,36 +70,32 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                       child: Text(DateFormat('E, d MMM yyyy HH:mm', 'RU')
                           .format(selectedDateTime)),
                     ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      itemCount: state.data.length,
-                      itemBuilder: (context, index) {
-                        bool isReserved = false;
-                        ReservationModel? reservation;
-                        if (state.data[index].reservations.isNotEmpty) {
-                          reservation = state.data[index].reservations
-                              .firstWhereOrNull((res) {
-                            var start =
-                                DateTime.fromMillisecondsSinceEpoch(res.start);
-                            var dif =
-                                selectedDateTime.difference(start).inMinutes;
-                            return dif < 0;
-                          });
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        itemCount: state.data.length,
+                        itemBuilder: (context, index) {
+                          // ReservationModel? reservation;
+                          // if (state.data[index].reservations.isNotEmpty) {
+                          //   reservation = state.data[index].reservations
+                          //       .cast<ReservationModel>()
+                          //       .firstWhereOrNull((res) {
+                          //     var start =
+                          //         DateTime.fromMillisecondsSinceEpoch(res.start);
+                          //     var dif =
+                          //         selectedDateTime.difference(start).inMinutes;
+                          //     return dif < 0;
+                          //   });
+                          // }
 
-                          if (reservation != null) {
-                            isReserved = true;
-                          }
-                        }
-
-                        return ReservationCard(
-                          tableModel: state.data[index].table,
-                          selectedDateTime: selectedDateTime,
-                          currentReservation: reservation,
-                          isReserved: isReserved,
-                          allReservations: state.data[index].reservations,
-                        );
-                      },
+                          return TableReservationCard(
+                            tableModel: state.data[index].table,
+                            selectedDateTime: selectedDateTime,
+                            reservations: state.data[index].reservations,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 );
