@@ -9,11 +9,13 @@ class TableReservationCard extends StatefulWidget {
   final TableModel tableModel;
   final DateTime selectedDateTime;
   final List<UserReservationModel> reservations;
+  final UserReservationModel? nextReservation;
   const TableReservationCard(
       {super.key,
       required this.tableModel,
       required this.selectedDateTime,
-      required this.reservations});
+      required this.reservations,
+      required this.nextReservation});
 
   @override
   State<TableReservationCard> createState() => _TableReservationCardState();
@@ -21,6 +23,7 @@ class TableReservationCard extends StatefulWidget {
 
 class _TableReservationCardState extends State<TableReservationCard> {
   int guestsCount = 1;
+
   @override
   Widget build(BuildContext context) => Card(
         shape: const RoundedRectangleBorder(
@@ -57,18 +60,21 @@ class _TableReservationCardState extends State<TableReservationCard> {
                       'Столик ${widget.tableModel.number}',
                       style: const TextStyle(color: Colors.white),
                     ),
-                    if (widget.reservations.isNotEmpty)
+                    if (widget.nextReservation == null)
+                      Text('Гостей: ${widget.tableModel.guests}',
+                          style: const TextStyle(color: Colors.white)),
+                    if (widget.nextReservation != null)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              'Гостей: ${widget.reservations[0].reservation.guests}',
+                              'Гостей: ${widget.nextReservation!.reservation.guests}',
                               style: const TextStyle(color: Colors.white)),
                           Text(
-                              'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.reservations[0].reservation.start))}',
+                              'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.nextReservation!.reservation.start))}',
                               style: const TextStyle(color: Colors.white)),
                           Text(
-                              'Гость: ${widget.reservations[0].user.name}(${widget.reservations[0].user.login})',
+                              'Гость: ${widget.nextReservation!.user.name}(${widget.nextReservation!.user.login})',
                               style: const TextStyle(color: Colors.white)),
                         ],
                       ),

@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/reservations/reservations_state.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/reservations/widgets/table_reservation_card.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,24 +77,31 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 24),
                         itemCount: state.data.length,
                         itemBuilder: (context, index) {
-                          // ReservationModel? reservation;
-                          // if (state.data[index].reservations.isNotEmpty) {
-                          //   reservation = state.data[index].reservations
-                          //       .cast<ReservationModel>()
-                          //       .firstWhereOrNull((res) {
-                          //     var start =
-                          //         DateTime.fromMillisecondsSinceEpoch(res.start);
-                          //     var dif =
-                          //         selectedDateTime.difference(start).inMinutes;
-                          //     return dif < 0;
-                          //   });
-                          // }
+                          UserReservationModel? nextReservation;
+                          if (state.data[index].reservations.isNotEmpty) {
+                            final dates = state.data[index].reservations.map(
+                                (e) => DateTime.fromMillisecondsSinceEpoch(
+                                    e.reservation.start));
+
+                            final now = DateTime.now();
+                            final closetsDateTimeToNow = dates.reduce((a, b) =>
+                                a.difference(now).abs() <
+                                        b.difference(now).abs()
+                                    ? a
+                                    : b);
+
+                            nextReservation = state.data[index].reservations
+                                .firstWhere((x) =>
+                                    x.reservation.start ==
+                                    closetsDateTimeToNow
+                                        .millisecondsSinceEpoch);
+                          }
 
                           return TableReservationCard(
-                            tableModel: state.data[index].table,
-                            selectedDateTime: selectedDateTime,
-                            reservations: state.data[index].reservations,
-                          );
+                              tableModel: state.data[index].table,
+                              selectedDateTime: selectedDateTime,
+                              reservations: state.data[index].reservations,
+                              nextReservation: nextReservation);
                         },
                       ),
                     ),
