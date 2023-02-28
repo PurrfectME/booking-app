@@ -1,4 +1,3 @@
-import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/local/place_info_vm.dart';
 import 'package:booking_app/models/models.dart';
@@ -11,16 +10,16 @@ part 'place_info_event.dart';
 part 'place_info_state.dart';
 
 class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
-  final PlaceModel place;
+  PlaceModel? place;
   List<TableReservationViewModel> availableTables = [];
 
-  PlaceInfoBloc({required this.place}) : super(PlaceInfoLoading()) {
+  PlaceInfoBloc() : super(PlaceInfoLoading()) {
     on<PlaceInfoEvent>((event, emit) async {
+      place = await DbProvider.db.getPlaceById(event.placeId);
+
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
         availableTables.clear();
-
-        //TODO: !!!!!!!!!!!!!отображать столы если выбрана другая дата
 
         //мы сохраняем локально в бд резервации юзера, а просто таблицу со всеми резервациями нет
         //а как менеджить момент когда с одного телефона два юзера разных зайдут,(бд одна)
@@ -53,7 +52,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         // ];
 
         final reservedTablesResponse =
-            await DbProvider.db.getReservations(place.id);
+            await DbProvider.db.getReservations(place!.id);
 
         // final userReservedTablesResponse =
         //     await DbProvider.db.getAllUserReservations();
@@ -68,7 +67,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         final tableIds = <int>[];
 
         if (reservedTablesResponse.isNotEmpty) {
-          for (final table in place.tables) {
+          for (final table in place!.tables) {
             final reserved = reservedTablesResponse.any((x) {
               final start =
                   DateTime.fromMillisecondsSinceEpoch(x.reservation.start);
@@ -108,9 +107,9 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
             }
           }
         } else {
-          tableIds.addAll(place.tables.map((e) => e.id));
+          tableIds.addAll(place!.tables.map((e) => e.id));
           availableTables
-              .addAll(place.tables.map((e) => TableReservationViewModel(
+              .addAll(place!.tables.map((e) => TableReservationViewModel(
                   e,
                   null,
                   null,
@@ -140,11 +139,11 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         }
 
         emit(PlaceInfoLoaded(PlaceInfoViewModel(
-            placeId: place.id,
+            placeId: place!.id,
             tables: availableTables,
-            logo: ImageService.imageFromBase64String(place.base64Logo),
-            placeName: place.name)));
-      } else if (event is PlaceTableReserve) {
+            logo: ImageService.imageFromBase64String(place!.base64Logo),
+            placeName: place!.name)));
+      } else if (event is UserTableReserve) {
         // api call
         // final response = await api.reserveTable(id: event.id)
 
@@ -154,7 +153,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           final resultId = await DbProvider.db.createUserReservation(
               LocalUserReservationModel(
                   placeId: event.placeId,
-                  tableId: event.id,
+                  tableId: event.tableId,
                   start: event.start.millisecondsSinceEpoch,
                   end: event.end.millisecondsSinceEpoch,
                   updateDate: DateTime.now().millisecondsSinceEpoch,
@@ -164,29 +163,32 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
           final resId = await DbProvider.db.createReservation(ReservationModel(
               id: null,
-              tableId: event.id,
+              tableId: event.tableId,
               placeId: event.placeId,
               userId: currentUser.id!,
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
               guests: event.guests));
 
-          final tableIndex =
-              availableTables.indexWhere((table) => table.table.id == event.id);
+          final tableIndex = availableTables
+              .indexWhere((table) => table.table.id == event.tableId);
 
           if (tableIndex != -1) {
             availableTables[tableIndex] =
                 availableTables[tableIndex].copyWith(isReservedByUser: true);
           }
-          emit(PlaceTableReserveSuccess(id: event.id));
+          emit(PlaceTableReserveSuccess(id: event.tableId));
         } else {
           //TODO: RESERVE ERROR IN MODal
         }
         emit(PlaceInfoLoaded(PlaceInfoViewModel(
-            placeId: place.id,
+            placeId: place!.id,
             tables: availableTables,
-            logo: ImageService.imageFromBase64String(place.base64Logo),
-            placeName: place.name)));
+            logo: ImageService.imageFromBase64String(place!.base64Logo),
+            placeName: place!.name)));
+      } else if (event is AdminTableReserve) {
+        final a = 5;
+        if (true) {}
       }
     });
   }

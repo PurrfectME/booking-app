@@ -129,7 +129,7 @@ class _TableCardState extends State<TableCard> {
                             ),
                             onPressed: () => context
                                 .read<PlaceInfoBloc>()
-                                .add(PlaceTableReserve(
+                                .add(UserTableReserve(
                                     widget.model.table.id,
                                     currentGuestsCount,
                                     widget.model.table.placeId,

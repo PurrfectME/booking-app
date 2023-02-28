@@ -2,38 +2,63 @@
 part of 'place_info_bloc.dart';
 
 abstract class PlaceInfoEvent extends Equatable {
-  const PlaceInfoEvent();
+  final int placeId;
+  const PlaceInfoEvent({required this.placeId});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [placeId];
 }
 
 class PlaceInfoLoad extends PlaceInfoEvent {
   final int placeId;
   final int dateInMilliseconds;
 
-  const PlaceInfoLoad(this.placeId, this.dateInMilliseconds);
+  const PlaceInfoLoad(this.placeId, this.dateInMilliseconds)
+      : super(placeId: placeId);
 
   @override
   List<Object> get props => [placeId, dateInMilliseconds];
 }
 
-class PlaceTableReserve extends PlaceInfoEvent {
-  final int id;
+class UserTableReserve extends PlaceInfoEvent {
+  final int tableId;
   final int guests;
-  // final DateTime selectedDateTime;
   final int placeId;
   final DateTime start;
   final DateTime end;
 
-  const PlaceTableReserve(
-    this.id,
+  const UserTableReserve(
+    this.tableId,
     this.guests,
     this.placeId,
     this.start,
     this.end,
-  );
+  ) : super(placeId: placeId);
 
   @override
-  List<Object> get props => [id, guests, placeId, start, end];
+  List<Object> get props => [tableId, guests, placeId, start, end];
+}
+
+class AdminTableReserve extends PlaceInfoEvent {
+  final int placeId;
+  final int tableId;
+  final int guests;
+  final DateTime start;
+  final DateTime end;
+  final String phoneNumber;
+  final String name;
+
+  const AdminTableReserve({
+    required this.placeId,
+    required this.tableId,
+    required this.guests,
+    required this.start,
+    required this.end,
+    required this.phoneNumber,
+    required this.name,
+  }) : super(placeId: placeId);
+
+  @override
+  List<Object> get props =>
+      [placeId, tableId, guests, start, end, phoneNumber, name];
 }

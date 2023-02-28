@@ -20,8 +20,7 @@ class TableReservationCard extends StatefulWidget {
 }
 
 class _TableReservationCardState extends State<TableReservationCard> {
-  int currentGuestsCount = 1;
-
+  int guestsCount = 1;
   @override
   Widget build(BuildContext context) => Card(
         shape: const RoundedRectangleBorder(
@@ -73,56 +72,20 @@ class _TableReservationCardState extends State<TableReservationCard> {
                               style: const TextStyle(color: Colors.white)),
                         ],
                       ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                                splashColor:
-                                    const Color.fromARGB(160, 85, 85, 85),
-                                onPressed: _canDescrease(currentGuestsCount)
-                                    ? _onGuestsCountDecrease
-                                    : null,
-                                icon: Icon(Icons.remove,
-                                    color: _canDescrease(currentGuestsCount)
-                                        ? Colors.white
-                                        : Colors.black)),
-                            Text(
-                              '$currentGuestsCount',
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            IconButton(
-                              splashColor:
-                                  const Color.fromARGB(160, 85, 85, 85),
-                              onPressed: _canIncrease(currentGuestsCount,
-                                      widget.tableModel.guests)
-                                  ? _onGuestsCountIncrease
-                                  : null,
-                              icon: Icon(Icons.add,
-                                  color: _canIncrease(currentGuestsCount,
-                                          widget.tableModel.guests)
-                                      ? Colors.white
-                                      : Colors.black),
-                            ),
-                          ],
+                    SizedBox(
+                      height: 32,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.yellow),
                         ),
-                        SizedBox(
-                          height: 32,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.yellow),
-                            ),
-                            onPressed: () => _reserveTable(widget.tableModel.id,
-                                widget.tableModel.placeId),
-                            child: const Text(
-                              'Забронировать',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        )
-                      ],
+                        onPressed: () => _reserveTable(
+                            widget.tableModel.id, widget.tableModel.placeId),
+                        child: const Text(
+                          'Забронировать',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -239,23 +202,26 @@ class _TableReservationCardState extends State<TableReservationCard> {
   }
 
   Future _reserveTable(int tableId, int placeId) async {
+    var phoneNumber = '';
+    var name = '';
+
     final a = await showDialog<void>(
         context: context,
+        // ignore: prefer_expression_function_bodies
         builder: (context) {
-          final a = 1;
           return AlertDialog(
             title: const Text(
               'Данные брони',
               style: TextStyle(color: Colors.black),
             ),
             content: SizedBox(
-              height: 99,
+              height: 190,
               child: Form(
                 child: Column(
                   children: [
                     Text(
                         'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(widget.selectedDateTime)}',
-                        style: const TextStyle(color: Colors.white)),
+                        style: const TextStyle(color: Colors.black)),
                     TextFormField(
                       initialValue: '',
                       decoration: const InputDecoration(
@@ -267,11 +233,11 @@ class _TableReservationCardState extends State<TableReservationCard> {
                           ),
                           labelText: 'Номер телефона',
                           labelStyle: TextStyle(color: Colors.black)),
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       onSaved: (newValue) {
-                        // localObj.name = newValue!;
+                        phoneNumber = newValue!;
                       },
-                      // onChanged: (value) => localObj.name = value,
+                      onChanged: (value) => phoneNumber = value,
                       // The validator receives the text that the user has entered.
                       // validator: validatePhoneNumber),
                     ),
@@ -288,11 +254,55 @@ class _TableReservationCardState extends State<TableReservationCard> {
                           labelStyle: TextStyle(color: Colors.black)),
                       keyboardType: TextInputType.text,
                       onSaved: (newValue) {
-                        // localObj.name = newValue!;
+                        name = newValue!;
                       },
-                      // onChanged: (value) => localObj.name = value,
+                      onChanged: (value) => name = value,
                       // The validator receives the text that the user has entered.
                       // validator: validatePhoneNumber),
+                    ),
+                    Row(
+                      children: [
+                        Text('Гостей'),
+                        IconButton(
+                            splashColor: const Color.fromARGB(160, 85, 85, 85),
+                            onPressed: _canDescrease(guestsCount)
+                                ? () => setState(() {
+                                      guestsCount = guestsCount--;
+                                    })
+                                : null,
+                            icon: Icon(Icons.remove,
+                                color: _canDescrease(guestsCount)
+                                    ? Colors.black
+                                    : Colors.grey)),
+                        SizedBox(
+                          width: 15,
+                          child: TextFormField(
+                            initialValue: guestsCount.toString(),
+                            readOnly: true,
+                            style: const TextStyle(color: Colors.black),
+                            onSaved: (newValue) {
+                              name = newValue!;
+                            },
+                            onChanged: (value) => setState(() {
+                              guestsCount = int.parse(value);
+                            }),
+                          ),
+                        ),
+                        IconButton(
+                          splashColor: const Color.fromARGB(160, 85, 85, 85),
+                          onPressed: _canIncrease(
+                                  guestsCount, widget.tableModel.guests)
+                              ? () => setState(() {
+                                    guestsCount = guestsCount++;
+                                  })
+                              : null,
+                          icon: Icon(Icons.add,
+                              color: _canIncrease(
+                                      guestsCount, widget.tableModel.guests)
+                                  ? Colors.black
+                                  : Colors.grey),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -300,22 +310,25 @@ class _TableReservationCardState extends State<TableReservationCard> {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('Подтвердить'),
+                child: const Text('Отмена'),
                 onPressed: () {
-                  context.read<PlaceInfoBloc>().add(PlaceTableReserve(
-                      tableId,
-                      currentGuestsCount,
-                      placeId,
-                      widget.selectedDateTime,
-                      DateTime.now().add(
-                        const Duration(hours: 3),
-                      )));
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                child: const Text('Отмена'),
+                child: const Text('Подтвердить'),
                 onPressed: () {
+                  final bloc = context.read<PlaceInfoBloc>();
+                  bloc.add(AdminTableReserve(
+                      placeId: placeId,
+                      tableId: tableId,
+                      guests: guestsCount,
+                      start: widget.selectedDateTime,
+                      end: DateTime.now().add(
+                        const Duration(hours: 3),
+                      ),
+                      phoneNumber: phoneNumber,
+                      name: name));
                   Navigator.of(context).pop();
                 },
               ),
@@ -335,16 +348,4 @@ class _TableReservationCardState extends State<TableReservationCard> {
       reservedGuests < maxGuests;
 
   bool _canDescrease(int reservedGuests) => reservedGuests > 1;
-
-  void _onGuestsCountDecrease() {
-    setState(() {
-      currentGuestsCount--;
-    });
-  }
-
-  void _onGuestsCountIncrease() {
-    setState(() {
-      currentGuestsCount++;
-    });
-  }
 }
