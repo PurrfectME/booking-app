@@ -112,10 +112,11 @@ class PlaceItem extends StatelessWidget {
                                   builder: (context) => BlocProvider(
                                         create: (context) =>
                                             ReservationsBloc(place.tables)
-                                              ..add(ReservationsLoad()),
+                                              ..add(ReservationsLoad(
+                                                  placeId: place.id)),
                                         child: const ReservationsScreen(),
                                       ))),
-                          child: Text("Резервы")),
+                          child: const Text('Резервации')),
                     ],
                   )
                 ],

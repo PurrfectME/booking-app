@@ -10,7 +10,8 @@ class AuthService {
 
   AuthService._();
 
-  Future<dynamic> signIn(SignInRequest request) async {
+  Future<SignInResponse> signIn(SignInRequest request) async {
+    //TODO: handle errors
     final response =
         await Api().dio.post<String>(Constants.signIn, data: request.toJson());
 

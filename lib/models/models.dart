@@ -1,9 +1,13 @@
 export 'db/place_model.dart';
+export 'db/reservation_model.dart';
 export 'db/table_model.dart';
+export 'db/user_model.dart';
 export 'local/menu_tab.dart';
 export 'local/nav_item.dart';
+export 'local/reservations_vm.dart';
+export 'local/table_reservation.dart';
 export 'local/table_reservation_vm.dart';
+export 'local/user_reservation.dart';
 export 'request/reserve_table.dart';
 export 'response/get_place.dart';
 export 'response/get_reservation.dart';
-export 'local/reservations_vm.dart';

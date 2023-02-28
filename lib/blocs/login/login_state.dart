@@ -20,4 +20,11 @@ class LoginError extends LoginState {
   List<Object> get props => [error];
 }
 
-class LoginSuccess extends LoginState {}
+class LoginSuccess extends LoginState {
+  final UserModel user;
+
+  const LoginSuccess({required this.user});
+
+  @override
+  List<Object> get props => [user];
+}

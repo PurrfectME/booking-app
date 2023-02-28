@@ -1,4 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:booking_app/models/db/user_model.dart';
+import 'package:booking_app/models/request/signin.dart';
+import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/services/auth/auth_service.dart';
 import 'package:equatable/equatable.dart';
 
 part 'login_event.dart';
@@ -10,7 +14,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (event is LoginStart) {
         emit(LoginLoading());
 
-        emit(LoginSuccess());
+        // final response =
+        //     await AuthService().signIn(SignInRequest(login: event.login));
+
+        final user = UserModel(
+            login: event.login,
+            firstSignIn: false,
+            accessToken: "response.accessToken",
+            refreshToken: "response.refreshToken");
+
+        if (user.firstSignIn) {
+          user.id = await DbProvider.db.createUser(user);
+        }
+
+        emit(LoginSuccess(user: user));
       }
     });
   }

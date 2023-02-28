@@ -8,10 +8,10 @@ abstract class LoginEvent extends Equatable {
 }
 
 class LoginStart extends LoginEvent {
-  final String phoneNumber;
+  final String login;
 
-  const LoginStart(this.phoneNumber);
+  const LoginStart(this.login);
 
   @override
-  List<Object> get props => [phoneNumber];
+  List<Object> get props => [login];
 }
