@@ -97,6 +97,8 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                                         .millisecondsSinceEpoch);
                           }
 
+                          //TODO: сделать так, чтобы если с момента брони прошло уже
+
                           return TableReservationCard(
                               tableModel: state.data[index].table,
                               selectedDateTime: selectedDateTime,

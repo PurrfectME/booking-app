@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/reservations/widgets/reservation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -85,7 +86,7 @@ class _TableReservationCardState extends State<TableReservationCard> {
                           backgroundColor:
                               MaterialStateProperty.all(Colors.yellow),
                         ),
-                        onPressed: () => _reserveTable(
+                        onPressed: () async => await _reserveTable(
                             widget.tableModel.id, widget.tableModel.placeId),
                         child: const Text(
                           'Забронировать',
@@ -163,31 +164,64 @@ class _TableReservationCardState extends State<TableReservationCard> {
                                               color: Colors.white)),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 52,
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.yellow),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      SizedBox(
+                                        height: 35,
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.yellow),
+                                          ),
+                                          onPressed: () {
+                                            //TODO: delete reservation from bottom sheet
+                                            _removeReservation(
+                                                reservationModel
+                                                    .reservation.id!,
+                                                reservationModel
+                                                    .reservation.placeId,
+                                                widget.tableModel.number);
+                                            filteredReservations
+                                                .removeAt(index);
+                                          },
+                                          child: const Text(
+                                            'Редактировать',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
                                       ),
-                                      onPressed: () {
-                                        _removeReservation(
-                                            reservationModel.reservation.id!,
-                                            reservationModel
-                                                .reservation.placeId,
-                                            widget.tableModel.number);
-                                        // setState(() {
-                                        //   widget.allReservations =
-                                        // });
-                                        filteredReservations.removeAt(index);
-                                      },
-                                      child: const Text(
-                                        'Отменить бронь',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  )
+                                      SizedBox(
+                                        height: 35,
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.yellow),
+                                          ),
+                                          onPressed: () {
+                                            //TODO: delete reservation from bottom sheet
+                                            _removeReservation(
+                                                reservationModel
+                                                    .reservation.id!,
+                                                reservationModel
+                                                    .reservation.placeId,
+                                                widget.tableModel.number);
+                                            filteredReservations
+                                                .removeAt(index);
+                                          },
+                                          child: const Text(
+                                            'Отменить',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
                             )
@@ -207,141 +241,16 @@ class _TableReservationCardState extends State<TableReservationCard> {
               ));
   }
 
-  Future _reserveTable(int tableId, int placeId) async {
-    var phoneNumber = '';
-    var name = '';
-
-    final a = await showDialog<void>(
-        context: context,
-        // ignore: prefer_expression_function_bodies
-        builder: (context) {
-          return AlertDialog(
-            title: const Text(
-              'Данные брони',
-              style: TextStyle(color: Colors.black),
-            ),
-            content: SizedBox(
-              height: 190,
-              child: Form(
-                child: Column(
-                  children: [
-                    Text(
-                        'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(widget.selectedDateTime)}',
-                        style: const TextStyle(color: Colors.black)),
-                    TextFormField(
-                      initialValue: '',
-                      decoration: const InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          labelText: 'Номер телефона',
-                          labelStyle: TextStyle(color: Colors.black)),
-                      keyboardType: TextInputType.number,
-                      onSaved: (newValue) {
-                        phoneNumber = newValue!;
-                      },
-                      onChanged: (value) => phoneNumber = value,
-                      // The validator receives the text that the user has entered.
-                      // validator: validatePhoneNumber),
-                    ),
-                    TextFormField(
-                      initialValue: '',
-                      decoration: const InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          labelText: 'Имя',
-                          labelStyle: TextStyle(color: Colors.black)),
-                      keyboardType: TextInputType.text,
-                      onSaved: (newValue) {
-                        name = newValue!;
-                      },
-                      onChanged: (value) => name = value,
-                      // The validator receives the text that the user has entered.
-                      // validator: validatePhoneNumber),
-                    ),
-                    Row(
-                      children: [
-                        Text('Гостей'),
-                        IconButton(
-                            splashColor: const Color.fromARGB(160, 85, 85, 85),
-                            onPressed: _canDescrease(guestsCount)
-                                ? () => setState(() {
-                                      guestsCount = guestsCount--;
-                                    })
-                                : null,
-                            icon: Icon(Icons.remove,
-                                color: _canDescrease(guestsCount)
-                                    ? Colors.black
-                                    : Colors.grey)),
-                        SizedBox(
-                          width: 15,
-                          child: TextFormField(
-                            initialValue: guestsCount.toString(),
-                            readOnly: true,
-                            style: const TextStyle(color: Colors.black),
-                            onSaved: (newValue) {
-                              name = newValue!;
-                            },
-                            onChanged: (value) => setState(() {
-                              guestsCount = int.parse(value);
-                            }),
-                          ),
-                        ),
-                        IconButton(
-                          splashColor: const Color.fromARGB(160, 85, 85, 85),
-                          onPressed: _canIncrease(
-                                  guestsCount, widget.tableModel.guests)
-                              ? () => setState(() {
-                                    guestsCount = guestsCount++;
-                                  })
-                              : null,
-                          icon: Icon(Icons.add,
-                              color: _canIncrease(
-                                      guestsCount, widget.tableModel.guests)
-                                  ? Colors.black
-                                  : Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Отмена'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('Подтвердить'),
-                onPressed: () {
-                  final bloc = context.read<PlaceInfoBloc>();
-                  bloc.add(AdminTableReserve(
-                      placeId: placeId,
-                      tableId: tableId,
-                      guests: guestsCount,
-                      start: widget.selectedDateTime,
-                      end: DateTime.now().add(
-                        const Duration(hours: 3),
-                      ),
-                      phoneNumber: phoneNumber,
-                      name: name));
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
+  Future _reserveTable(int tableId, int placeId) => showDialog<void>(
+      context: context,
+      // ignore: prefer_expression_function_bodies
+      builder: (context) {
+        return ReservationDialog(
+            placeId: placeId,
+            tableId: tableId,
+            maxGuests: widget.tableModel.guests,
+            selectedDateTime: widget.selectedDateTime);
+      });
 
   void _removeReservation(int reservationId, int placeId, int tableNumber) {
     context.read<ReservationsBloc>().add(RemoveReservation(
@@ -350,8 +259,5 @@ class _TableReservationCardState extends State<TableReservationCard> {
         tableNumber: tableNumber));
   }
 
-  bool _canIncrease(int reservedGuests, int maxGuests) =>
-      reservedGuests < maxGuests;
-
-  bool _canDescrease(int reservedGuests) => reservedGuests > 1;
+  Future _editReservation() async {}
 }
