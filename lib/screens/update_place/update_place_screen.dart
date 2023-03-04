@@ -269,12 +269,12 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
             localObj.base64Logo = ImageService.base64String(imageBytes);
           }
         });
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       } catch (e) {
         setState(() {
           _pickImageError = e;
         });
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       }
     }
   }
@@ -294,17 +294,12 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
   }
 
   void _onTablesUpdateTap(PlaceModel place) {
-    final tables = place.tables
-        .map((table) => TableViewModel(table, const [], const []))
-        .toList();
-
     Navigator.push<void>(
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) => TablesBloc(
             placeId: place.id,
-            initialTables: tables,
           )..add(const TablesLoad()),
           child: const TablesScreen(),
         ),

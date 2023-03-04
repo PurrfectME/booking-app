@@ -105,6 +105,7 @@ class PlaceItem extends StatelessWidget {
                         ),
                         child: const Text('Апдейт'),
                       ),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                           onPressed: () => Navigator.push<void>(
                               context,

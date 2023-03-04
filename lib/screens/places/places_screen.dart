@@ -64,109 +64,53 @@ class PlacesScreenState extends State<PlacesScreen> {
         ),
       );
 
-  final filters = <Widget>[
-    Expanded(
-      child: SizedBox(
+  Widget filterItem() => Container(
         width: double.infinity,
         height: 400,
-        child: Card(
-          color: const Color.fromARGB(255, 95, 95, 95),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              children: const [
-                Text('ЗАГОЛОВОК'),
-                SizedBox(height: 20),
-                Text('описание'),
-              ],
-            ),
-          ),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[600]!),
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
         ),
-      ),
-    ),
-    Expanded(
-      child: SizedBox(
-        width: double.infinity,
-        height: 400,
-        child: Card(
-          color: const Color.fromARGB(255, 95, 95, 95),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              children: const [
-                Text('ЗАГОЛОВОК'),
-                SizedBox(height: 20),
-                Text('описание'),
-              ],
-            ),
-          ),
+        child: Column(
+          children: const [
+            SizedBox(height: 20),
+            Text('ЗАГОЛОВОК'),
+            SizedBox(height: 20),
+            Text('описание'),
+          ],
         ),
-      ),
-    ),
-    Expanded(
-      child: SizedBox(
-        width: double.infinity,
-        height: 400,
-        child: Card(
-          color: const Color.fromARGB(255, 95, 95, 95),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              children: const [
-                Text('ЗАГОЛОВОК'),
-                SizedBox(height: 20),
-                Text('описание'),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  ];
+      );
 
   void _onFiltersTap() {
     showBarModalBottomSheet<void>(
       context: context,
-      builder: (context) => Container(
-        color: Colors.black,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            ListView.builder(
-                // physics:
-                //     const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: filters.length,
-                itemBuilder: (context, index) => filters[index]),
-            SizedBox(
-              //TODO: make expanded
-              width: double.infinity,
-              height: 100,
-              child: Card(
-                  color: const Color.fromARGB(255, 95, 95, 95),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Применить фильтры'),
-                    ),
-                  )),
+      builder: (context) => Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              // physics:
+              //     const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              // shrinkWrap: true,
+              itemCount: 5,
+              itemBuilder: (context, index) => filterItem(),
             ),
-          ],
-        ),
+          ),
+          SizedBox(
+            //TODO: make expanded
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: SafeArea(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Применить фильтры'),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

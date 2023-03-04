@@ -67,15 +67,10 @@ class UpdateTableBloc extends Bloc<UpdateTableEvent, UpdateTableState> {
 
           emit(UpdateTableLoaded(table));
         } else if (event is UpdateTable) {
-          final imagesAsString =
-              event.data.imagesBytes.map(ImageService.base64String).join(',');
-
           await DbProvider.db.updateTable(event.data.table);
 
-          if (imagesAsString.isNotNullOrBlank) {
-            await DbProvider.db
-                .updateTableImages(event.data.table.id, imagesAsString);
-          }
+          await DbProvider.db
+              .updateTableImages(event.data.table.id, event.data.imagesBytes);
 
           tablesBloc.add(const TablesLoad());
 

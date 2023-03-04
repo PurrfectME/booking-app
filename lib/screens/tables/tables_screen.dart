@@ -55,8 +55,9 @@ class _TablesScreenState extends State<TablesScreen> {
                                     ),
                                     image: DecorationImage(
                                       opacity: 1,
-                                      image: table.images.isNotEmpty
-                                          ? table.images.last.image
+                                      image: table.imagesBytes.isNotEmpty
+                                          ? Image.memory(table.imagesBytes.last)
+                                              .image
                                           : const AssetImage(
                                               'assets/images/neft.jpg'),
                                       fit: BoxFit.cover,

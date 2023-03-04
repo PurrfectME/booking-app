@@ -15,6 +15,7 @@ import 'navigation.dart';
 void main() {
   //TODO: initialize DbProvider here to create it on app init
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   Bloc.observer = SimpleBlocObserver();
   Bloc.transformer = sequential<dynamic>();
 
@@ -24,7 +25,7 @@ void main() {
       BlocProvider(create: (context) => PlacesBloc()),
       BlocProvider(create: (context) => MenuBloc()),
       // BlocProvider(create: (context) => PlaceInfoBloc()),
-      // BlocProvider(create: (context) => ExtraInfoBloc()),
+      BlocProvider(create: (context) => ExtraInfoBloc()),
       // BlocProvider(create: (context) => UpdatePlaceBloc()),
       // BlocProvider(create: (context) => UpdateTableBloc()),
       // BlocProvider(create: (context) => ReservationsBloc([])),
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
                 // height: 22,
                 // letterSpacing: -0.5%
               ),
-              systemOverlayStyle: SystemUiOverlayStyle.light,
+              systemOverlayStyle: SystemUiOverlayStyle.dark,
               elevation: 0,
             ),
             // backgroundColor: Colors.black,

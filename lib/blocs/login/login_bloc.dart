@@ -19,13 +19,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         final user = UserModel(
             login: event.login,
-            firstSignIn: false,
+            firstSignIn: true,
             accessToken: "response.accessToken",
             refreshToken: "response.refreshToken");
 
-        if (user.firstSignIn) {
-          user.id = await DbProvider.db.createUser(user);
-        }
+        user.id = await DbProvider.db.createUser(user);
+        // if (user.firstSignIn) {
+        //   user.id = await DbProvider.db.createUser(user);
+        // }
 
         emit(LoginSuccess(user: user));
       }

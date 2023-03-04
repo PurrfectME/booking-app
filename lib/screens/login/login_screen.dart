@@ -53,7 +53,7 @@ class LoginScreenState extends State<LoginScreen> {
             );
           } else {
             context.read<PlacesBloc>().add(PlacesLoad());
-            Navigation.toPlaces();
+            Navigation.toMain();
           }
         }
       },

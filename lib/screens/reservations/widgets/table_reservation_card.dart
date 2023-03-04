@@ -1,22 +1,26 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/reservations/widgets/reservation_dialog.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class TableReservationCard extends StatefulWidget {
   final TableModel tableModel;
   final DateTime selectedDateTime;
   final List<UserReservationModel> reservations;
   final UserReservationModel? nextReservation;
-  const TableReservationCard(
-      {super.key,
-      required this.tableModel,
-      required this.selectedDateTime,
-      required this.reservations,
-      required this.nextReservation});
+
+  const TableReservationCard({
+    super.key,
+    required this.tableModel,
+    required this.selectedDateTime,
+    required this.reservations,
+    required this.nextReservation,
+  });
 
   @override
   State<TableReservationCard> createState() => _TableReservationCardState();
@@ -51,50 +55,60 @@ class _TableReservationCardState extends State<TableReservationCard> {
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(9),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Столик ${widget.tableModel.number}',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    if (widget.nextReservation == null)
-                      Text('Гостей: ${widget.tableModel.guests}',
-                          style: const TextStyle(color: Colors.white)),
-                    if (widget.nextReservation != null)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              'Гостей: ${widget.nextReservation!.reservation.guests}',
-                              style: const TextStyle(color: Colors.white)),
-                          Text(
-                              'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.nextReservation!.reservation.start))}',
-                              style: const TextStyle(color: Colors.white)),
-                          Text(
-                              'Гость: ${widget.nextReservation!.user.name}(${widget.nextReservation!.user.login})',
-                              style: const TextStyle(color: Colors.white)),
-                        ],
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(9),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Столик ${widget.tableModel.number}',
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    SizedBox(
-                      height: 32,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.yellow),
+                      if (widget.nextReservation != null) const Spacer(),
+                      if (widget.nextReservation == null)
+                        Text('Гостей: ${widget.tableModel.guests}',
+                            style: const TextStyle(color: Colors.white)),
+                      if (widget.nextReservation != null)
+                        Text(
+                            'Гостей: ${widget.nextReservation!.reservation.guests}',
+                            style: const TextStyle(color: Colors.white)),
+                      if (widget.nextReservation != null)
+                        Text(
+                            'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.nextReservation!.reservation.start))}',
+                            style: const TextStyle(color: Colors.white)),
+                      if (widget.nextReservation != null)
+                        RichText(
+                          text: TextSpan(
+                              text:
+                                  'Гость: ${widget.nextReservation!.user.name} ',
+                              children: [
+                                TextSpan(
+                                    text: widget.nextReservation!.user.login,
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _onPhoneTap(
+                                          widget.nextReservation!.user.login))
+                              ]),
                         ),
-                        onPressed: () async => await _reserveTable(
-                            widget.tableModel.id, widget.tableModel.placeId),
-                        child: const Text(
-                          'Забронировать',
-                          style: TextStyle(color: Colors.black),
+                      const Spacer(),
+                      SizedBox(
+                        height: 32,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.yellow),
+                          ),
+                          onPressed: () async => await _reserveTable(
+                              widget.tableModel.id, widget.tableModel.placeId),
+                          child: const Text(
+                            'Забронировать',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
@@ -260,4 +274,8 @@ class _TableReservationCardState extends State<TableReservationCard> {
   }
 
   Future _editReservation() async {}
+
+  void _onPhoneTap(String phone) {
+    launchUrlString('tel:${phone.replaceAll(' ', '')}');
+  }
 }

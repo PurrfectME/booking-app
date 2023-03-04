@@ -1,30 +1,28 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class TableImageModel {
   int? id;
   int tableId;
-  String images;
-  String base64Images;
-  TableImageModel(
+  Uint8List imageBytes;
+  TableImageModel({
     this.id,
-    this.tableId,
-    this.images,
-    this.base64Images,
-  );
+    required this.tableId,
+    required this.imageBytes,
+  });
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         'id': id,
         'tableId': tableId,
-        'images': images,
-        'base64Images': base64Images,
+        'imageBytes': imageBytes,
       };
 
   factory TableImageModel.fromMap(Map<String, dynamic> map) => TableImageModel(
-        map['id'] as int,
-        map['tableId'] as int,
-        map['images'] as String,
-        map['base64Images'] as String,
+        id: map['id'] != null ? map['id'] as int : null,
+        tableId: map['tableId'] as int,
+        imageBytes: Uint8List.fromList(map['imageBytes'] as List<int>),
       );
 
   String toJson() => json.encode(toMap());
@@ -35,13 +33,12 @@ class TableImageModel {
   TableImageModel copyWith({
     int? id,
     int? tableId,
-    String? images,
-    String? base64Images,
-  }) =>
-      TableImageModel(
-        id ?? this.id,
-        tableId ?? this.tableId,
-        images ?? this.images,
-        base64Images ?? this.base64Images,
-      );
+    Uint8List? imageBytes,
+  }) {
+    return TableImageModel(
+      id: id ?? this.id,
+      tableId: tableId ?? this.tableId,
+      imageBytes: imageBytes ?? this.imageBytes,
+    );
+  }
 }

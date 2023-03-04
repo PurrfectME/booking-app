@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/local/place_info_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/services/image/image_service.dart';
+import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -132,12 +135,18 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 //TODO: optimize here
         if (tableImages.isNotEmpty) {
           for (var i = 0; i < availableTables.length; i++) {
-            final imageToAdd = ImageService.imageFromBase64String(tableImages
-                .firstWhere((tableImage) =>
-                    availableTables[i].table.id == tableImage.tableId)
-                .base64Images);
+            final tempTables =
+                List<TableReservationViewModel>.from(availableTables);
+            availableTables.forEachIndexed((table, index) {
+              final imagesModel = tableImages
+                  .where((x) => x.tableId == table.table.id)
+                  .toList();
 
-            availableTables[i].images.add(imageToAdd);
+              tempTables[index] = table.copyWith(
+                  imagesBytes: List.from(
+                      imagesModel.map<Uint8List>((e) => e.imageBytes)));
+            });
+            availableTables = tempTables;
           }
         }
 

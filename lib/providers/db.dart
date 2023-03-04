@@ -4,6 +4,7 @@ import 'package:booking_app/models/db/user_model.dart';
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/scripts/scripts.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -57,24 +58,24 @@ class DbProvider {
     return tableResult;
   }
 
-  Future<int> updateTableImages(int tableId, String base64Images) async {
+  Future<List<Object?>> updateTableImages(
+      int tableId, List<Uint8List> imagesBytesList) async {
     final db = await database;
+    final batch = db.batch();
 
-    final imageResult = await db.update('tableImages',
-        TableImageModel(null, tableId, '1', base64Images).toMap(),
-        where: 'tableId = ?',
-        whereArgs: [tableId],
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    batch.delete('tableImages', where: 'tableId = ?', whereArgs: [tableId]);
 
-    var res = 0;
-    if (imageResult == 0) {
-      //insert
-      res = await db.insert('tableImages',
-          TableImageModel(null, tableId, '1', base64Images).toMap(),
+    for (final imageBytes in imagesBytesList) {
+      batch.insert(
+          'tableImages',
+          TableImageModel(id: null, tableId: tableId, imageBytes: imageBytes)
+              .toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
     }
 
-    return res;
+    final result = await batch.commit();
+
+    return result;
   }
 
   // Insert PlaceModels in database

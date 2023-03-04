@@ -14,8 +14,7 @@ const String tables = 'CREATE TABLE IF NOT EXISTS tables('
 const String tableImages = 'CREATE TABLE IF NOT EXISTS tableImages('
     'id INTEGER PRIMARY KEY, '
     'tableId INTEGER NOT NULL, '
-    'images TEXT, '
-    'base64Images TEXT, '
+    'imageBytes BLOB, '
     'FOREIGN KEY (tableId) REFERENCES tables (id) ON DELETE CASCADE)';
 
 const String reservations = 'CREATE TABLE IF NOT EXISTS reservations('

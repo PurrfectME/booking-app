@@ -157,20 +157,18 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
                             child: const Text('Добавить фото',
                                 style: TextStyle(color: Colors.white)),
                           )),
-                          if (localObj.imagesBytes?.isNotEmpty ?? false)
+                          if (localObj.imagesBytes.isNotEmpty)
                             Container(
-                              decoration: const BoxDecoration(
-                                  color: Color.fromARGB(255, 169, 181, 178)),
+                              // decoration: const BoxDecoration(
+                              //     color: Color.fromARGB(255, 169, 181, 178)),
                               height: 280,
-                              child: GridView.count(
-                                  mainAxisSpacing: 3,
-                                  crossAxisSpacing: 3,
+                              child: GridView.extent(
+                                  maxCrossAxisExtent: 130,
+                                  childAspectRatio: 1,
+                                  mainAxisSpacing: 8,
+                                  crossAxisSpacing: 8,
                                   shrinkWrap: true,
                                   physics: const ScrollPhysics(),
-                                  crossAxisCount:
-                                      localObj.imagesBytes!.length >= 3
-                                          ? 3
-                                          : localObj.imagesBytes!.length,
                                   primary: false,
                                   children: _previewImages()),
                             ),
@@ -222,13 +220,17 @@ class _UpdateTableScreenState extends State<UpdateTableScreen> {
     if (retrieveError != null) {
       return [retrieveError];
     }
-    if (localObj.imagesBytes?.isNotEmpty ?? false) {
-      return localObj.imagesBytes!
+    if (localObj.imagesBytes.isNotEmpty) {
+      return localObj.imagesBytes
           .map<Widget>((image) => Container(
                 decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    image: DecorationImage(
-                        opacity: 1, image: Image.memory(image).image)),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                        color: const Color.fromRGBO(180, 180, 180, 1))),
+                child: Image.memory(
+                  image,
+                  fit: BoxFit.contain,
+                ),
               ))
           .toList();
     } else if (_pickImageError != null) {

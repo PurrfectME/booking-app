@@ -2,7 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/services/services.dart';
+import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
 part 'tables_event.dart';
 part 'tables_state.dart';
@@ -14,7 +16,6 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
 
   TablesBloc({
     required this.placeId,
-    required List<TableViewModel> initialTables,
   }) : super(TablesLoading()) {
     // tables = List<TableViewModel>.from(initialTables);
 
@@ -22,9 +23,9 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
       if (event is TablesLoad) {
         emit(TablesLoading());
 
-        tables = List<TableViewModel>.from((await DbProvider.db
-                .getTables(placeId))
-            .map<TableViewModel>((e) => TableViewModel(e, const [], const [])));
+        tables = List<TableViewModel>.from(
+            (await DbProvider.db.getTables(placeId))
+                .map<TableViewModel>((e) => TableViewModel(e, const [])));
 
         final tableImages = await DbProvider.db
             .getTableImages(tables.map((e) => e.table.id).toList());
@@ -35,22 +36,16 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
         //TODO: optimize here
 
         if (tableImages.isNotEmpty) {
-          for (var i = 0; i < tables.length; i++) {
-            final imageModelIndex = tableImages.indexWhere(
-                (tableImage) => tables[i].table.id == tableImage.tableId);
+          final tempTables = List<TableViewModel>.from(tables);
+          tables.forEachIndexed((table, index) {
+            final imagesModel =
+                tableImages.where((x) => x.tableId == table.table.id).toList();
 
-            if (imageModelIndex != -1) {
-              final allTableImages =
-                  tableImages[imageModelIndex].base64Images.split(',');
-
-              for (final imageString in allTableImages) {
-                tables[i] = tables[i].copyWith(
-                  images: List.from(tables[i].images)
-                    ..add(ImageService.imageFromBase64String(imageString)),
-                );
-              }
-            }
-          }
+            tempTables[index] = table.copyWith(
+                imagesBytes:
+                    List.from(imagesModel.map<Uint8List>((e) => e.imageBytes)));
+          });
+          tables = tempTables;
         }
 
         emit(TablesLoaded(tables));
