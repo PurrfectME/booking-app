@@ -91,10 +91,13 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                                     : b);
 
                             nextReservation = state.data[index].reservations
-                                .firstWhere((x) =>
+                                .firstWhereOrNull((x) =>
                                     x.reservation.start ==
+                                        closetsDateTimeToNow
+                                            .millisecondsSinceEpoch &&
                                     closetsDateTimeToNow
-                                        .millisecondsSinceEpoch);
+                                            .millisecondsSinceEpoch >=
+                                        now.millisecondsSinceEpoch);
                           }
 
                           //TODO: сделать так, чтобы если с момента брони прошло уже
