@@ -46,7 +46,7 @@ class DbProvider {
     return result;
   }
 
-  Future updateTable(TableModel table, String imageAsString) async {
+  Future updateTable(TableModel table) async {
     final db = await database;
 
     final tableResult = await db.update('tables', table.toMap(),
@@ -54,17 +54,23 @@ class DbProvider {
         whereArgs: [table.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
 
+    return tableResult;
+  }
+
+  Future<int> updateTableImages(int tableId, String base64Images) async {
+    final db = await database;
+
     final imageResult = await db.update('tableImages',
-        TableImageModel(null, table.id, '1', imageAsString).toMap(),
-        where: 'id = ?',
-        whereArgs: [table.id],
+        TableImageModel(null, tableId, '1', base64Images).toMap(),
+        where: 'tableId = ?',
+        whereArgs: [tableId],
         conflictAlgorithm: ConflictAlgorithm.replace);
 
     var res = 0;
     if (imageResult == 0) {
       //insert
       res = await db.insert('tableImages',
-          TableImageModel(null, table.id, '1', imageAsString).toMap(),
+          TableImageModel(null, tableId, '1', base64Images).toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
     }
 

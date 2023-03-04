@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageService {
-  Future displayImagePickerBox(BuildContext context, Function setImageSource) =>
-      showDialog<void>(
+  Future<ImageSource?> displayImagePickerBox(BuildContext context) =>
+      showDialog<ImageSource>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text(
@@ -19,33 +20,32 @@ class ImageService {
               children: <Widget>[
                 ElevatedButton(
                     onPressed: () =>
-                        setImageSource(ImageSource.gallery, context),
+                        Navigator.of(context).pop(ImageSource.gallery),
                     child: const Text('Галерея')),
                 ElevatedButton(
-                    onPressed: () =>
-                        setImageSource(ImageSource.camera, context),
-                    child: const Text('Камера')),
+                  onPressed: () =>
+                      Navigator.of(context).pop(ImageSource.camera),
+                  child: const Text('Камера'),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
               child: const Text('Отмена'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ],
         ),
       );
 
   static Image imageFromBase64String(String? base64String) {
-    if (base64String == null) {
+    if (base64String.isNullOrBlank) {
       //TODO: add default image
       return Image.asset('assets/images/neft.jpg');
     }
     return Image.memory(
-      base64Decode(base64String),
+      base64Decode(base64String!),
       fit: BoxFit.cover,
     );
   }

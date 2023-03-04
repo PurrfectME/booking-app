@@ -1,14 +1,22 @@
 import 'package:bloc/bloc.dart';
+import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/services/image/image_service.dart';
+import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 
 part 'update_table_event.dart';
 part 'update_table_state.dart';
 
 class UpdateTableBloc extends Bloc<UpdateTableEvent, UpdateTableState> {
-  UpdateTableBloc() : super(UpdateTableLoading()) {
+  final TablesBloc tablesBloc;
+
+  TableViewModel table;
+  UpdateTableBloc({
+    required this.table,
+    required this.tablesBloc,
+  }) : super(UpdateTableLoading()) {
     on<UpdateTableEvent>(
       (event, emit) async {
         if (event is UpdateTableLoad) {
@@ -57,14 +65,24 @@ class UpdateTableBloc extends Bloc<UpdateTableEvent, UpdateTableState> {
           //   }
           // }
 
-          emit(UpdateTableLoaded(event.data));
+          emit(UpdateTableLoaded(table));
         } else if (event is UpdateTable) {
           final imagesAsString =
-              event.data.imagesBytes!.map(ImageService.base64String).join(',');
+              event.data.imagesBytes.map(ImageService.base64String).join(',');
 
-          await DbProvider.db.updateTable(event.data.table, imagesAsString);
+          await DbProvider.db.updateTable(event.data.table);
+
+          if (imagesAsString.isNotNullOrBlank) {
+            await DbProvider.db
+                .updateTableImages(event.data.table.id, imagesAsString);
+          }
+
+          tablesBloc.add(const TablesLoad());
+
+          table = event.data;
 
           emit(UpdateTableSuccess(event.data.table.placeId));
+          emit(UpdateTableLoaded(table));
         }
       },
     );

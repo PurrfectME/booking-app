@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class TableViewModel extends Equatable {
   final TableModel table;
   final List<Image> images;
-  final List<Uint8List>? imagesBytes;
+  final List<Uint8List> imagesBytes;
 
   const TableViewModel(
     this.table,

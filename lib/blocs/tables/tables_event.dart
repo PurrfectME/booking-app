@@ -9,12 +9,5 @@ abstract class TablesEvent extends Equatable {
 }
 
 class TablesLoad extends TablesEvent {
-  final int placeId;
-
-  const TablesLoad({
-    required this.placeId,
-  });
-
-  @override
-  List<Object?> get props => [placeId];
+  const TablesLoad();
 }

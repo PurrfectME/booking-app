@@ -132,7 +132,6 @@ class _TableCardState extends State<TableCard> {
                                 .add(UserTableReserve(
                                     widget.model.table.id,
                                     currentGuestsCount,
-                                    widget.model.table.placeId,
                                     widget.selectedDateTime,
                                     //дефолтное время брони 3 часа
                                     widget.selectedDateTime.add(

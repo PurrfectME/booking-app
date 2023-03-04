@@ -8,19 +8,23 @@ part 'tables_event.dart';
 part 'tables_state.dart';
 
 class TablesBloc extends Bloc<TablesEvent, TablesState> {
-  final List<TableViewModel> tables = [];
+  final int placeId;
 
-  TablesBloc({required List<TableViewModel> initialTables})
-      : super(TablesLoading()) {
-    tables.addAll(initialTables);
+  late List<TableViewModel> tables;
+
+  TablesBloc({
+    required this.placeId,
+    required List<TableViewModel> initialTables,
+  }) : super(TablesLoading()) {
+    // tables = List<TableViewModel>.from(initialTables);
 
     on<TablesEvent>((event, emit) async {
       if (event is TablesLoad) {
         emit(TablesLoading());
 
-        tables.addAll((await DbProvider.db.getTables(event.placeId))
-            .map((e) => TableViewModel(e, const [], const []))
-            .toList());
+        tables = List<TableViewModel>.from((await DbProvider.db
+                .getTables(placeId))
+            .map<TableViewModel>((e) => TableViewModel(e, const [], const [])));
 
         final tableImages = await DbProvider.db
             .getTableImages(tables.map((e) => e.table.id).toList());
@@ -40,9 +44,10 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
                   tableImages[imageModelIndex].base64Images.split(',');
 
               for (final imageString in allTableImages) {
-                tables[i]
-                    .images
-                    .add(ImageService.imageFromBase64String(imageString));
+                tables[i] = tables[i].copyWith(
+                  images: List.from(tables[i].images)
+                    ..add(ImageService.imageFromBase64String(imageString)),
+                );
               }
             }
           }

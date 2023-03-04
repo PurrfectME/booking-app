@@ -52,15 +52,8 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             );
           } else {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => BlocProvider(
-                    create: (context) => PlacesBloc()..add(PlacesLoad()),
-                    child: const PlacesScreen(),
-                  ),
-                ),
-                (route) => false);
+            context.read<PlacesBloc>().add(PlacesLoad());
+            Navigation.toPlaces();
           }
         }
       },

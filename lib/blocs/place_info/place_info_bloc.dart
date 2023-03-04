@@ -10,12 +10,16 @@ part 'place_info_event.dart';
 part 'place_info_state.dart';
 
 class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
+  final int id;
+
   PlaceModel? place;
   List<TableReservationViewModel> availableTables = [];
 
-  PlaceInfoBloc() : super(PlaceInfoLoading()) {
+  PlaceInfoBloc({
+    required this.id,
+  }) : super(PlaceInfoLoading()) {
     on<PlaceInfoEvent>((event, emit) async {
-      place = await DbProvider.db.getPlaceById(event.placeId);
+      place = await DbProvider.db.getPlaceById(id);
 
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
@@ -73,8 +77,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                   DateTime.fromMillisecondsSinceEpoch(x.reservation.start);
               final end =
                   DateTime.fromMillisecondsSinceEpoch(x.reservation.end);
-              final selected =
-                  DateTime.fromMillisecondsSinceEpoch(event.dateInMilliseconds);
+              final selected = DateTime.now();
 
               if (table.id == x.reservation.tableId) {
                 if (selected.isAfter(start) && selected.isBefore(end)) {
@@ -152,7 +155,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         if (true) {
           final resultId = await DbProvider.db.createUserReservation(
               LocalUserReservationModel(
-                  placeId: event.placeId,
+                  placeId: id,
                   tableId: event.tableId,
                   start: event.start.millisecondsSinceEpoch,
                   end: event.end.millisecondsSinceEpoch,
@@ -164,7 +167,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           final resId = await DbProvider.db.createReservation(ReservationModel(
               id: null,
               tableId: event.tableId,
-              placeId: event.placeId,
+              placeId: id,
               userId: currentUser.id!,
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,

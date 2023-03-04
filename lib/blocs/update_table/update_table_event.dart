@@ -8,12 +8,7 @@ abstract class UpdateTableEvent extends Equatable {
 }
 
 class UpdateTableLoad extends UpdateTableEvent {
-  final TableViewModel data;
-
-  const UpdateTableLoad(this.data);
-
-  @override
-  List<Object> get props => [data];
+  const UpdateTableLoad();
 }
 
 class UpdateTable extends UpdateTableEvent {

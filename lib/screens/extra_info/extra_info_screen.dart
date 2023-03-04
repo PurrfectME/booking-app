@@ -27,13 +27,11 @@ class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
               SnackBar(content: Text('Ошибка: ${state.error}')),
             );
           } else if (state is ExtraInfoUpdated) {
+            context.read<PlacesBloc>().add(PlacesLoad());
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (context) => BlocProvider(
-                    create: (context) => PlacesBloc()..add(PlacesLoad()),
-                    child: const PlacesScreen(),
-                  ),
+                  builder: (context) => const PlacesScreen(),
                 ),
                 (route) => false);
           }

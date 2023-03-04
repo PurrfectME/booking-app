@@ -129,7 +129,6 @@ class _ReservationDIalogState extends State<ReservationDialog> {
           child: const Text('Подтвердить'),
           onPressed: () {
             context.read<PlaceInfoBloc>().add(AdminTableReserve(
-                placeId: widget.placeId,
                 tableId: widget.tableId,
                 guests: guestsCount,
                 start: widget.selectedDateTime,

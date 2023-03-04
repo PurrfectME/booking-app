@@ -220,9 +220,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                           BoxDecoration(color: Colors.white.withOpacity(0)),
                       child: Center(
                         child: IconButton(
-                          onPressed: () async => await ImageService()
-                              .displayImagePickerBox(
-                                  context, _onImageButtonPressed),
+                          onPressed: _onImageButtonPressed,
                           icon: const Icon(
                             Icons.photo_camera_back_outlined,
                             color: Colors.white,
@@ -246,8 +244,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
         height: 300,
         child: Center(
           child: IconButton(
-            onPressed: () async => await ImageService()
-                .displayImagePickerBox(context, _onImageButtonPressed),
+            onPressed: _onImageButtonPressed,
             icon: const Icon(
               Icons.photo_camera_back_outlined,
               color: Colors.white,
@@ -258,24 +255,27 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
     }
   }
 
-  Future _onImageButtonPressed(ImageSource source, BuildContext context) async {
-    try {
-      final pickedFile = await _picker.pickImage(source: source);
-      final imageBytes = await pickedFile?.readAsBytes();
-      setState(() {
-        _imageFile = pickedFile;
-        _isBlurredImageVisible = false;
+  Future _onImageButtonPressed() async {
+    final source = await ImageService().displayImagePickerBox(context);
+    if (source != null) {
+      try {
+        final pickedFile = await _picker.pickImage(source: source);
+        final imageBytes = await pickedFile?.readAsBytes();
+        setState(() {
+          _imageFile = pickedFile;
+          _isBlurredImageVisible = false;
 
-        if (imageBytes != null) {
-          localObj.base64Logo = ImageService.base64String(imageBytes);
-        }
-      });
-      Navigator.of(context).pop();
-    } catch (e) {
-      setState(() {
-        _pickImageError = e;
-      });
-      Navigator.of(context).pop();
+          if (imageBytes != null) {
+            localObj.base64Logo = ImageService.base64String(imageBytes);
+          }
+        });
+        Navigator.of(context).pop();
+      } catch (e) {
+        setState(() {
+          _pickImageError = e;
+        });
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -303,10 +303,9 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
       MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) => TablesBloc(
+            placeId: place.id,
             initialTables: tables,
-          )..add(TablesLoad(
-              placeId: place.id,
-            )),
+          )..add(const TablesLoad()),
           child: const TablesScreen(),
         ),
       ),
