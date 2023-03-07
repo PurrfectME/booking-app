@@ -121,7 +121,7 @@ class PlacesScreenState extends State<PlacesScreen> {
       MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) =>
-              PlaceInfoBloc(id: place.id)..add(const PlaceInfoLoad()),
+              PlaceInfoBloc(id: place.id)..add(PlaceInfoLoad(DateTime.now())),
           child: const PlaceInfoScreen(),
         ),
       ),

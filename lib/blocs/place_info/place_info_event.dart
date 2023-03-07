@@ -9,7 +9,13 @@ abstract class PlaceInfoEvent extends Equatable {
 }
 
 class PlaceInfoLoad extends PlaceInfoEvent {
-  const PlaceInfoLoad();
+  final DateTime selectedDateTime;
+  const PlaceInfoLoad(
+    this.selectedDateTime,
+  );
+
+  @override
+  List<Object> get props => [selectedDateTime];
 }
 
 class UserTableReserve extends PlaceInfoEvent {

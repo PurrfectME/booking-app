@@ -80,7 +80,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
                   DateTime.fromMillisecondsSinceEpoch(x.reservation.start);
               final end =
                   DateTime.fromMillisecondsSinceEpoch(x.reservation.end);
-              final selected = DateTime.now();
+              final selected = event.selectedDateTime;
 
               if (table.id == x.reservation.tableId) {
                 if (selected.isAfter(start) && selected.isBefore(end)) {

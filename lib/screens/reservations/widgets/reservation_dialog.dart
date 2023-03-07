@@ -85,7 +85,11 @@ class _ReservationDIalogState extends State<ReservationDialog> {
                   IconButton(
                       splashColor: const Color.fromARGB(160, 85, 85, 85),
                       onPressed: _canDescrease(guestsCount)
-                          ? () => guestsCount = guestsCount--
+                          ? () {
+                              setState(() {
+                                guestsCount--;
+                              });
+                            }
                           : null,
                       icon: Icon(Icons.remove,
                           color: _canDescrease(guestsCount)
@@ -93,19 +97,16 @@ class _ReservationDIalogState extends State<ReservationDialog> {
                               : Colors.grey)),
                   SizedBox(
                     width: 15,
-                    child: TextFormField(
-                        initialValue: guestsCount.toString(),
-                        readOnly: true,
-                        style: const TextStyle(color: Colors.black),
-                        onSaved: (newValue) {
-                          name = newValue!;
-                        },
-                        onChanged: (value) => guestsCount = int.parse(value)),
+                    child: Text(guestsCount.toString()),
                   ),
                   IconButton(
                     splashColor: const Color.fromARGB(160, 85, 85, 85),
                     onPressed: _canIncrease(guestsCount, widget.maxGuests)
-                        ? () => guestsCount = guestsCount++
+                        ? () {
+                            setState(() {
+                              guestsCount++;
+                            });
+                          }
                         : null,
                     icon: Icon(Icons.add,
                         color: _canIncrease(guestsCount, widget.maxGuests)

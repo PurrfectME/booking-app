@@ -251,7 +251,8 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
           selectedDateTime =
               DateTime(date.year, date.month, date.day, time.hour, time.minute);
         });
-        context.read<PlaceInfoBloc>().add(const PlaceInfoLoad());
+        context.read<PlaceInfoBloc>().add(PlaceInfoLoad(
+            DateTime(date.year, date.month, date.day, time.hour, time.minute)));
       }
     }
   }

@@ -36,7 +36,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            title: const Text("Резервации"),
+            title: const Text('Резервации'),
           ),
           body: BlocBuilder<ReservationsBloc, ReservationsState>(
             builder: (context, state) {
@@ -83,7 +83,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                                 (e) => DateTime.fromMillisecondsSinceEpoch(
                                     e.reservation.start));
 
-                            final now = DateTime.now();
+                            final now = selectedDateTime;
                             final closetsDateTimeToNow = dates.reduce((a, b) =>
                                 a.difference(now).abs() <
                                         b.difference(now).abs()
@@ -99,8 +99,6 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                                             .millisecondsSinceEpoch >=
                                         now.millisecondsSinceEpoch);
                           }
-
-                          //TODO: сделать так, чтобы если с момента брони прошло уже
 
                           return TableReservationCard(
                               tableModel: state.data[index].table,
@@ -131,12 +129,10 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       final time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
-        builder: (BuildContext context, Widget? child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!,
-          );
-        },
+        builder: (BuildContext context, Widget? child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        ),
       );
       if (time != null) {
         setState(() {
