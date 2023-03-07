@@ -27,8 +27,6 @@ class TableReservationCard extends StatefulWidget {
 }
 
 class _TableReservationCardState extends State<TableReservationCard> {
-  int guestsCount = 1;
-
   @override
   Widget build(BuildContext context) => Card(
         shape: const RoundedRectangleBorder(
@@ -122,14 +120,6 @@ class _TableReservationCardState extends State<TableReservationCard> {
             reserv.reservation.start >=
             widget.selectedDateTime.millisecondsSinceEpoch)
         .toList();
-
-    // filteredReservations.addAll([
-    //   filteredReservations[0],
-    //   filteredReservations[0],
-    //   filteredReservations[0],
-    //   filteredReservations[0],
-    //   filteredReservations[0]
-    // ]);
 
     await showBarModalBottomSheet<void>(
         context: context,

@@ -25,6 +25,8 @@ class UserModel {
         'name': name
       };
 
+  //TODO: fix mapping
+
   factory UserModel.fromMap(Map<String, dynamic> map) {
     if (map['user_id'] == null) {
       return UserModel(

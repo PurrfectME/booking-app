@@ -198,9 +198,6 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
             tables: availableTables,
             logo: ImageService.imageFromBase64String(place!.base64Logo),
             placeName: place!.name)));
-      } else if (event is AdminTableReserve) {
-        final a = 5;
-        if (true) {}
       }
     });
   }

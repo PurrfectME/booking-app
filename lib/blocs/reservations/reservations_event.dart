@@ -31,3 +31,27 @@ class RemoveReservation extends ReservationsEvent {
   @override
   List<Object> get props => [reservationId, placeId, tableNumber];
 }
+
+class AdminTableReserve extends ReservationsEvent {
+  final int placeId;
+  final int tableId;
+  final int guests;
+  final DateTime start;
+  final DateTime end;
+  final String phoneNumber;
+  final String name;
+
+  const AdminTableReserve({
+    required this.placeId,
+    required this.tableId,
+    required this.guests,
+    required this.start,
+    required this.end,
+    required this.phoneNumber,
+    required this.name,
+  });
+
+  @override
+  List<Object> get props =>
+      [placeId, tableId, guests, start, end, phoneNumber, name];
+}

@@ -228,7 +228,7 @@ class DbProvider {
     final db = await database;
     final res = await db.rawQuery(
         'SELECT reservations.*, user.id as user_id, user.login, user.firstSignin, user.accessToken, user.refreshToken, user.name FROM reservations '
-        'LEFT JOIN user on user.id = reservations.userId AND reservations.placeId = $placeId');
+        'LEFT JOIN user on user.id = reservations.userId WHERE reservations.placeId = $placeId');
 
     if (res.isEmpty) {
       return [];
