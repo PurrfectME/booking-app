@@ -4,27 +4,24 @@ import 'dart:convert';
 import 'package:booking_app/models/models.dart';
 
 class UserReservationModel {
-  final UserModel user;
+  final UserModel? user;
   final ReservationModel reservation;
   UserReservationModel({
     required this.user,
     required this.reservation,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'user': user.toMap(),
-      'reservations': reservation.toMap(),
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'user': user?.toMap(),
+        'reservations': reservation.toMap(),
+      };
 
-  factory UserReservationModel.fromMap(Map<String, dynamic> map) {
-    return UserReservationModel(
-      user: UserModel.fromMap(map['user'] as Map<String, dynamic>),
-      reservation:
-          ReservationModel.fromMap(map['reservations'] as Map<String, dynamic>),
-    );
-  }
+  factory UserReservationModel.fromMap(Map<String, dynamic> map) =>
+      UserReservationModel(
+        user: UserModel.fromMap(map['user'] as Map<String, dynamic>),
+        reservation: ReservationModel.fromMap(
+            map['reservations'] as Map<String, dynamic>),
+      );
 
   String toJson() => json.encode(toMap());
 

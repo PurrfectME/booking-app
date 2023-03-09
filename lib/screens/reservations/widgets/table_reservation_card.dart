@@ -80,13 +80,16 @@ class _TableReservationCardState extends State<TableReservationCard> {
                         RichText(
                           text: TextSpan(
                               text:
-                                  'Гость: ${widget.nextReservation!.user.name} ',
+                                  'Гость: ${widget.nextReservation!.reservation.name} ',
                               children: [
                                 TextSpan(
-                                    text: widget.nextReservation!.user.login,
+                                    text: widget.nextReservation!.reservation
+                                        .phoneNumber,
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _onPhoneTap(
-                                          widget.nextReservation!.user.login))
+                                      ..onTap = () => _onPhoneTap(widget
+                                          .nextReservation!
+                                          .reservation
+                                          .phoneNumber!))
                               ]),
                         ),
                       const Spacer(),
@@ -163,7 +166,7 @@ class _TableReservationCardState extends State<TableReservationCard> {
                                           style: const TextStyle(
                                               color: Colors.white)),
                                       Text(
-                                          'Гость: ${reservationModel.user.name}(${reservationModel.user.login})',
+                                          'Гость: ${reservationModel.reservation.name} (${reservationModel.reservation.phoneNumber})',
                                           style: const TextStyle(
                                               color: Colors.white)),
                                     ],

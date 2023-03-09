@@ -228,7 +228,7 @@ class DbProvider {
     final db = await database;
     final res = await db.rawQuery(
         'SELECT reservations.*, user.id as user_id, user.login, user.firstSignin, user.accessToken, user.refreshToken, user.name FROM reservations '
-        'LEFT JOIN user on user.id = reservations.userId WHERE reservations.placeId = $placeId');
+        'LEFT JOIN user on user_id = reservations.userId WHERE reservations.placeId = $placeId');
 
     if (res.isEmpty) {
       return [];
@@ -237,9 +237,14 @@ class DbProvider {
     final userReservationsResult = <UserReservationModel>[];
 
     for (final map in res) {
-      userReservationsResult.add(UserReservationModel(
-          user: UserModel.fromMap(map),
-          reservation: ReservationModel.fromMap(map)));
+      if (map['user_id'] == null && map['userId'] == null) {
+        userReservationsResult.add(UserReservationModel(
+            user: null, reservation: ReservationModel.fromMap(map)));
+      } else {
+        userReservationsResult.add(UserReservationModel(
+            user: UserModel.fromMap(map),
+            reservation: ReservationModel.fromMap(map)));
+      }
     }
 
     return userReservationsResult;
@@ -372,5 +377,17 @@ class DbProvider {
     final result = await db.delete('user');
 
     return result;
+  }
+
+  Future<UserModel?> getByPhoneNumber(String phone) async {
+    final db = await database;
+    final result =
+        await db.query('user', where: 'login = ?', whereArgs: [phone]);
+
+    if (result.isEmpty) {
+      return null;
+    }
+
+    return UserModel.fromMap(result.first);
   }
 }

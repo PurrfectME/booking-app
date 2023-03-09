@@ -12,6 +12,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
       if (event is PlacesLoad) {
         // await DbProvider.db.deleteAllPlaceModels();
         // await DbProvider.db.deleteAllTables();
+        // await DbProvider.db.deleteAllUsers();
 
         emit(PlacesLoading());
 

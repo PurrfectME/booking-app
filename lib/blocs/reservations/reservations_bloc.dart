@@ -16,19 +16,23 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
 
         emit(ReservationsLoaded(result));
       } else if (event is AdminTableReserve) {
+        final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
+
         final resId = await DbProvider.db.createReservation(ReservationModel(
             id: null,
             tableId: event.tableId,
             placeId: event.placeId,
-            userId: null,
+            userId: user?.id,
             phoneNumber: event.phoneNumber,
             name: event.name,
             start: event.start.millisecondsSinceEpoch,
             end: event.end.millisecondsSinceEpoch,
             guests: event.guests));
 
-        emit(ReservationsLoaded(
-            await _initReservations(tables!, event.placeId)));
+        final currentTables = await DbProvider.db.getTables(event.placeId);
+
+        final result = await _initReservations(currentTables, event.placeId);
+        emit(ReservationsLoaded(result));
       } else if (event is RemoveReservation) {
         final isDeleted = await DbProvider.db
             .deleteReservation(event.reservationId, event.placeId);
