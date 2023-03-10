@@ -161,6 +161,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
         // if ok
         // if (response.status == 200)
+        // ignore: literal_only_boolean_expressions
         if (true) {
           final resultId = await DbProvider.db.createUserReservation(
               LocalUserReservationModel(
@@ -177,7 +178,9 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
               id: null,
               tableId: event.tableId,
               placeId: id,
-              userId: currentUser.id!,
+              userId: currentUser.id,
+              name: currentUser.name,
+              phoneNumber: currentUser.login,
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
               guests: event.guests));

@@ -41,7 +41,6 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
         },
         child: Scaffold(
             backgroundColor: Colors.black,
-            // appBar: AppBar(title: const Text("Выбрать место")),
             body: BlocBuilder<PlaceInfoBloc, PlaceInfoState>(
               builder: (context, state) {
                 if (state is PlaceInfoLoading) {
@@ -59,30 +58,25 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                       SliverPersistentHeader(
                         pinned: true,
                         delegate: FlexibleHeaderDelegate(
+                          backgroundColor: Colors.transparent,
                           expandedHeight: 190,
                           statusBarHeight: MediaQuery.of(context).padding.top,
                           background: MutableBackground(
-                            expandedWidget: Stack(
-                              children: [
-                                Container(
-                                  foregroundDecoration: BoxDecoration(
-                                    gradient: LinearGradient(
+                            expandedWidget: Container(
+                                foregroundDecoration: BoxDecoration(
+                                  gradient: LinearGradient(
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                       colors: [
                                         Colors.black.withOpacity(.1),
                                         Colors.black.withOpacity(1),
-                                      ],
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          opacity: 1,
-                                          image: state.data.logo.image,
-                                          fit: BoxFit.cover)),
+                                      ]),
                                 ),
-                              ],
-                            ),
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        opacity: 1,
+                                        image: state.data.logo.image,
+                                        fit: BoxFit.cover))),
                             collapsedColor: Colors.black,
                           ),
                           actions: [
@@ -93,10 +87,6 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                               ),
                               onPressed: () =>
                                   _onDateTimeTap(state.data.placeId),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.search),
-                              onPressed: () {},
                             ),
                           ],
                           children: [
