@@ -1,6 +1,5 @@
+import 'package:booking_app/models/models.dart';
 import 'package:equatable/equatable.dart';
-
-import '../../models/models.dart';
 
 abstract class ReservationsState extends Equatable {
   const ReservationsState();
@@ -40,3 +39,5 @@ class RemoveReservationSuccess extends ReservationsState {
   @override
   List<Object> get props => [tableNumber];
 }
+
+class EditReservationSuccess extends ReservationsState {}

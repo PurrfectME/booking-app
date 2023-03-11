@@ -9,143 +9,166 @@ class ReservationDialog extends StatefulWidget {
   int tableId;
   int maxGuests;
   DateTime selectedDateTime;
+  String phoneNumber;
+  String name;
+  int guestsCount;
+  bool isEdit;
+  int? reservationId;
 
-  ReservationDialog({
-    required this.placeId,
-    required this.tableId,
-    required this.maxGuests,
-    required this.selectedDateTime,
-  });
+  ReservationDialog(
+      {required this.placeId,
+      required this.tableId,
+      required this.maxGuests,
+      required this.selectedDateTime,
+      required this.phoneNumber,
+      required this.name,
+      required this.guestsCount,
+      required this.isEdit,
+      required this.reservationId});
 
   @override
-  State<ReservationDialog> createState() => _ReservationDIalogState();
+  State<ReservationDialog> createState() => _ReservationDialogState();
 }
 
-class _ReservationDIalogState extends State<ReservationDialog> {
-  String phoneNumber = '';
-  String name = '';
-  int guestsCount = 1;
+class _ReservationDialogState extends State<ReservationDialog> {
+  // String phoneNumber = '';
+  // String name = '';
+  // int guestsCount = 1;
 
   @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text(
-        'Данные брони',
-        style: TextStyle(color: Colors.black),
-      ),
-      content: SizedBox(
-        height: 190,
-        child: Form(
-          child: Column(
-            children: [
-              Text(
-                  'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(widget.selectedDateTime)}',
-                  style: const TextStyle(color: Colors.black)),
-              TextFormField(
-                initialValue: phoneNumber,
-                decoration: const InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+  Widget build(BuildContext context) => AlertDialog(
+        title: const Text(
+          'Данные брони',
+          style: TextStyle(color: Colors.black),
+        ),
+        content: SizedBox(
+          height: 190,
+          child: Form(
+            child: Column(
+              children: [
+                Text(
+                    'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(widget.selectedDateTime)}',
+                    style: const TextStyle(color: Colors.black)),
+                TextFormField(
+                  initialValue: widget.phoneNumber,
+                  decoration: const InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: 'Номер телефона',
+                      labelStyle: TextStyle(color: Colors.black)),
+                  keyboardType: TextInputType.number,
+                  onSaved: (newValue) {
+                    widget.phoneNumber = newValue!;
+                  },
+                  onChanged: (value) => widget.phoneNumber = value,
+                  // The validator receives the text that the user has entered.
+                  // validator: validatePhoneNumber),
+                ),
+                TextFormField(
+                  initialValue: widget.name,
+                  decoration: const InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: 'Имя',
+                      labelStyle: TextStyle(color: Colors.black)),
+                  keyboardType: TextInputType.text,
+                  onSaved: (newValue) {
+                    widget.name = newValue!;
+                  },
+                  onChanged: (value) => widget.name = value,
+                  // The validator receives the text that the user has entered.
+                  // validator: validatePhoneNumber),
+                ),
+                Row(
+                  children: [
+                    const Text('Гостей'),
+                    IconButton(
+                        splashColor: const Color.fromARGB(160, 85, 85, 85),
+                        onPressed: _canDescrease(widget.guestsCount)
+                            ? () {
+                                setState(() {
+                                  widget.guestsCount--;
+                                });
+                              }
+                            : null,
+                        icon: Icon(Icons.remove,
+                            color: _canDescrease(widget.guestsCount)
+                                ? Colors.black
+                                : Colors.grey)),
+                    SizedBox(
+                      width: 15,
+                      child: Text(widget.guestsCount.toString()),
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    labelText: 'Номер телефона',
-                    labelStyle: TextStyle(color: Colors.black)),
-                keyboardType: TextInputType.number,
-                onSaved: (newValue) {
-                  phoneNumber = newValue!;
-                },
-                onChanged: (value) => phoneNumber = value,
-                // The validator receives the text that the user has entered.
-                // validator: validatePhoneNumber),
-              ),
-              TextFormField(
-                initialValue: name,
-                decoration: const InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    labelText: 'Имя',
-                    labelStyle: TextStyle(color: Colors.black)),
-                keyboardType: TextInputType.text,
-                onSaved: (newValue) {
-                  name = newValue!;
-                },
-                onChanged: (value) => name = value,
-                // The validator receives the text that the user has entered.
-                // validator: validatePhoneNumber),
-              ),
-              Row(
-                children: [
-                  Text('Гостей'),
-                  IconButton(
+                    IconButton(
                       splashColor: const Color.fromARGB(160, 85, 85, 85),
-                      onPressed: _canDescrease(guestsCount)
-                          ? () {
-                              setState(() {
-                                guestsCount--;
-                              });
-                            }
-                          : null,
-                      icon: Icon(Icons.remove,
-                          color: _canDescrease(guestsCount)
-                              ? Colors.black
-                              : Colors.grey)),
-                  SizedBox(
-                    width: 15,
-                    child: Text(guestsCount.toString()),
-                  ),
-                  IconButton(
-                    splashColor: const Color.fromARGB(160, 85, 85, 85),
-                    onPressed: _canIncrease(guestsCount, widget.maxGuests)
-                        ? () {
-                            setState(() {
-                              guestsCount++;
-                            });
-                          }
-                        : null,
-                    icon: Icon(Icons.add,
-                        color: _canIncrease(guestsCount, widget.maxGuests)
-                            ? Colors.black
-                            : Colors.grey),
-                  ),
-                ],
-              ),
-            ],
+                      onPressed:
+                          _canIncrease(widget.guestsCount, widget.maxGuests)
+                              ? () {
+                                  setState(() {
+                                    widget.guestsCount++;
+                                  });
+                                }
+                              : null,
+                      icon: Icon(Icons.add,
+                          color:
+                              _canIncrease(widget.guestsCount, widget.maxGuests)
+                                  ? Colors.black
+                                  : Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Отмена'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        TextButton(
-          child: const Text('Подтвердить'),
-          onPressed: () {
-            context.read<ReservationsBloc>().add(AdminTableReserve(
-                placeId: widget.placeId,
-                tableId: widget.tableId,
-                guests: guestsCount,
-                start: widget.selectedDateTime,
-                end: DateTime.now().add(
-                  const Duration(hours: 3),
-                ),
-                phoneNumber: phoneNumber,
-                name: name));
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
-    ;
-  }
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Отмена'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Подтвердить'),
+            onPressed: () {
+              if (!widget.isEdit) {
+                context.read<ReservationsBloc>().add(AdminTableReserve(
+                    placeId: widget.placeId,
+                    tableId: widget.tableId,
+                    guests: widget.guestsCount,
+                    start: widget.selectedDateTime,
+                    end: DateTime.now().add(
+                      const Duration(hours: 3),
+                    ),
+                    phoneNumber: widget.phoneNumber,
+                    name: widget.name));
+              } else {
+                context.read<ReservationsBloc>().add(AdminEditReservation(
+                    reservationId: widget.reservationId!,
+                    placeId: widget.placeId,
+                    tableId: widget.tableId,
+                    guests: widget.guestsCount,
+                    start: widget.selectedDateTime,
+                    end: DateTime.now().add(
+                      const Duration(hours: 3),
+                    ),
+                    phoneNumber: widget.phoneNumber,
+                    name: widget.name));
+              }
+
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
 
   bool _canIncrease(int reservedGuests, int maxGuests) =>
       reservedGuests < maxGuests;

@@ -185,14 +185,20 @@ class _TableReservationCardState extends State<TableReservationCard> {
                                           ),
                                           onPressed: () {
                                             //TODO: delete reservation from bottom sheet
-                                            _removeReservation(
-                                                reservationModel
-                                                    .reservation.id!,
+                                            _editReservation(
                                                 reservationModel
                                                     .reservation.placeId,
-                                                widget.tableModel.number);
-                                            filteredReservations
-                                                .removeAt(index);
+                                                reservationModel
+                                                    .reservation.tableId,
+                                                reservationModel
+                                                    .reservation.phoneNumber!,
+                                                reservationModel
+                                                    .reservation.name!,
+                                                reservationModel
+                                                    .reservation.guests,
+                                                reservationModel
+                                                    .reservation.id!);
+                                            // widget.reservations.removeAt(index);
                                           },
                                           child: const Text(
                                             'Редактировать',
@@ -256,7 +262,12 @@ class _TableReservationCardState extends State<TableReservationCard> {
             placeId: placeId,
             tableId: tableId,
             maxGuests: widget.tableModel.guests,
-            selectedDateTime: widget.selectedDateTime);
+            selectedDateTime: widget.selectedDateTime,
+            phoneNumber: '',
+            name: '',
+            guestsCount: 1,
+            isEdit: false,
+            reservationId: null);
       });
 
   void _removeReservation(int reservationId, int placeId, int tableNumber) {
@@ -266,7 +277,20 @@ class _TableReservationCardState extends State<TableReservationCard> {
         tableNumber: tableNumber));
   }
 
-  Future _editReservation() async {}
+  Future _editReservation(int placeId, int tableId, String phone, String name,
+          int guests, int reservationId) =>
+      showDialog<void>(
+          context: context,
+          builder: (context) => ReservationDialog(
+              placeId: placeId,
+              tableId: tableId,
+              maxGuests: widget.tableModel.guests,
+              selectedDateTime: widget.selectedDateTime,
+              phoneNumber: phone,
+              name: name,
+              guestsCount: guests,
+              isEdit: true,
+              reservationId: reservationId));
 
   void _onPhoneTap(String phone) {
     launchUrlString('tel:${phone.replaceAll(' ', '')}');
