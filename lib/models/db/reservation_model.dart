@@ -5,7 +5,9 @@ class ReservationModel {
   int? id;
   int placeId;
   int tableId;
-  int userId;
+  int? userId;
+  String? phoneNumber;
+  String? name;
   int start;
   int end;
   int guests;
@@ -13,7 +15,9 @@ class ReservationModel {
     this.id,
     required this.placeId,
     required this.tableId,
-    required this.userId,
+    this.userId,
+    this.phoneNumber,
+    this.name,
     required this.start,
     required this.end,
     required this.guests,
@@ -24,6 +28,8 @@ class ReservationModel {
     int? placeId,
     int? tableId,
     int? userId,
+    String? phoneNumber,
+    String? name,
     int? start,
     int? end,
     int? guests,
@@ -33,6 +39,8 @@ class ReservationModel {
         placeId: placeId ?? this.placeId,
         tableId: tableId ?? this.tableId,
         userId: userId ?? this.userId,
+        phoneNumber: phoneNumber ?? this.phoneNumber,
+        name: name ?? this.name,
         start: start ?? this.start,
         end: end ?? this.end,
         guests: guests ?? this.guests,
@@ -43,6 +51,8 @@ class ReservationModel {
         'placeId': placeId,
         'tableId': tableId,
         'userId': userId,
+        'phoneNumber': phoneNumber,
+        'name': name,
         'start': start,
         'end': end,
         'guests': guests,
@@ -53,7 +63,10 @@ class ReservationModel {
         id: map['id'] != null ? map['id'] as int : null,
         placeId: map['placeId'] as int,
         tableId: map['tableId'] as int,
-        userId: map['userId'] as int,
+        userId: map['userId'] != null ? map['userId'] as int : null,
+        phoneNumber:
+            map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
+        name: map['name'] != null ? map['name'] as String : null,
         start: map['start'] as int,
         end: map['end'] as int,
         guests: map['guests'] as int,

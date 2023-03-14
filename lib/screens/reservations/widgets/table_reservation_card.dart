@@ -27,8 +27,6 @@ class TableReservationCard extends StatefulWidget {
 }
 
 class _TableReservationCardState extends State<TableReservationCard> {
-  int guestsCount = 1;
-
   @override
   Widget build(BuildContext context) => Card(
         shape: const RoundedRectangleBorder(
@@ -60,7 +58,6 @@ class _TableReservationCardState extends State<TableReservationCard> {
                   padding: const EdgeInsets.all(9),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Столик ${widget.tableModel.number}',
@@ -82,13 +79,16 @@ class _TableReservationCardState extends State<TableReservationCard> {
                         RichText(
                           text: TextSpan(
                               text:
-                                  'Гость: ${widget.nextReservation!.user.name} ',
+                                  'Гость: ${widget.nextReservation!.reservation.name} ',
                               children: [
                                 TextSpan(
-                                    text: widget.nextReservation!.user.login,
+                                    text: widget.nextReservation!.reservation
+                                        .phoneNumber,
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _onPhoneTap(
-                                          widget.nextReservation!.user.login))
+                                      ..onTap = () => _onPhoneTap(widget
+                                          .nextReservation!
+                                          .reservation
+                                          .phoneNumber!))
                               ]),
                         ),
                       const Spacer(),
@@ -122,14 +122,6 @@ class _TableReservationCardState extends State<TableReservationCard> {
             reserv.reservation.start >=
             widget.selectedDateTime.millisecondsSinceEpoch)
         .toList();
-
-    // filteredReservations.addAll([
-    //   filteredReservations[0],
-    //   filteredReservations[0],
-    //   filteredReservations[0],
-    //   filteredReservations[0],
-    //   filteredReservations[0]
-    // ]);
 
     await showBarModalBottomSheet<void>(
         context: context,
@@ -173,7 +165,7 @@ class _TableReservationCardState extends State<TableReservationCard> {
                                           style: const TextStyle(
                                               color: Colors.white)),
                                       Text(
-                                          'Гость: ${reservationModel.user.name}(${reservationModel.user.login})',
+                                          'Гость: ${reservationModel.reservation.name} (${reservationModel.reservation.phoneNumber})',
                                           style: const TextStyle(
                                               color: Colors.white)),
                                     ],
@@ -192,14 +184,24 @@ class _TableReservationCardState extends State<TableReservationCard> {
                                           ),
                                           onPressed: () {
                                             //TODO: delete reservation from bottom sheet
-                                            _removeReservation(
+                                            _editReservation(
+                                                reservationModel
+                                                    .reservation.placeId,
+                                                reservationModel
+                                                    .reservation.tableId,
+                                                reservationModel
+                                                    .reservation.phoneNumber!,
+                                                reservationModel
+                                                    .reservation.name!,
+                                                reservationModel
+                                                    .reservation.guests,
                                                 reservationModel
                                                     .reservation.id!,
                                                 reservationModel
-                                                    .reservation.placeId,
-                                                widget.tableModel.number);
-                                            filteredReservations
-                                                .removeAt(index);
+                                                    .reservation.start,
+                                                reservationModel
+                                                    .reservation.end);
+                                            // widget.reservations.removeAt(index);
                                           },
                                           child: const Text(
                                             'Редактировать',
@@ -263,7 +265,11 @@ class _TableReservationCardState extends State<TableReservationCard> {
             placeId: placeId,
             tableId: tableId,
             maxGuests: widget.tableModel.guests,
-            selectedDateTime: widget.selectedDateTime);
+            selectedDateTime: widget.selectedDateTime,
+            phoneNumber: '',
+            name: '',
+            guestsCount: 1,
+            isEdit: false);
       });
 
   void _removeReservation(int reservationId, int placeId, int tableNumber) {
@@ -273,7 +279,22 @@ class _TableReservationCardState extends State<TableReservationCard> {
         tableNumber: tableNumber));
   }
 
-  Future _editReservation() async {}
+  Future _editReservation(int placeId, int tableId, String phone, String name,
+          int guests, int reservationId, int start, int end) =>
+      showDialog<void>(
+          context: context,
+          builder: (context) => ReservationDialog(
+              placeId: placeId,
+              tableId: tableId,
+              maxGuests: widget.tableModel.guests,
+              selectedDateTime: widget.selectedDateTime,
+              phoneNumber: phone,
+              name: name,
+              guestsCount: guests,
+              isEdit: true,
+              reservationId: reservationId,
+              start: start,
+              end: end));
 
   void _onPhoneTap(String phone) {
     launchUrlString('tel:${phone.replaceAll(' ', '')}');

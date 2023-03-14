@@ -15,11 +15,46 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
         final result = await _initReservations(tables!, event.placeId);
 
         emit(ReservationsLoaded(result));
+      } else if (event is AdminTableReserve) {
+        final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
+
+        final resId = await DbProvider.db.createReservation(ReservationModel(
+            id: null,
+            tableId: event.tableId,
+            placeId: event.placeId,
+            userId: user?.id,
+            phoneNumber: event.phoneNumber,
+            name: event.name,
+            start: event.start.millisecondsSinceEpoch,
+            end: event.end.millisecondsSinceEpoch,
+            guests: event.guests));
+
+        final currentTables = await DbProvider.db.getTables(event.placeId);
+
+        final result = await _initReservations(currentTables, event.placeId);
+        emit(ReservationsLoaded(result));
       } else if (event is RemoveReservation) {
         final isDeleted = await DbProvider.db
             .deleteReservation(event.reservationId, event.placeId);
 
         emit(RemoveReservationSuccess(tableNumber: event.tableNumber));
+        emit(ReservationsLoaded(
+            await _initReservations(tables!, event.placeId)));
+      } else if (event is AdminEditReservation) {
+        final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
+
+        final result = await DbProvider.db.updateReservation(ReservationModel(
+            id: event.reservationId,
+            placeId: event.placeId,
+            tableId: event.tableId,
+            start: event.start.millisecondsSinceEpoch,
+            end: event.end.millisecondsSinceEpoch,
+            guests: event.guests,
+            phoneNumber: event.phoneNumber,
+            name: event.name,
+            userId: user?.id));
+
+        emit(EditReservationSuccess());
         emit(ReservationsLoaded(
             await _initReservations(tables!, event.placeId)));
       }

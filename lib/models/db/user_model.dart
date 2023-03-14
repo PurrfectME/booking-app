@@ -25,10 +25,23 @@ class UserModel {
         'name': name
       };
 
+  //TODO: fix mapping
+
   factory UserModel.fromMap(Map<String, dynamic> map) {
-    if (map['user_id'] == null) {
+    if (map['user_id'] == null && map['userId'] == null) {
       return UserModel(
         id: map['id'] as int,
+        login: map['login'] as String,
+        firstSignIn: map['firstSignin'] as int == 1,
+        accessToken: map['accessToken'] as String,
+        refreshToken: map['refreshToken'] as String,
+        name: map['name'] as String,
+      );
+    }
+
+    if (map['user_id'] == null) {
+      return UserModel(
+        id: map['userId'] as int,
         login: map['login'] as String,
         firstSignIn: map['firstSignin'] as int == 1,
         accessToken: map['accessToken'] as String,
