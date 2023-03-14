@@ -28,7 +28,7 @@ void main() {
       BlocProvider(create: (context) => ExtraInfoBloc()),
       // BlocProvider(create: (context) => UpdatePlaceBloc()),
       // BlocProvider(create: (context) => UpdateTableBloc()),
-      BlocProvider(create: (context) => ReservationsBloc([])),
+      // BlocProvider(create: (context) => ReservationsBloc([])),
     ], child: const MyApp()),
   );
 }

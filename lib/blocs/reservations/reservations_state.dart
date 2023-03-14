@@ -1,5 +1,4 @@
-import 'package:booking_app/models/models.dart';
-import 'package:equatable/equatable.dart';
+part of 'reservations_bloc.dart';
 
 abstract class ReservationsState extends Equatable {
   const ReservationsState();

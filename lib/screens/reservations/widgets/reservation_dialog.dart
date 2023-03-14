@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/screens/reservations/widgets/change_time_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
-import 'package:booking_app/blocs/blocs.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ReservationDialog extends StatefulWidget {
+  final ReservationsBloc reservationsBloc;
   int placeId;
   int tableId;
   int maxGuests;
@@ -20,6 +21,7 @@ class ReservationDialog extends StatefulWidget {
   int? end;
 
   ReservationDialog({
+    required this.reservationsBloc,
     required this.placeId,
     required this.tableId,
     required this.maxGuests,
@@ -149,7 +151,8 @@ class _ReservationDialogState extends State<ReservationDialog> {
                             MaterialStateProperty.all(Colors.black),
                       ),
                       child: Text('Продлить'),
-                      onPressed: () async => await showDialog(
+                      onPressed: () async => showMaterialModalBottomSheet(
+                          expand: true,
                           context: context,
                           builder: (context) => ChangeTimeDialog(
                                 label: 'Продлить',
@@ -188,7 +191,7 @@ class _ReservationDialogState extends State<ReservationDialog> {
                 style: TextStyle(color: Colors.white)),
             onPressed: () {
               if (!widget.isEdit) {
-                context.read<ReservationsBloc>().add(AdminTableReserve(
+                widget.reservationsBloc.add(AdminTableReserve(
                     placeId: widget.placeId,
                     tableId: widget.tableId,
                     guests: widget.guestsCount,
@@ -199,7 +202,7 @@ class _ReservationDialogState extends State<ReservationDialog> {
                     phoneNumber: widget.phoneNumber,
                     name: widget.name));
               } else {
-                context.read<ReservationsBloc>().add(AdminEditReservation(
+                widget.reservationsBloc.add(AdminEditReservation(
                     reservationId: widget.reservationId!,
                     placeId: widget.placeId,
                     tableId: widget.tableId,

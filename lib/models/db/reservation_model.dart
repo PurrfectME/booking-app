@@ -1,17 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class ReservationModel {
-  int? id;
-  int placeId;
-  int tableId;
-  int? userId;
-  String? phoneNumber;
-  String? name;
-  int start;
-  int end;
-  int guests;
-  ReservationModel({
+import 'package:equatable/equatable.dart';
+
+class ReservationModel extends Equatable {
+  final int? id;
+  final int placeId;
+  final int tableId;
+  final int? userId;
+  final String? phoneNumber;
+  final String? name;
+  final int start;
+  final int end;
+  final int guests;
+
+  const ReservationModel({
     this.id,
     required this.placeId,
     required this.tableId,
@@ -76,4 +79,17 @@ class ReservationModel {
 
   factory ReservationModel.fromJson(String source) =>
       ReservationModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  List<Object?> get props => [
+        id,
+        placeId,
+        tableId,
+        userId,
+        phoneNumber,
+        name,
+        start,
+        end,
+        guests,
+      ];
 }

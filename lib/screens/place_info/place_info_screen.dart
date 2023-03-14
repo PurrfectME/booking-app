@@ -55,6 +55,10 @@ class PlaceInfoScreenState extends State<PlaceInfoScreen> {
                 } else if (state is PlaceInfoLoaded) {
                   return CustomScrollView(
                     slivers: [
+                      // TODO
+                      // SliverAppBar(
+
+                      // ),
                       SliverPersistentHeader(
                         pinned: true,
                         delegate: FlexibleHeaderDelegate(

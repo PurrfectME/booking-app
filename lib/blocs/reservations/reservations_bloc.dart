@@ -1,21 +1,22 @@
 import 'package:bloc/bloc.dart';
-import 'package:booking_app/blocs/reservations/reservations_state.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:equatable/equatable.dart';
 
 part 'reservations_event.dart';
+part 'reservations_state.dart';
 
 class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
   final List<TableModel>? tables;
   ReservationsBloc(this.tables) : super(ReservationsLoading()) {
     on<ReservationsEvent>((event, emit) async {
-      emit(ReservationsLoading());
       if (event is ReservationsLoad) {
+        emit(ReservationsLoading());
         final result = await _initReservations(tables!, event.placeId);
 
         emit(ReservationsLoaded(result));
       } else if (event is AdminTableReserve) {
+        emit(ReservationsLoading());
         final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
 
         final resId = await DbProvider.db.createReservation(ReservationModel(
@@ -34,6 +35,8 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
         final result = await _initReservations(currentTables, event.placeId);
         emit(ReservationsLoaded(result));
       } else if (event is RemoveReservation) {
+        emit(ReservationsLoading());
+
         final isDeleted = await DbProvider.db
             .deleteReservation(event.reservationId, event.placeId);
 
@@ -41,6 +44,8 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
         emit(ReservationsLoaded(
             await _initReservations(tables!, event.placeId)));
       } else if (event is AdminEditReservation) {
+        emit(ReservationsLoading());
+
         final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
 
         final result = await DbProvider.db.updateReservation(ReservationModel(

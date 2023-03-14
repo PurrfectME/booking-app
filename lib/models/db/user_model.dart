@@ -1,20 +1,25 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class UserModel {
-  int? id;
-  String login;
-  bool firstSignIn;
-  String accessToken;
-  String refreshToken;
-  String? name;
-  UserModel(
-      {this.id,
-      required this.login,
-      required this.firstSignIn,
-      required this.accessToken,
-      required this.refreshToken,
-      this.name});
+class UserModel extends Equatable {
+  final int? id;
+  final String login;
+  final bool firstSignIn;
+  final String accessToken;
+  final String refreshToken;
+  // TODO: not null
+  final String? name;
+
+  const UserModel({
+    this.id,
+    required this.login,
+    required this.firstSignIn,
+    required this.accessToken,
+    required this.refreshToken,
+    this.name,
+  });
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         'id': id,
@@ -65,18 +70,30 @@ class UserModel {
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  UserModel copyWith(
-          {int? id,
-          String? login,
-          bool? firstSignIn,
-          String? accessToken,
-          String? refreshToken,
-          String? name}) =>
+  UserModel copyWith({
+    int? id,
+    String? login,
+    bool? firstSignIn,
+    String? accessToken,
+    String? refreshToken,
+    String? name,
+  }) =>
       UserModel(
-          id: id ?? this.id,
-          login: login ?? this.login,
-          firstSignIn: firstSignIn ?? this.firstSignIn,
-          accessToken: accessToken ?? this.accessToken,
-          refreshToken: refreshToken ?? this.refreshToken,
-          name: name ?? this.name);
+        id: id ?? this.id,
+        login: login ?? this.login,
+        firstSignIn: firstSignIn ?? this.firstSignIn,
+        accessToken: accessToken ?? this.accessToken,
+        refreshToken: refreshToken ?? this.refreshToken,
+        name: name ?? this.name,
+      );
+
+  @override
+  List<Object?> get props => [
+        id,
+        login,
+        firstSignIn,
+        accessToken,
+        refreshToken,
+        name,
+      ];
 }

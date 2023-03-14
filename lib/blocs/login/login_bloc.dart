@@ -17,13 +17,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         // final response =
         //     await AuthService().signIn(SignInRequest(login: event.login));
 
-        final user = UserModel(
-            login: event.login,
-            firstSignIn: true,
-            accessToken: "response.accessToken",
-            refreshToken: "response.refreshToken");
+        var user = UserModel(
+          login: event.login,
+          firstSignIn: true,
+          accessToken: 'response.accessToken',
+          refreshToken: 'response.refreshToken',
+        );
 
-        user.id = await DbProvider.db.createUser(user);
+        user = user.copyWith(id: await DbProvider.db.createUser(user));
         // if (user.firstSignIn) {
         //   user.id = await DbProvider.db.createUser(user);
         // }

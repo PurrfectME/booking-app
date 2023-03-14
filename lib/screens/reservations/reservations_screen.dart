@@ -1,4 +1,3 @@
-import 'package:booking_app/blocs/reservations/reservations_state.dart';
 import 'package:booking_app/models/db/reservation_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/reservations/widgets/table_reservation_card.dart';
@@ -101,6 +100,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                           }
 
                           return TableReservationCard(
+                              reservationsBloc: context.read(),
                               tableModel: state.data[index].table,
                               selectedDateTime: selectedDateTime,
                               reservations: state.data[index].reservations,

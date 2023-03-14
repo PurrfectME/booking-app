@@ -2,11 +2,13 @@
 import 'dart:convert';
 
 import 'package:booking_app/models/models.dart';
+import 'package:equatable/equatable.dart';
 
-class UserReservationModel {
+class UserReservationModel extends Equatable {
   final UserModel? user;
   final ReservationModel reservation;
-  UserReservationModel({
+
+  const UserReservationModel({
     required this.user,
     required this.reservation,
   });
@@ -27,4 +29,8 @@ class UserReservationModel {
 
   factory UserReservationModel.fromJson(String source) =>
       UserReservationModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [user, reservation];
 }
