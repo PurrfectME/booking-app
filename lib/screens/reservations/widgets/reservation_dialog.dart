@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/screens/reservations/widgets/change_time_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+import 'package:booking_app/blocs/blocs.dart';
 
 class ReservationDialog extends StatefulWidget {
   int placeId;
@@ -14,27 +16,28 @@ class ReservationDialog extends StatefulWidget {
   int guestsCount;
   bool isEdit;
   int? reservationId;
+  int? start;
+  int? end;
 
-  ReservationDialog(
-      {required this.placeId,
-      required this.tableId,
-      required this.maxGuests,
-      required this.selectedDateTime,
-      required this.phoneNumber,
-      required this.name,
-      required this.guestsCount,
-      required this.isEdit,
-      required this.reservationId});
+  ReservationDialog({
+    required this.placeId,
+    required this.tableId,
+    required this.maxGuests,
+    required this.selectedDateTime,
+    required this.phoneNumber,
+    required this.name,
+    required this.guestsCount,
+    required this.isEdit,
+    this.reservationId,
+    this.start,
+    this.end,
+  });
 
   @override
   State<ReservationDialog> createState() => _ReservationDialogState();
 }
 
 class _ReservationDialogState extends State<ReservationDialog> {
-  // String phoneNumber = '';
-  // String name = '';
-  // int guestsCount = 1;
-
   @override
   Widget build(BuildContext context) => AlertDialog(
         title: const Text(
@@ -42,13 +45,25 @@ class _ReservationDialogState extends State<ReservationDialog> {
           style: TextStyle(color: Colors.black),
         ),
         content: SizedBox(
-          height: 190,
+          height: 260,
           child: Form(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                    'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(widget.selectedDateTime)}',
-                    style: const TextStyle(color: Colors.black)),
+                if (!widget.isEdit)
+                  Text(
+                      'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(widget.selectedDateTime)}',
+                      style: const TextStyle(color: Colors.black))
+                else
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          'Начало: ${DateFormat('d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.start!))}'),
+                      Text(
+                          'Конец: ${DateFormat('d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.end!))}'),
+                    ],
+                  ),
                 TextFormField(
                   initialValue: widget.phoneNumber,
                   decoration: const InputDecoration(
@@ -125,19 +140,52 @@ class _ReservationDialogState extends State<ReservationDialog> {
                     ),
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.black),
+                      ),
+                      child: Text('Продлить'),
+                      onPressed: () async => await showDialog(
+                          context: context,
+                          builder: (context) => ChangeTimeDialog(
+                                label: 'Продлить',
+                              )),
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.black),
+                      ),
+                      child: Text('Сдвинуть'),
+                      onPressed: () => null,
+                    )
+                  ],
+                )
               ],
             ),
           ),
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Отмена'),
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.black)),
+            child: const Text(
+              'Отмена',
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: const Text('Подтвердить'),
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.black)),
+            child: const Text('Подтвердить',
+                style: TextStyle(color: Colors.white)),
             onPressed: () {
               if (!widget.isEdit) {
                 context.read<ReservationsBloc>().add(AdminTableReserve(
@@ -145,7 +193,7 @@ class _ReservationDialogState extends State<ReservationDialog> {
                     tableId: widget.tableId,
                     guests: widget.guestsCount,
                     start: widget.selectedDateTime,
-                    end: DateTime.now().add(
+                    end: widget.selectedDateTime.add(
                       const Duration(hours: 3),
                     ),
                     phoneNumber: widget.phoneNumber,

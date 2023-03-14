@@ -58,7 +58,6 @@ class _TableReservationCardState extends State<TableReservationCard> {
                   padding: const EdgeInsets.all(9),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Столик ${widget.tableModel.number}',
@@ -197,7 +196,11 @@ class _TableReservationCardState extends State<TableReservationCard> {
                                                 reservationModel
                                                     .reservation.guests,
                                                 reservationModel
-                                                    .reservation.id!);
+                                                    .reservation.id!,
+                                                reservationModel
+                                                    .reservation.start,
+                                                reservationModel
+                                                    .reservation.end);
                                             // widget.reservations.removeAt(index);
                                           },
                                           child: const Text(
@@ -266,8 +269,7 @@ class _TableReservationCardState extends State<TableReservationCard> {
             phoneNumber: '',
             name: '',
             guestsCount: 1,
-            isEdit: false,
-            reservationId: null);
+            isEdit: false);
       });
 
   void _removeReservation(int reservationId, int placeId, int tableNumber) {
@@ -278,7 +280,7 @@ class _TableReservationCardState extends State<TableReservationCard> {
   }
 
   Future _editReservation(int placeId, int tableId, String phone, String name,
-          int guests, int reservationId) =>
+          int guests, int reservationId, int start, int end) =>
       showDialog<void>(
           context: context,
           builder: (context) => ReservationDialog(
@@ -290,7 +292,9 @@ class _TableReservationCardState extends State<TableReservationCard> {
               name: name,
               guestsCount: guests,
               isEdit: true,
-              reservationId: reservationId));
+              reservationId: reservationId,
+              start: start,
+              end: end));
 
   void _onPhoneTap(String phone) {
     launchUrlString('tel:${phone.replaceAll(' ', '')}');
