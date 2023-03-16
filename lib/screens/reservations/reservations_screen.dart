@@ -83,7 +83,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                                     e.reservation.start));
 
                             final now = selectedDateTime;
-                            final closetsDateTimeToNow = dates.reduce((a, b) =>
+                            final closestDateTimeToNow = dates.reduce((a, b) =>
                                 a.difference(now).abs() <
                                         b.difference(now).abs()
                                     ? a
@@ -92,11 +92,8 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                             nextReservation = state.data[index].reservations
                                 .firstWhereOrNull((x) =>
                                     x.reservation.start ==
-                                        closetsDateTimeToNow
-                                            .millisecondsSinceEpoch &&
-                                    closetsDateTimeToNow
-                                            .millisecondsSinceEpoch >=
-                                        now.millisecondsSinceEpoch);
+                                    closestDateTimeToNow
+                                        .millisecondsSinceEpoch);
                           }
 
                           return TableReservationCard(
