@@ -398,4 +398,31 @@ class DbProvider {
 
     return UserModel.fromMap(result.first);
   }
+
+  Future<List<UserReservationModel>> getArchivedReservations(
+      int placeId) async {
+    final db = await database;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final result = await db.query('reservations',
+        where: 'placeId = ? AND end < ?', whereArgs: [placeId, now]);
+
+    if (result.isEmpty) {
+      return [];
+    }
+
+    final userReservationsResult = <UserReservationModel>[];
+
+    for (final map in result) {
+      if (map['user_id'] == null && map['userId'] == null) {
+        userReservationsResult.add(UserReservationModel(
+            user: null, reservation: ReservationModel.fromMap(map)));
+      } else {
+        userReservationsResult.add(UserReservationModel(
+            user: UserModel.fromMap(map),
+            reservation: ReservationModel.fromMap(map)));
+      }
+    }
+
+    return userReservationsResult;
+  }
 }

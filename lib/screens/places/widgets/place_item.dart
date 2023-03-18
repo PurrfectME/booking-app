@@ -118,6 +118,19 @@ class PlaceItem extends StatelessWidget {
                                         child: const ReservationsScreen(),
                                       ))),
                           child: const Text('Резервации')),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                          onPressed: () => Navigator.push<void>(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                        create: (context) =>
+                                            ReservationsBloc(place.tables)
+                                              ..add(ReservationsLoad(
+                                                  placeId: place.id)),
+                                        child: const ReservationsScreen(),
+                                      ))),
+                          child: const Text('Архив')),
                     ],
                   )
                 ],
