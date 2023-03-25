@@ -183,7 +183,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
               phoneNumber: currentUser.login,
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
-              guests: event.guests));
+              guests: event.guests,
+              isOpened: false));
 
           final tableIndex = availableTables
               .indexWhere((table) => table.table.id == event.tableId);

@@ -28,7 +28,8 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
             name: event.name,
             start: event.start.millisecondsSinceEpoch,
             end: event.end.millisecondsSinceEpoch,
-            guests: event.guests));
+            guests: event.guests,
+            isOpened: false));
 
         final currentTables = await DbProvider.db.getTables(event.placeId);
 
@@ -57,7 +58,8 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
             guests: event.guests,
             phoneNumber: event.phoneNumber,
             name: event.name,
-            userId: user?.id));
+            userId: user?.id,
+            isOpened: false));
 
         emit(EditReservationSuccess());
         emit(ReservationsLoaded(

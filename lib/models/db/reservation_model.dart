@@ -13,6 +13,7 @@ class ReservationModel extends Equatable {
   final int start;
   final int end;
   final int guests;
+  final bool isOpened;
 
   const ReservationModel({
     this.id,
@@ -24,6 +25,7 @@ class ReservationModel extends Equatable {
     required this.start,
     required this.end,
     required this.guests,
+    required this.isOpened,
   });
 
   ReservationModel copyWith({
@@ -36,6 +38,7 @@ class ReservationModel extends Equatable {
     int? start,
     int? end,
     int? guests,
+    bool? isOpened,
   }) =>
       ReservationModel(
         id: id ?? this.id,
@@ -47,6 +50,7 @@ class ReservationModel extends Equatable {
         start: start ?? this.start,
         end: end ?? this.end,
         guests: guests ?? this.guests,
+        isOpened: isOpened ?? this.isOpened,
       );
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -59,21 +63,22 @@ class ReservationModel extends Equatable {
         'start': start,
         'end': end,
         'guests': guests,
+        'isOpened': isOpened ? 1 : 0
       };
 
   factory ReservationModel.fromMap(Map<String, dynamic> map) =>
       ReservationModel(
-        id: map['id'] != null ? map['id'] as int : null,
-        placeId: map['placeId'] as int,
-        tableId: map['tableId'] as int,
-        userId: map['userId'] != null ? map['userId'] as int : null,
-        phoneNumber:
-            map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
-        name: map['name'] != null ? map['name'] as String : null,
-        start: map['start'] as int,
-        end: map['end'] as int,
-        guests: map['guests'] as int,
-      );
+          id: map['id'] != null ? map['id'] as int : null,
+          placeId: map['placeId'] as int,
+          tableId: map['tableId'] as int,
+          userId: map['userId'] != null ? map['userId'] as int : null,
+          phoneNumber:
+              map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
+          name: map['name'] != null ? map['name'] as String : null,
+          start: map['start'] as int,
+          end: map['end'] as int,
+          guests: map['guests'] as int,
+          isOpened: map['isOpened'] == 1 ? true : false);
 
   String toJson() => json.encode(toMap());
 
@@ -91,5 +96,6 @@ class ReservationModel extends Equatable {
         start,
         end,
         guests,
+        isOpened
       ];
 }

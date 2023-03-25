@@ -40,7 +40,7 @@ class UserModel extends Equatable {
         firstSignIn: map['firstSignin'] as int == 1,
         accessToken: map['accessToken'] as String,
         refreshToken: map['refreshToken'] as String,
-        name: map['name'] as String,
+        name: map['name'] as String?,
       );
     }
 
