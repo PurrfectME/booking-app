@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/new_app/tables/widgets/reservation_label.dart';
+import 'package:booking_app/screens/new_app/tables/widgets/table_status.dart';
 import 'package:collection/collection.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +19,7 @@ class TablesScreen extends StatefulWidget {
 
 class _TablesScreenState extends State<TablesScreen> {
   // DateTime n = DateTime.now();
-  DateTime selectedDateTime = DateTime(2023, 03, 25);
+  DateTime selectedDateTime = DateTime.now();
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -54,10 +55,10 @@ class _TablesScreenState extends State<TablesScreen> {
                         DateTime? start;
                         DateTime? end;
                         var hasReservationsToday = false;
-                        bool isYellow = false;
-                        bool isRed = false;
+                        var tableStatus = TableStatus.green;
                         UserReservationModel? nextReservation;
 
+                        //TODO: сделать на стороне БД?
                         if (reservationVm.reservations.isNotEmpty) {
                           var dates = reservationVm.reservations.map((e) =>
                               DateTime.fromMillisecondsSinceEpoch(
@@ -68,148 +69,128 @@ class _TablesScreenState extends State<TablesScreen> {
                           dates = dates.where(
                               (date) => date.isAtSameDayAs(selectedDateTime));
 
-                          final closestDateTimeToNow = dates.reduce((a, b) =>
-                              a.difference(now).abs() < b.difference(now).abs()
-                                  ? a
-                                  : b);
+                          if (dates.isNotEmpty) {
+                            final closestDateTimeToNow = dates.reduce((a, b) =>
+                                a.difference(now).abs() <
+                                        b.difference(now).abs()
+                                    ? a
+                                    : b);
 
-                          nextReservation = reservationVm.reservations
-                              .firstWhereOrNull((x) =>
-                                  x.reservation.start ==
-                                  closestDateTimeToNow.millisecondsSinceEpoch);
+                            nextReservation = reservationVm.reservations
+                                .firstWhereOrNull((x) =>
+                                    x.reservation.start ==
+                                    closestDateTimeToNow
+                                        .millisecondsSinceEpoch);
 
-                          if (nextReservation != null) {
-                            start = DateTime.fromMillisecondsSinceEpoch(
-                                nextReservation.reservation.start);
+                            if (nextReservation != null) {
+                              start = DateTime.fromMillisecondsSinceEpoch(
+                                  nextReservation.reservation.start);
 
-                            end = DateTime.fromMillisecondsSinceEpoch(
-                                nextReservation.reservation.end);
+                              end = DateTime.fromMillisecondsSinceEpoch(
+                                  nextReservation.reservation.end);
 
-                            hasReservationsToday = true;
+                              hasReservationsToday = true;
 
-                            if ((start.isAtSameMomentAs(selectedDateTime) ||
-                                    start.isAfter(selectedDateTime)) &&
-                                end.isAfter(selectedDateTime)) {
-                              if (!nextReservation.reservation.isOpened) {
-                                isYellow = true;
-                              } else {
-                                isRed = true;
+                              if ((start.isAtSameMomentAs(selectedDateTime) ||
+                                      start.isAfter(selectedDateTime)) &&
+                                  end.isAfter(selectedDateTime)) {
+                                if (!nextReservation.reservation.isOpened) {
+                                  tableStatus = TableStatus.yellow;
+                                } else {
+                                  tableStatus = TableStatus.red;
+                                }
                               }
                             }
                           }
                         }
 
-                        //TODO: сделать на стороне БД
-                        // final a = reservationVm.reservations
-                        //     .where((r) => !DateTime.fromMillisecondsSinceEpoch(
-                        //             r.reservation.start)
-                        //         .isBefore(selectedDateTime))
-                        //     .toList();
-
-                        // if (a.isNotEmpty) {
-                        //   final reservation = a.first;
-
-                        //   start = DateTime.fromMillisecondsSinceEpoch(
-                        //       reservation.reservation.start);
-
-                        //   end = DateTime.fromMillisecondsSinceEpoch(
-                        //       reservation.reservation.end);
-
-                        //   if (start.difference(selectedDateTime).inDays == 0) {
-                        //     hasReservationsToday = true;
-
-                        //     if (start.isAtSameHourAs(selectedDateTime) &&
-                        //         start.isAtSameMinuteAs(selectedDateTime) &&
-                        //         !reservation.reservation.isOpened) {
-                        //       isYellow = true;
-                        //       //добавить для брони поле, что гости уже пришли
-                        //     }
-                        //   }
-                        // }
-
-                        return Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: const EdgeInsets.all(4),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ReservationLabel(
-                                        hasReservationsToday:
-                                            hasReservationsToday,
-                                        start: start,
-                                        end: end),
-                                    Container(
-                                      width: 13,
-                                      height: 13,
-                                      decoration: BoxDecoration(
-                                          color: isYellow
-                                              ? Colors.yellowAccent
-                                              : isRed
-                                                  ? Colors.red
-                                                  : Colors.green,
-                                          shape: BoxShape.circle),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Center(
-                                child: Container(
-                                  width: 70,
-                                  height: 70,
-                                  margin: EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                      color: isYellow
-                                          ? Colors.yellowAccent
-                                          : isRed
-                                              ? Colors.red
-                                              : Colors.green,
-                                      shape: BoxShape.circle),
-                                ),
-                              ),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10)),
-                                ),
-                                child: Padding(
+                        return GestureDetector(
+                          onTap: () => null,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            margin: const EdgeInsets.all(4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
                                   padding: const EdgeInsets.all(8),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('Зал'),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                              'Стол ${reservationVm.table.number}'),
-                                          Row(
-                                            children: [
-                                              Text(reservationVm.table.guests
-                                                  .toString()),
-                                              const Icon(Icons.people),
-                                            ],
-                                          )
-                                        ],
+                                      ReservationLabel(
+                                          hasReservationsToday:
+                                              hasReservationsToday,
+                                          start: start,
+                                          end: end),
+                                      Container(
+                                        width: 13,
+                                        height: 13,
+                                        decoration: BoxDecoration(
+                                            color: tableStatus ==
+                                                    TableStatus.yellow
+                                                ? Colors.yellowAccent
+                                                : tableStatus == TableStatus.red
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                            shape: BoxShape.circle),
                                       )
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
+                                Center(
+                                  child: Container(
+                                    width: 70,
+                                    height: 70,
+                                    margin: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                        color: tableStatus == TableStatus.yellow
+                                            ? Colors.yellowAccent
+                                            : tableStatus == TableStatus.red
+                                                ? Colors.red
+                                                : Colors.green,
+                                        shape: BoxShape.circle),
+                                  ),
+                                ),
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text('Зал'),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                                'Стол ${reservationVm.table.number}'),
+                                            Row(
+                                              children: [
+                                                Text(reservationVm.table.guests
+                                                    .toString()),
+                                                const Icon(Icons.people),
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }).toList(),
