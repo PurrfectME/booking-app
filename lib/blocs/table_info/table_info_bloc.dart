@@ -9,12 +9,21 @@ part 'table_info_state.dart';
 class TableInfoBloc extends Bloc<TableInfoEvent, TableInfoState> {
   TableInfoBloc() : super(TableInfoLoading()) {
     on<TableInfoEvent>((event, emit) async {
-      // TODO: implement event handler
       if (event is TableInfoLoad) {
         emit(TableInfoLoading());
 
-        final tableReservations = await DbProvider.db
-            .getTableReservations(event.placeId, event.table.id);
+        final tableReservations = (await DbProvider.db
+                .getTableReservations(event.table.placeId, event.table.id))
+            .where((x) {
+          final start = DateTime.fromMillisecondsSinceEpoch(x.start);
+          final now = DateTime.now();
+          //TODO: 20 - максимальное время ожидания гостя
+          if (start.isAfter(now) || now.difference(start).inMinutes < 20) {
+            return true;
+          }
+
+          return false;
+        }).toList();
 
         final result = TableInfoViewModel(
             table: event.table, reservations: tableReservations);

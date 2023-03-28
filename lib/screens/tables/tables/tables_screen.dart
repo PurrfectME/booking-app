@@ -1,7 +1,8 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
-import 'package:booking_app/screens/new_app/tables/widgets/reservation_label.dart';
-import 'package:booking_app/screens/new_app/tables/widgets/table_status.dart';
+import 'package:booking_app/screens/table_info/table_info_screen.dart';
+import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
+import 'package:booking_app/screens/tables/tables/widgets/table_status.dart';
 import 'package:collection/collection.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -59,6 +60,7 @@ class _TablesScreenState extends State<TablesScreen> {
                         UserReservationModel? nextReservation;
 
                         //TODO: сделать на стороне БД?
+                        //TODO: вытягивать резервации актуальные
                         if (reservationVm.reservations.isNotEmpty) {
                           var dates = reservationVm.reservations.map((e) =>
                               DateTime.fromMillisecondsSinceEpoch(
@@ -91,21 +93,29 @@ class _TablesScreenState extends State<TablesScreen> {
 
                               hasReservationsToday = true;
 
-                              if ((start.isAtSameMomentAs(selectedDateTime) ||
-                                      start.isAfter(selectedDateTime)) &&
-                                  end.isAfter(selectedDateTime)) {
-                                if (!nextReservation.reservation.isOpened) {
-                                  tableStatus = TableStatus.yellow;
-                                } else {
-                                  tableStatus = TableStatus.red;
-                                }
+                              if (!nextReservation.reservation.isOpened &&
+                                  now.isAfter(start)) {
+                                tableStatus = TableStatus.yellow;
                               }
+
+                              if (nextReservation.reservation.isOpened) {
+                                tableStatus = TableStatus.red;
+                              }
+
+                              // if ((start.isAtSameMomentAs(now) || start.isAfter(now)) &&
+                              //     end.isAfter(now)) {
+                              //   if (!nextReservation.isOpened && start) {
+                              //     tableStatus = TableStatus.yellow;
+                              //   } else {
+                              //     tableStatus = TableStatus.red;
+                              //   }
+                              // }
                             }
                           }
                         }
 
                         return GestureDetector(
-                          onTap: () => null,
+                          onTap: () => _onTableUpdatePress(reservationVm.table),
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.black),
@@ -122,6 +132,7 @@ class _TablesScreenState extends State<TablesScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
+                                      //TODO: передавать статус стола и отображать корреткный лейбл
                                       ReservationLabel(
                                           hasReservationsToday:
                                               hasReservationsToday,
@@ -203,6 +214,22 @@ class _TablesScreenState extends State<TablesScreen> {
             }
           },
         ));
+  }
+
+  void _onTableUpdatePress(TableModel table) {
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) =>
+              TableInfoBloc()..add(TableInfoLoad(table: table)),
+          child: TableInfoScreen(
+            tableNumber: table.number,
+            tableGuests: table.guests,
+          ),
+        ),
+      ),
+    );
   }
 
   Future _onDateTimeTap() async {

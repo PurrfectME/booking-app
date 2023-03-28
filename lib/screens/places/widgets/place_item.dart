@@ -5,7 +5,7 @@ import 'package:booking_app/services/image/image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../new_app/tables/tables_screen.dart';
+import '../../tables/tables/tables_screen.dart';
 
 class PlaceItem extends StatelessWidget {
   final PlaceModel place;
