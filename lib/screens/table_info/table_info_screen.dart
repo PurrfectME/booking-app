@@ -1,5 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/reserve_table/reserve_table_screen.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:collection/collection.dart';
 import 'package:dartx/dartx.dart';
@@ -13,8 +15,12 @@ import '../tables/tables/widgets/table_status.dart';
 class TableInfoScreen extends StatefulWidget {
   final int tableNumber;
   final int tableGuests;
+  final ReservationsBloc reservationsBloc;
   const TableInfoScreen(
-      {super.key, required this.tableNumber, required this.tableGuests});
+      {super.key,
+      required this.tableNumber,
+      required this.tableGuests,
+      required this.reservationsBloc});
 
   @override
   State<TableInfoScreen> createState() => _TableInfoScreenState();
@@ -170,7 +176,25 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                                       backgroundColor:
                                           MaterialStateProperty.all(
                                               Colors.black)),
-                                  onPressed: null,
+                                  onPressed: () {
+                                    Navigator.push<void>(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BlocProvider(
+                                          create: (context) => ReserveTableBloc(
+                                              reservationsBloc:
+                                                  widget.reservationsBloc)
+                                            ..add(ReserveTableLoad(
+                                                tableId: state.data.table.id,
+                                                placeId:
+                                                    state.data.table.placeId)),
+                                          child: ReserveTableScreen(
+                                              tableNumber:
+                                                  state.data.table.number),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                   child: const Text(
                                     'Забронировать',
                                     style: TextStyle(

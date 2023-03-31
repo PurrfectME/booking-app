@@ -217,6 +217,7 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void _onTableUpdatePress(TableModel table) {
+    final reservationsBloc = context.read<ReservationsBloc>();
     Navigator.push<void>(
       context,
       MaterialPageRoute(
@@ -224,9 +225,9 @@ class _TablesScreenState extends State<TablesScreen> {
           create: (context) =>
               TableInfoBloc()..add(TableInfoLoad(table: table)),
           child: TableInfoScreen(
-            tableNumber: table.number,
-            tableGuests: table.guests,
-          ),
+              tableNumber: table.number,
+              tableGuests: table.guests,
+              reservationsBloc: reservationsBloc),
         ),
       ),
     );

@@ -14,6 +14,7 @@ class ReservationModel extends Equatable {
   final int end;
   final int guests;
   final bool isOpened;
+  final bool excludeReshuffle;
 
   const ReservationModel({
     this.id,
@@ -26,6 +27,7 @@ class ReservationModel extends Equatable {
     required this.end,
     required this.guests,
     required this.isOpened,
+    required this.excludeReshuffle,
   });
 
   ReservationModel copyWith({
@@ -39,6 +41,7 @@ class ReservationModel extends Equatable {
     int? end,
     int? guests,
     bool? isOpened,
+    bool? excludeReshuffle,
   }) =>
       ReservationModel(
         id: id ?? this.id,
@@ -51,6 +54,7 @@ class ReservationModel extends Equatable {
         end: end ?? this.end,
         guests: guests ?? this.guests,
         isOpened: isOpened ?? this.isOpened,
+        excludeReshuffle: excludeReshuffle ?? this.excludeReshuffle,
       );
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -63,7 +67,8 @@ class ReservationModel extends Equatable {
         'start': start,
         'end': end,
         'guests': guests,
-        'isOpened': isOpened ? 1 : 0
+        'isOpened': isOpened ? 1 : 0,
+        'excludeReshuffle': excludeReshuffle ? 1 : 0,
       };
 
   factory ReservationModel.fromMap(Map<String, dynamic> map) =>
@@ -78,7 +83,8 @@ class ReservationModel extends Equatable {
           start: map['start'] as int,
           end: map['end'] as int,
           guests: map['guests'] as int,
-          isOpened: map['isOpened'] == 1 ? true : false);
+          isOpened: map['isOpened'] == 1,
+          excludeReshuffle: map['excludeReshuffle'] == 1);
 
   String toJson() => json.encode(toMap());
 
@@ -96,6 +102,7 @@ class ReservationModel extends Equatable {
         start,
         end,
         guests,
-        isOpened
+        isOpened,
+        excludeReshuffle
       ];
 }

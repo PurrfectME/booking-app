@@ -184,7 +184,8 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
               guests: event.guests,
-              isOpened: false));
+              isOpened: false,
+              excludeReshuffle: false));
 
           final tableIndex = availableTables
               .indexWhere((table) => table.table.id == event.tableId);

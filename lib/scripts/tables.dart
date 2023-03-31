@@ -28,6 +28,7 @@ const String reservations = 'CREATE TABLE IF NOT EXISTS reservations('
     'end INTEGER NOT NULL, '
     'guests INTEGER NOT NULL, '
     'isOpened INTEGER NOT NULL, '
+    'excludeReshuffle INTEGER NOT NULL, '
     'FOREIGN KEY (placeId) REFERENCES places (id) ON DELETE CASCADE, '
     //TODO: должен ли быть каскад при удалении юзера?
     'FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE, '
