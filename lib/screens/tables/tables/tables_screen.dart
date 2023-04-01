@@ -115,7 +115,7 @@ class _TablesScreenState extends State<TablesScreen> {
                         }
 
                         return GestureDetector(
-                          onTap: () => _onTableUpdatePress(reservationVm.table),
+                          onTap: () => _onTablePress(reservationVm.table),
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.black),
@@ -216,18 +216,19 @@ class _TablesScreenState extends State<TablesScreen> {
         ));
   }
 
-  void _onTableUpdatePress(TableModel table) {
+  void _onTablePress(TableModel table) {
     final reservationsBloc = context.read<ReservationsBloc>();
     Navigator.push<void>(
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (context) =>
-              TableInfoBloc()..add(TableInfoLoad(table: table)),
+          create: (context) => TableInfoBloc()
+            ..add(TableInfoLoad(placeId: table.placeId, tableId: table.id)),
           child: TableInfoScreen(
-              tableNumber: table.number,
-              tableGuests: table.guests,
-              reservationsBloc: reservationsBloc),
+            tableNumber: table.number,
+            tableGuests: table.guests,
+            reservationsBloc: reservationsBloc,
+          ),
         ),
       ),
     );

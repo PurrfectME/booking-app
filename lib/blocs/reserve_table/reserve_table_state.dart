@@ -32,4 +32,14 @@ class ReserveTableLoaded extends ReserveTableState {
   List<Object> get props => [tableId, placeId];
 }
 
-class ReserveTableSuccess extends ReserveTableState {}
+class ReserveTableSuccess extends ReserveTableState {
+  final int tableId;
+  final int placeId;
+  const ReserveTableSuccess({
+    required this.tableId,
+    required this.placeId,
+  });
+
+  @override
+  List<Object> get props => [tableId, placeId];
+}

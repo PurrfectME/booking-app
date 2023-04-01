@@ -1,8 +1,12 @@
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
+import 'package:booking_app/blocs/table_info/table_info_bloc.dart';
+import 'package:booking_app/models/local/reservation_time.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/reserve_table/widgets/datetime_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class ReserveTableScreen extends StatefulWidget {
   final int tableNumber;
@@ -20,6 +24,7 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
   DateTime end = DateTime.now();
   String comment = '';
   bool excludeReshuffle = false;
+  bool dateIsSet = false;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -27,7 +32,16 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
           title: Text('Забронировать стол №${widget.tableNumber}'),
         ),
         body: BlocConsumer<ReserveTableBloc, ReserveTableState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is ReserveTableSuccess) {
+              final a = context.read<TableInfoBloc>();
+              Navigator.pop(
+                  context,
+                  a
+                    ..add(TableInfoLoad(
+                        placeId: state.placeId, tableId: state.tableId)));
+            }
+          },
           builder: (context, state) {
             if (state is ReserveTableLoading) {
               return const Center(
@@ -60,6 +74,10 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                           OutlinedButton(
                               onPressed: () async => await _onDatePress(),
                               child: Text('Дата и время бронирования')),
+                          if (dateIsSet)
+                            Text(
+                              'C ${DateFormat('dd MMMM HH:mm', 'RU').format(start)} | До ${DateFormat('dd MMMM HH:mm', 'RU').format(end)}',
+                            ),
                           TextFormField(
                             initialValue: '',
                             decoration: const InputDecoration(
@@ -108,27 +126,35 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                               Expanded(
                                   child: Container(
                                 decoration:
-                                    const BoxDecoration(color: Colors.red),
+                                    const BoxDecoration(color: Colors.grey),
                                 height: 65,
-                                child: DropdownButton(
-                                  items: const [
-                                    DropdownMenuItem(
-                                      child: Text('1'),
-                                      value: 1,
+                                child: Row(
+                                  children: [
+                                    const Text('Гостей'),
+                                    const SizedBox(
+                                      width: 20,
                                     ),
-                                    DropdownMenuItem(
-                                      child: Text('2'),
-                                      value: 2,
+                                    DropdownButton(
+                                      items: const [
+                                        DropdownMenuItem(
+                                          child: Text('1'),
+                                          value: 1,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('2'),
+                                          value: 2,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('3'),
+                                          value: 3,
+                                        )
+                                      ],
+                                      onChanged: (value) => setState(() {
+                                        guestsCount = value!;
+                                      }),
+                                      value: guestsCount,
                                     ),
-                                    DropdownMenuItem(
-                                      child: Text('3'),
-                                      value: 3,
-                                    )
                                   ],
-                                  onChanged: (value) => setState(() {
-                                    guestsCount = value!;
-                                  }),
-                                  value: guestsCount,
                                 ),
                               ))
                             ],
@@ -208,7 +234,8 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.black)),
-                          onPressed: null,
+                          onPressed: () =>
+                              reserveTable(state.placeId, state.tableId),
                           child: const Text(
                             'Забронировать',
                             style: TextStyle(color: Colors.white),
@@ -227,7 +254,27 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
       );
 
   Future _onDatePress() async {
-    await showDialog<void>(
+    final result = await showDialog<ReservationTime>(
         context: context, builder: (context) => const DatetimeSelector());
+
+    if (result != null) {
+      setState(() {
+        start = result.start;
+        end = result.end;
+        dateIsSet = true;
+      });
+    }
+  }
+
+  void reserveTable(int placeId, int tableId) {
+    context.read<ReserveTableBloc>().add(AdminReserveTable(
+        placeId: placeId,
+        tableId: tableId,
+        guests: guestsCount,
+        start: DateTime(2023, 04, 1, 13, 30),
+        end: DateTime(2023, 04, 1, 16, 30),
+        phoneNumber: phoneNumber,
+        name: name,
+        excludeReshuffle: excludeReshuffle));
   }
 }

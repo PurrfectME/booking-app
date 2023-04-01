@@ -13,14 +13,16 @@ import 'package:intl/intl.dart';
 import '../tables/tables/widgets/table_status.dart';
 
 class TableInfoScreen extends StatefulWidget {
+  static const String pageRoute = '/tableInfo';
   final int tableNumber;
   final int tableGuests;
   final ReservationsBloc reservationsBloc;
-  const TableInfoScreen(
-      {super.key,
-      required this.tableNumber,
-      required this.tableGuests,
-      required this.reservationsBloc});
+  const TableInfoScreen({
+    super.key,
+    required this.tableNumber,
+    required this.tableGuests,
+    required this.reservationsBloc,
+  });
 
   @override
   State<TableInfoScreen> createState() => _TableInfoScreenState();
@@ -183,7 +185,8 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                                         builder: (context) => BlocProvider(
                                           create: (context) => ReserveTableBloc(
                                               reservationsBloc:
-                                                  widget.reservationsBloc)
+                                                  widget.reservationsBloc,
+                                              tableInfoBloc: context.read())
                                             ..add(ReserveTableLoad(
                                                 tableId: state.data.table.id,
                                                 placeId:

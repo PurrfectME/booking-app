@@ -1,3 +1,4 @@
+import 'package:booking_app/models/local/reservation_time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,11 +13,13 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
   DateTime start = DateTime.now();
   DateTime end = DateTime.now();
 
-  int? startHour = null;
-  int? startMinute = null;
+  bool startTimeIsSet = false;
 
-  int? endHour = null;
-  int? endMinute = null;
+  int? startHour;
+  int? startMinute;
+
+  int? endHour;
+  int? endMinute;
 
   bool isHoursVisible = true;
 
@@ -41,7 +44,7 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                     width: 120,
                     margin: const EdgeInsets.only(bottom: 20),
                     padding: const EdgeInsets.all(8),
-                    color: Colors.redAccent,
+                    color: !startTimeIsSet ? Colors.redAccent : Colors.green,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -103,7 +106,9 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                     width: 120,
                     margin: const EdgeInsets.only(bottom: 20),
                     padding: const EdgeInsets.all(8),
-                    color: Colors.redAccent,
+                    color: endHour == null || endMinute == null
+                        ? Colors.redAccent
+                        : Colors.green,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -125,7 +130,11 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                                                 color: Colors.black,
                                                 width: 2))),
                                     child: Text(
-                                      endHour == null ? '' : endHour.toString(),
+                                      endHour == null
+                                          ? ''
+                                          : DateFormat('mm', 'RU').format(
+                                              DateTime(end.year, end.month,
+                                                  end.day, endHour!)),
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                   ),
@@ -140,7 +149,13 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                                     child: Text(
                                         endMinute == null
                                             ? ''
-                                            : endMinute.toString(),
+                                            : DateFormat('mm', 'RU').format(
+                                                DateTime(
+                                                    end.year,
+                                                    end.month,
+                                                    end.day,
+                                                    endHour!,
+                                                    endMinute!)),
                                         style: const TextStyle(fontSize: 14)),
                                   )
                                 ],
@@ -152,10 +167,16 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                   ),
                 ],
               ),
-              const Text(
-                'Во сколько придёт гость?',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
+              if (startTimeIsSet)
+                const Text(
+                  'Во сколько придёт гость?',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                )
+              else
+                const Text(
+                  'До скольки будет гость?',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
               Row(
                 children: [
                   OutlinedButton(
@@ -185,15 +206,40 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
   }
 
   void onHourTilePress(int hour) {
-    setState(() {
-      startHour = hour;
-    });
+    if (!startTimeIsSet) {
+      setState(() {
+        startHour = hour;
+        isHoursVisible = false;
+      });
+    } else {
+      setState(() {
+        endHour = hour;
+        isHoursVisible = false;
+      });
+    }
   }
 
   void onMinuteTilePress(int minute) {
-    setState(() {
-      startMinute = minute;
-    });
+    if (!startTimeIsSet) {
+      setState(() {
+        startMinute = minute;
+        isHoursVisible = true;
+        startTimeIsSet = true;
+      });
+    } else {
+      setState(() {
+        endMinute = minute;
+        isHoursVisible = true;
+        // startTimeIsSet = true;
+      });
+      Navigator.pop(
+          context,
+          ReservationTime(
+              start: DateTime(
+                  start.year, start.month, start.day, startHour!, startMinute!),
+              end: DateTime(
+                  end.year, end.month, end.day, endHour!, endMinute!)));
+    }
   }
 
   Widget displayMinutes() => GridView.count(

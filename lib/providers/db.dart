@@ -248,6 +248,18 @@ class DbProvider {
     return userReservationsResult;
   }
 
+  Future<TableModel?> getTableById(int placeId, int tableId) async {
+    final db = await database;
+    final res = await db.query('tables',
+        where: 'placeId = ? AND id = ?', whereArgs: [placeId, tableId]);
+
+    if (res.isEmpty) {
+      return null;
+    }
+
+    return TableModel.fromMap(res.first);
+  }
+
   Future<List<ReservationModel>> getTableReservations(
       int placeId, int tableId) async {
     final db = await database;

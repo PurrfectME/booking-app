@@ -26,6 +26,7 @@ void main() {
       BlocProvider(create: (context) => MenuBloc()),
       // BlocProvider(create: (context) => PlaceInfoBloc(null)),
       BlocProvider(create: (context) => ExtraInfoBloc()),
+      BlocProvider(create: (context) => TableInfoBloc()),
       // BlocProvider(create: (context) => UpdatePlaceBloc()),
       // BlocProvider(create: (context) => UpdateTableBloc()),
       // BlocProvider(create: (context) => ReservationsBloc([])),

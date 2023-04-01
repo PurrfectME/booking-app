@@ -9,7 +9,9 @@ part 'reserve_table_state.dart';
 
 class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
   final ReservationsBloc reservationsBloc;
-  ReserveTableBloc({required this.reservationsBloc})
+  final TableInfoBloc tableInfoBloc;
+  ReserveTableBloc(
+      {required this.reservationsBloc, required this.tableInfoBloc})
       : super(ReserveTableLoading()) {
     on<ReserveTableEvent>((event, emit) async {
       if (event is ReserveTableLoad) {
@@ -34,8 +36,13 @@ class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
             excludeReshuffle: event.excludeReshuffle));
 
         // final currentTables = await DbProvider.db.getTables(event.placeId);
-        reservationsBloc.add(ReservationsLoad(placeId: event.placeId));
-        emit(ReserveTableSuccess());
+
+        // reservationsBloc.add(ReservationsLoad(placeId: event.placeId));
+
+        tableInfoBloc
+            .add(TableInfoLoad(placeId: event.placeId, tableId: event.tableId));
+        emit(ReserveTableSuccess(
+            tableId: event.tableId, placeId: event.placeId));
       }
     });
   }

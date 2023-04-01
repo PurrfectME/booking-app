@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 class TableInfoViewModel extends Equatable {
   final TableModel table;
   final List<ReservationModel> reservations;
-  TableInfoViewModel({
+  const TableInfoViewModel({
     required this.table,
     required this.reservations,
   });

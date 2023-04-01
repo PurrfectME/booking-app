@@ -12,9 +12,13 @@ class TableInfoBloc extends Bloc<TableInfoEvent, TableInfoState> {
       if (event is TableInfoLoad) {
         emit(TableInfoLoading());
 
-        final tableReservations = (await DbProvider.db
-                .getTableReservations(event.table.placeId, event.table.id))
-            .where((x) {
+        final table =
+            await DbProvider.db.getTableById(event.placeId, event.tableId);
+
+        final tableReservations =
+            await DbProvider.db.getTableReservations(table!.placeId, table.id);
+
+        final res = tableReservations.where((x) {
           final start = DateTime.fromMillisecondsSinceEpoch(x.start);
           final now = DateTime.now();
           //TODO: 20 - максимальное время ожидания гостя
@@ -25,8 +29,7 @@ class TableInfoBloc extends Bloc<TableInfoEvent, TableInfoState> {
           return false;
         }).toList();
 
-        final result = TableInfoViewModel(
-            table: event.table, reservations: tableReservations);
+        final result = TableInfoViewModel(table: table, reservations: res);
 
         emit(TableInfoLoaded(data: result));
       }
