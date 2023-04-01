@@ -1,3 +1,4 @@
+import 'package:booking_app/blocs/reservations/reservations_bloc.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/blocs/table_info/table_info_bloc.dart';
 import 'package:booking_app/models/local/reservation_time.dart';
@@ -10,7 +11,9 @@ import 'package:intl/intl.dart';
 
 class ReserveTableScreen extends StatefulWidget {
   final int tableNumber;
-  const ReserveTableScreen({super.key, required this.tableNumber});
+  final ReservationsBloc reservationsBloc;
+  const ReserveTableScreen(
+      {super.key, required this.tableNumber, required this.reservationsBloc});
 
   @override
   State<ReserveTableScreen> createState() => _ReserveTableScreenState();
@@ -34,12 +37,13 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
         body: BlocConsumer<ReserveTableBloc, ReserveTableState>(
           listener: (context, state) {
             if (state is ReserveTableSuccess) {
-              final a = context.read<TableInfoBloc>();
-              Navigator.pop(
-                  context,
-                  a
-                    ..add(TableInfoLoad(
-                        placeId: state.placeId, tableId: state.tableId)));
+              context.read<TableInfoBloc>().add(TableInfoLoad(
+                  placeId: state.placeId, tableId: state.tableId));
+
+              widget.reservationsBloc
+                  .add(ReservationsLoad(placeId: state.placeId));
+
+              Navigator.pop(context);
             }
           },
           builder: (context, state) {
@@ -57,20 +61,6 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // if (!widget.isEdit)
-                          //   Text(
-                          //       'Дата: ${DateFormat('E, d MMM yyyy HH:mm', 'RU').format(widget.selectedDateTime)}',
-                          //       style: const TextStyle(color: Colors.black))
-                          // else
-                          //   Column(
-                          //     crossAxisAlignment: CrossAxisAlignment.start,
-                          //     children: [
-                          //       Text(
-                          //           'Начало: ${DateFormat('d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.start!))}'),
-                          //       Text(
-                          //           'Конец: ${DateFormat('d MMM yyyy HH:mm', 'RU').format(DateTime.fromMillisecondsSinceEpoch(widget.end!))}'),
-                          //     ],
-                          //   ),
                           OutlinedButton(
                               onPressed: () async => await _onDatePress(),
                               child: Text('Дата и время бронирования')),

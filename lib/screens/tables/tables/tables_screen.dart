@@ -1,4 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/table_info/table_info_screen.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
@@ -217,20 +218,19 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void _onTablePress(TableModel table) {
+    final reserveTableBloc = context.read<ReserveTableBloc>();
+    context
+        .read<TableInfoBloc>()
+        .add(TableInfoLoad(placeId: table.placeId, tableId: table.id));
     final reservationsBloc = context.read<ReservationsBloc>();
     Navigator.push<void>(
       context,
       MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => TableInfoBloc()
-            ..add(TableInfoLoad(placeId: table.placeId, tableId: table.id)),
-          child: TableInfoScreen(
-            tableNumber: table.number,
-            tableGuests: table.guests,
-            reservationsBloc: reservationsBloc,
-          ),
-        ),
-      ),
+          builder: (context) => TableInfoScreen(
+              tableNumber: table.number,
+              tableGuests: table.guests,
+              reserveTableBloc: reserveTableBloc,
+              reservationsBloc: reservationsBloc)),
     );
   }
 

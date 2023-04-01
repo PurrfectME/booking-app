@@ -1,6 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
+import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ void main() {
       // BlocProvider(create: (context) => PlaceInfoBloc(null)),
       BlocProvider(create: (context) => ExtraInfoBloc()),
       BlocProvider(create: (context) => TableInfoBloc()),
+      BlocProvider(create: (context) => ReserveTableBloc()),
       // BlocProvider(create: (context) => UpdatePlaceBloc()),
       // BlocProvider(create: (context) => UpdateTableBloc()),
       // BlocProvider(create: (context) => ReservationsBloc([])),
