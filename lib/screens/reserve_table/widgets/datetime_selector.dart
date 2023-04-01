@@ -10,16 +10,12 @@ class DatetimeSelector extends StatefulWidget {
 }
 
 class _DatetimeSelectorState extends State<DatetimeSelector> {
+  DateTime selectedTime = DateTime.now();
+
   DateTime start = DateTime.now();
   DateTime end = DateTime.now();
 
   bool startTimeIsSet = false;
-
-  int? startHour;
-  int? startMinute;
-
-  int? endHour;
-  int? endMinute;
 
   bool isHoursVisible = true;
 
@@ -180,10 +176,10 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
               Row(
                 children: [
                   OutlinedButton(
-                      onPressed: onHoursTabPress, child: Text('ЧАСЫ')),
+                      onPressed: onHoursTabPress, child: const Text('ЧАСЫ')),
                   OutlinedButton(
                       onPressed: startHour == null ? null : onTimeTabPress,
-                      child: Text('МИНУТЫ'))
+                      child: const Text('МИНУТЫ'))
                 ],
               ),
               const SizedBox(),
@@ -208,12 +204,14 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
   void onHourTilePress(int hour) {
     if (!startTimeIsSet) {
       setState(() {
-        startHour = hour;
+        start = DateTime(
+            selectedTime.year, selectedTime.month, selectedTime.day, hour);
         isHoursVisible = false;
       });
     } else {
       setState(() {
-        endHour = hour;
+        end = DateTime(
+            selectedTime.year, selectedTime.month, selectedTime.day, hour);
         isHoursVisible = false;
       });
     }
@@ -222,23 +220,25 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
   void onMinuteTilePress(int minute) {
     if (!startTimeIsSet) {
       setState(() {
-        startMinute = minute;
+        start =
+            DateTime(start.year, start.month, start.day, start.hour, minute);
         isHoursVisible = true;
         startTimeIsSet = true;
       });
     } else {
       setState(() {
-        endMinute = minute;
+        end = DateTime(end.year, end.month, end.day, end.hour, minute);
         isHoursVisible = true;
         // startTimeIsSet = true;
       });
+
       Navigator.pop(
           context,
           ReservationTime(
               start: DateTime(
-                  start.year, start.month, start.day, startHour!, startMinute!),
+                  start.year, start.month, start.day, start.hour, start.minute),
               end: DateTime(
-                  end.year, end.month, end.day, endHour!, endMinute!)));
+                  end.year, end.month, end.day, end.hour, end.minute)));
     }
   }
 
@@ -247,291 +247,103 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
         mainAxisSpacing: 3,
         crossAxisSpacing: 3,
         shrinkWrap: true,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 2)),
-            child: OutlinedButton(
-              onPressed: () => onMinuteTilePress(00),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('00'),
-                  Text('минут'),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 2)),
-            child: OutlinedButton(
-              onPressed: () => onMinuteTilePress(5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('05'),
-                  Text('минут'),
-                ],
-              ),
-            ),
-          ),
-        ],
+        children: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
+            .map((minute) => Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 2),
+                    color: selectedTime.hour >= startHour! &&
+                            selectedTime.minute <= minute
+                        ? startMinute == minute
+                            ? Colors.greenAccent
+                            : Colors.white
+                        : const Color.fromARGB(255, 134, 134, 134),
+                  ),
+                  child: OutlinedButton(
+                    style: const ButtonStyle(),
+                    onPressed: () => selectedTime.minute <= minute
+                        ? onMinuteTilePress(minute)
+                        : null,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          DateFormat('mm', 'RU').format(DateTime(start.year,
+                              start.month, start.day, startHour!, minute)),
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        const Text('минут',
+                            style: const TextStyle(color: Colors.black)),
+                      ],
+                    ),
+                  ),
+                ))
+            .toList(),
       );
 
   Widget displayHours() => GridView.count(
-          mainAxisSpacing: 3,
-          crossAxisSpacing: 3,
-          crossAxisCount: 5,
-          shrinkWrap: true,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 2)),
-              child: OutlinedButton(
-                onPressed: () => onHourTilePress(00),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('00'),
-                    Text('часов'),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 2)),
-              child: OutlinedButton(
-                onPressed: () => onHourTilePress(1),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('01'),
-                    Text('час'),
-                  ],
-                ),
-              ),
-            ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('02'),
-            //       Text('часа'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('03'),
-            //       Text('часа'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('04'),
-            //       Text('часа'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('05'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('06'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('07'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('08'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('09'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('10'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('11'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('12'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('13'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('14'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('15'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('16'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('17'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('18'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('19'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('20'),
-            //       Text('часов'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('21'),
-            //       Text('час'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('22'),
-            //       Text('часа'),
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black, width: 2)),
-            //   child: Column(
-            //     children: const [
-            //       Text('23'),
-            //       Text('часа'),
-            //     ],
-            //   ),
-            // ),
-          ]);
+        mainAxisSpacing: 3,
+        crossAxisSpacing: 3,
+        crossAxisCount: 5,
+        shrinkWrap: true,
+        children: [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+            .map((hour) => Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 2),
+                    color: selectedTime.hour <= hour
+                        ? start.hour == hour
+                            ? Colors.greenAccent
+                            : Colors.white
+                        : const Color.fromARGB(255, 134, 134, 134),
+                  ),
+                  child: OutlinedButton(
+                    style: const ButtonStyle(),
+                    onPressed: () => selectedTime.hour <= hour
+                        ? onHourTilePress(hour)
+                        : null,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          DateFormat('HH', 'RU').format(DateTime(
+                              start.year, start.month, start.day, hour)),
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        Text(
+                            hour == 1
+                                ? 'час'
+                                : hour == 2 || hour == 3 || hour == 4
+                                    ? 'часа'
+                                    : 'часов',
+                            style: const TextStyle(color: Colors.black)),
+                      ],
+                    ),
+                  ),
+                ))
+            .toList(),
+      );
 }
