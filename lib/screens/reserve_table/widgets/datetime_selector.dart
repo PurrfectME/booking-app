@@ -12,11 +12,10 @@ class DatetimeSelector extends StatefulWidget {
 class _DatetimeSelectorState extends State<DatetimeSelector> {
   DateTime selectedTime = DateTime.now();
 
-  DateTime start = DateTime.now();
-  DateTime end = DateTime.now();
+  DateTime? start;
+  DateTime? end;
 
   bool startTimeIsSet = false;
-
   bool isHoursVisible = true;
 
   @override
@@ -40,7 +39,6 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                     width: 120,
                     margin: const EdgeInsets.only(bottom: 20),
                     padding: const EdgeInsets.all(8),
-                    color: !startTimeIsSet ? Colors.redAccent : Colors.green,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -51,7 +49,10 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                         Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text(DateFormat('d MMMM', 'RU').format(start)),
+                              Text(start == null
+                                  ? DateFormat('d MMMM', 'RU')
+                                      .format(selectedTime)
+                                  : DateFormat('d MMMM', 'RU').format(start!)),
                               Row(
                                 children: [
                                   Container(
@@ -62,11 +63,14 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                                                 color: Colors.black,
                                                 width: 2))),
                                     child: Text(
-                                      startHour == null
+                                      start == null
                                           ? ''
                                           : DateFormat('HH', 'RU').format(
-                                              DateTime(start.year, start.month,
-                                                  start.day, startHour!)),
+                                              DateTime(
+                                                  start!.year,
+                                                  start!.month,
+                                                  start!.day,
+                                                  start!.hour)),
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                   ),
@@ -79,15 +83,15 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                                                 color: Colors.black,
                                                 width: 2))),
                                     child: Text(
-                                        startMinute == null
+                                        start == null
                                             ? ''
                                             : DateFormat('mm', 'RU').format(
                                                 DateTime(
-                                                    start.year,
-                                                    start.month,
-                                                    start.day,
-                                                    startHour!,
-                                                    startMinute!)),
+                                                    start!.year,
+                                                    start!.month,
+                                                    start!.day,
+                                                    start!.hour,
+                                                    start!.minute)),
                                         style: const TextStyle(fontSize: 14)),
                                   )
                                 ],
@@ -102,9 +106,6 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                     width: 120,
                     margin: const EdgeInsets.only(bottom: 20),
                     padding: const EdgeInsets.all(8),
-                    color: endHour == null || endMinute == null
-                        ? Colors.redAccent
-                        : Colors.green,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -115,7 +116,10 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                         Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text(DateFormat('d MMMM', 'RU').format(end)),
+                              Text(end == null
+                                  ? DateFormat('d MMMM', 'RU')
+                                      .format(selectedTime)
+                                  : DateFormat('d MMMM', 'RU').format(end!)),
                               Row(
                                 children: [
                                   Container(
@@ -126,11 +130,11 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                                                 color: Colors.black,
                                                 width: 2))),
                                     child: Text(
-                                      endHour == null
+                                      end == null
                                           ? ''
-                                          : DateFormat('mm', 'RU').format(
-                                              DateTime(end.year, end.month,
-                                                  end.day, endHour!)),
+                                          : DateFormat('HH', 'RU').format(
+                                              DateTime(end!.year, end!.month,
+                                                  end!.day, end!.hour)),
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                   ),
@@ -143,15 +147,15 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                                                 color: Colors.black,
                                                 width: 2))),
                                     child: Text(
-                                        endMinute == null
+                                        end == null
                                             ? ''
                                             : DateFormat('mm', 'RU').format(
                                                 DateTime(
-                                                    end.year,
-                                                    end.month,
-                                                    end.day,
-                                                    endHour!,
-                                                    endMinute!)),
+                                                    end!.year,
+                                                    end!.month,
+                                                    end!.day,
+                                                    end!.hour,
+                                                    end!.minute)),
                                         style: const TextStyle(fontSize: 14)),
                                   )
                                 ],
@@ -178,7 +182,7 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                   OutlinedButton(
                       onPressed: onHoursTabPress, child: const Text('ЧАСЫ')),
                   OutlinedButton(
-                      onPressed: startHour == null ? null : onTimeTabPress,
+                      onPressed: !startTimeIsSet ? null : onTimeTabPress,
                       child: const Text('МИНУТЫ'))
                 ],
               ),
@@ -220,14 +224,14 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
   void onMinuteTilePress(int minute) {
     if (!startTimeIsSet) {
       setState(() {
-        start =
-            DateTime(start.year, start.month, start.day, start.hour, minute);
+        start = DateTime(
+            start!.year, start!.month, start!.day, start!.hour, minute);
         isHoursVisible = true;
         startTimeIsSet = true;
       });
     } else {
       setState(() {
-        end = DateTime(end.year, end.month, end.day, end.hour, minute);
+        end = DateTime(end!.year, end!.month, end!.day, end!.hour, minute);
         isHoursVisible = true;
         // startTimeIsSet = true;
       });
@@ -235,12 +239,14 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
       Navigator.pop(
           context,
           ReservationTime(
-              start: DateTime(
-                  start.year, start.month, start.day, start.hour, start.minute),
+              start: DateTime(start!.year, start!.month, start!.day,
+                  start!.hour, start!.minute),
               end: DateTime(
-                  end.year, end.month, end.day, end.hour, end.minute)));
+                  end!.year, end!.month, end!.day, end!.hour, end!.minute)));
     }
   }
+
+  //TODO: создать ивент который каждую минуту(5 имнут) обновляет стейт
 
   Widget displayMinutes() => GridView.count(
         crossAxisCount: 4,
@@ -250,14 +256,11 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
         children: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
             .map((minute) => Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 2),
-                    color: selectedTime.hour >= startHour! &&
-                            selectedTime.minute <= minute
-                        ? startMinute == minute
-                            ? Colors.greenAccent
-                            : Colors.white
-                        : const Color.fromARGB(255, 134, 134, 134),
-                  ),
+                      border: Border.all(color: Colors.black, width: 2),
+                      color: start!.hour >= selectedTime.hour &&
+                              minute >= selectedTime.minute
+                          ? Colors.white
+                          : Colors.grey),
                   child: OutlinedButton(
                     style: const ButtonStyle(),
                     onPressed: () => selectedTime.minute <= minute
@@ -267,12 +270,17 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          DateFormat('mm', 'RU').format(DateTime(start.year,
-                              start.month, start.day, startHour!, minute)),
+                          DateFormat('mm', 'RU').format(DateTime(
+                            selectedTime.year,
+                            selectedTime.month,
+                            selectedTime.day,
+                            selectedTime.hour,
+                            minute,
+                          )),
                           style: const TextStyle(color: Colors.black),
                         ),
                         const Text('минут',
-                            style: const TextStyle(color: Colors.black)),
+                            style: TextStyle(color: Colors.black)),
                       ],
                     ),
                   ),
@@ -315,7 +323,7 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 2),
                     color: selectedTime.hour <= hour
-                        ? start.hour == hour
+                        ? start?.hour == hour
                             ? Colors.greenAccent
                             : Colors.white
                         : const Color.fromARGB(255, 134, 134, 134),
@@ -330,7 +338,11 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                       children: [
                         Text(
                           DateFormat('HH', 'RU').format(DateTime(
-                              start.year, start.month, start.day, hour)),
+                            selectedTime.year,
+                            selectedTime.month,
+                            selectedTime.day,
+                            hour,
+                          )),
                           style: const TextStyle(color: Colors.black),
                         ),
                         Text(
