@@ -12,8 +12,15 @@ import '../../blocs/table_reservations/table_reservations_bloc.dart';
 class ReserveTableScreen extends StatefulWidget {
   final int tableNumber;
   final TableReservationsBloc reservationsBloc;
-  const ReserveTableScreen(
-      {super.key, required this.tableNumber, required this.reservationsBloc});
+  final ReserveTableBloc reserveTableBloc;
+  final TableInfoBloc tableInfoBloc;
+  const ReserveTableScreen({
+    super.key,
+    required this.tableNumber,
+    required this.reservationsBloc,
+    required this.reserveTableBloc,
+    required this.tableInfoBloc,
+  });
 
   @override
   State<ReserveTableScreen> createState() => _ReserveTableScreenState();
@@ -35,9 +42,10 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
           title: Text('Забронировать стол №${widget.tableNumber}'),
         ),
         body: BlocConsumer<ReserveTableBloc, ReserveTableState>(
+          bloc: widget.reserveTableBloc,
           listener: (context, state) {
             if (state is ReserveTableSuccess) {
-              context.read<TableInfoBloc>().add(TableInfoLoad(
+              widget.tableInfoBloc.add(TableInfoLoad(
                   placeId: state.placeId, tableId: state.tableId));
 
               widget.reservationsBloc
@@ -257,12 +265,12 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
   }
 
   void reserveTable(int placeId, int tableId) {
-    context.read<ReserveTableBloc>().add(AdminReserveTable(
+    widget.reserveTableBloc.add(AdminReserveTable(
         placeId: placeId,
         tableId: tableId,
         guests: guestsCount,
-        start: DateTime(2023, 4, 3, 18, 30),
-        end: DateTime(2023, 4, 3, 22, 30),
+        start: DateTime.now().add(const Duration(minutes: 30)),
+        end: DateTime.now().add(const Duration(hours: 2)),
         phoneNumber: phoneNumber,
         name: name,
         excludeReshuffle: excludeReshuffle));

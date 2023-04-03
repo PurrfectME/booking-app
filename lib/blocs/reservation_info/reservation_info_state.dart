@@ -29,3 +29,5 @@ class ReservationInfoLoaded extends ReservationInfoState {
   @override
   List<Object> get props => [data];
 }
+
+class ReservationInfoUpdated extends ReservationInfoState {}

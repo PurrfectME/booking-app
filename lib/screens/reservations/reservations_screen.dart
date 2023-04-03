@@ -9,9 +9,8 @@ import '../../blocs/reservations/reservations_bloc.dart';
 
 class ReservationsScreen extends StatefulWidget {
   static const String pageRoute = '/reservations';
-  const ReservationsScreen({
-    Key? key,
-  }) : super(key: key);
+  // final ReservationsBloc reservationsBloc;
+  const ReservationsScreen({Key? key}) : super(key: key);
 
   @override
   State<ReservationsScreen> createState() => _ReservationsScreenState();
@@ -19,7 +18,10 @@ class ReservationsScreen extends StatefulWidget {
 
 class _ReservationsScreenState extends State<ReservationsScreen> {
   ReservationStatus selectedStatus = ReservationStatus.fresh;
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = () {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }();
   late int placeId;
 
   @override
@@ -173,16 +175,19 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       );
 
   void onReservationTap(int reservationId) {
-    context.read<ReservationInfoBloc>().add(ReservationInfoLoad(
-        placeId: placeId,
-        reservationId: reservationId,
-        status: selectedStatus));
+    //TODO
+    final riB = context.read<ReservationInfoBloc>()
+      ..add(ReservationInfoLoad(
+          placeId: placeId,
+          reservationId: reservationId,
+          status: selectedStatus));
 
     Navigator.push<void>(
       context,
       MaterialPageRoute(
           builder: (context) => ReservationInfoScreen(
                 reservationId: reservationId,
+                reservationInfoBloc: riB,
               )),
     );
   }
@@ -191,6 +196,10 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     context.read<ReservationsBloc>().add(ReservationsLoad(
         placeId: placeId,
         start: selectedDate.millisecondsSinceEpoch,
+        end: DateTime(
+                    selectedDate.year, selectedDate.month, selectedDate.day + 1)
+                .millisecondsSinceEpoch -
+            1,
         status: status));
 
     setState(() {
@@ -206,30 +215,24 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         lastDate: DateTime.now().add(const Duration(days: 20000)));
 
     if (date != null) {
-      final time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-        builder: (BuildContext context, Widget? child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: child!,
-        ),
-      );
-      if (time != null) {
-        context.read<ReservationsBloc>().add(ReservationsLoad(
-            placeId: placeId,
-            start: DateTime(
-              date.year,
-              date.month,
-              date.day,
-              time.hour,
-              time.minute,
-            ).millisecondsSinceEpoch,
-            status: selectedStatus));
-        setState(() {
-          selectedDate =
-              DateTime(date.year, date.month, date.day, time.hour, time.minute);
-        });
-      }
+      context.read<ReservationsBloc>().add(ReservationsLoad(
+          placeId: placeId,
+          start: DateTime(
+            date.year,
+            date.month,
+            date.day,
+          ).millisecondsSinceEpoch,
+          end: DateTime(
+                date.year,
+                date.month,
+                date.day + 1,
+              ).millisecondsSinceEpoch -
+              1,
+          status: selectedStatus));
+
+      setState(() {
+        selectedDate = DateTime(date.year, date.month, date.day);
+      });
     }
   }
 }

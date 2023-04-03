@@ -21,3 +21,16 @@ class ReservationInfoLoad extends ReservationInfoEvent {
   @override
   List<Object> get props => [placeId, reservationId, status];
 }
+
+class ReservationOpen extends ReservationInfoEvent {
+  final int placeId;
+  final int reservationId;
+
+  const ReservationOpen({
+    required this.placeId,
+    required this.reservationId,
+  });
+
+  @override
+  List<Object> get props => [placeId, reservationId];
+}

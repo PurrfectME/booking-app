@@ -249,11 +249,11 @@ class DbProvider {
   }
 
   Future<List<ReservationModel>> getReservationsByTime(
-      int placeId, int start, int isOpened) async {
+      int placeId, int start, int end, int isOpened) async {
     final db = await database;
     final res = await db.query('reservations',
-        where: 'placeId = ? AND start >= ? AND isOpened = ?',
-        whereArgs: [placeId, start, isOpened]);
+        where: 'placeId = ? AND start BETWEEN ? AND ? AND isOpened = ?',
+        whereArgs: [placeId, start, end, isOpened]);
 
     if (res.isEmpty) {
       return [];
@@ -278,6 +278,22 @@ class DbProvider {
     // }
 
     return ReservationModel.fromMap(res.first);
+  }
+
+  Future<bool> openReservation(int placeId, int id) async {
+    final db = await database;
+    final res = await db.update(
+      'reservations',
+      {'isOpened': 1},
+      where: 'placeId = ? AND id = ?',
+      whereArgs: [placeId, id],
+    );
+
+    if (res == 0) {
+      return false;
+    }
+
+    return true;
   }
 
   Future<TableModel?> getTableById(int placeId, int tableId) async {

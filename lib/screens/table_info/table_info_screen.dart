@@ -16,13 +16,11 @@ class TableInfoScreen extends StatefulWidget {
   static const String pageRoute = '/tableInfo';
   final int tableNumber;
   final int tableGuests;
-  final ReserveTableBloc reserveTableBloc;
   final TableReservationsBloc reservationsBloc;
   const TableInfoScreen({
     super.key,
     required this.tableNumber,
     required this.tableGuests,
-    required this.reserveTableBloc,
     required this.reservationsBloc,
   });
 
@@ -181,19 +179,26 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                                           MaterialStateProperty.all(
                                               Colors.black)),
                                   onPressed: () {
-                                    widget.reserveTableBloc.add(
-                                        ReserveTableLoad(
+                                    final rtBloc =
+                                        context.read<ReserveTableBloc>()
+                                          ..add(ReserveTableLoad(
                                             tableId: state.data.table.id,
-                                            placeId: state.data.table.placeId));
+                                            placeId: state.data.table.placeId,
+                                          ));
+                                    final tiBloc =
+                                        context.read<TableInfoBloc>();
                                     Navigator.push<void>(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 ReserveTableScreen(
-                                                    tableNumber:
-                                                        state.data.table.number,
-                                                    reservationsBloc: widget
-                                                        .reservationsBloc)));
+                                                  tableNumber:
+                                                      state.data.table.number,
+                                                  reservationsBloc:
+                                                      widget.reservationsBloc,
+                                                  reserveTableBloc: rtBloc,
+                                                  tableInfoBloc: tiBloc,
+                                                )));
                                   },
                                   child: const Text(
                                     'Забронировать',

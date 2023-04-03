@@ -95,19 +95,30 @@ class PlacesScreenState extends State<PlacesScreen> {
       );
 
   void newAppPress(List<TableModel> tables, int placeId) {
-    Navigator.push<void>(context, MaterialPageRoute(builder: (context) {
-      final reservationsBloc = context.read<ReservationsBloc>();
-      final reservationInfoBloc = context.read<ReservationInfoBloc>();
-
-      return BlocProvider(
-        create: (context) => TableReservationsBloc(tables)
-          ..add(TableReservationsLoad(placeId: placeId)),
-        child: TablesScreen(
-          reservationsBloc: reservationsBloc,
-          reservationInfoBloc: reservationInfoBloc,
-        ),
-      );
-    }));
+    Navigator.push<void>(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => ReservationsBloc(),
+                    ),
+                    BlocProvider(
+                      create: (context) => TableInfoBloc(),
+                    ),
+                    // BlocProvider(
+                    //   create: (context) => ReserveTab(),
+                    // ),
+                    BlocProvider(
+                      create: (context) => ReservationInfoBloc(),
+                    ),
+                    BlocProvider(
+                      create: (context) => TableReservationsBloc(tables)
+                        ..add(TableReservationsLoad(placeId: placeId)),
+                    ),
+                  ],
+                  child: const TablesScreen(),
+                )));
   }
 
   void _onFiltersTap() {

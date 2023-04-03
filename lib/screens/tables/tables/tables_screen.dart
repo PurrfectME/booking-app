@@ -11,12 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TablesScreen extends StatefulWidget {
-  final ReservationsBloc reservationsBloc;
-  final ReservationInfoBloc reservationInfoBloc;
   const TablesScreen({
     Key? key,
-    required this.reservationsBloc,
-    required this.reservationInfoBloc,
   }) : super(key: key);
 
   @override
@@ -25,7 +21,6 @@ class TablesScreen extends StatefulWidget {
 
 class _TablesScreenState extends State<TablesScreen> {
   DateTime selectedDateTime = DateTime.now();
-  late int placeId;
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -34,9 +29,20 @@ class _TablesScreenState extends State<TablesScreen> {
         appBar: AppBar(
           title: const Text('Столы'),
           actions: [
-            IconButton(
-                onPressed: () => _onReservationsTap(placeId),
-                icon: Icon(Icons.request_page, color: Colors.black)),
+            BlocBuilder<TableReservationsBloc, TableReservationsState>(
+              builder: (context, state) {
+                if (state is TableReservationsLoaded) {
+                  return state.data.isNotEmpty
+                      ? IconButton(
+                          onPressed: () => _onReservationsTap(
+                              state.data.first.table.placeId),
+                          icon: Icon(Icons.request_page, color: Colors.black))
+                      : const SizedBox.shrink();
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
             IconButton(
                 onPressed: null, icon: Icon(Icons.edit, color: Colors.black)),
             IconButton(
@@ -51,7 +57,6 @@ class _TablesScreenState extends State<TablesScreen> {
               return const Center(
                   child: CupertinoActivityIndicator(radius: 20));
             } else if (state is TableReservationsLoaded) {
-              placeId = 1;
               return Column(
                 children: [
                   Expanded(
@@ -226,19 +231,29 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void _onTablePress(TableModel table) {
-    final reserveTableBloc = context.read<ReserveTableBloc>();
-    context
-        .read<TableInfoBloc>()
-        .add(TableInfoLoad(placeId: table.placeId, tableId: table.id));
     final reservationsBloc = context.read<TableReservationsBloc>();
     Navigator.push<void>(
       context,
       MaterialPageRoute(
-          builder: (context) => TableInfoScreen(
-              tableNumber: table.number,
-              tableGuests: table.guests,
-              reserveTableBloc: reserveTableBloc,
-              reservationsBloc: reservationsBloc)),
+          builder: (context) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => ReserveTableBloc(),
+                  ),
+                  BlocProvider<TableInfoBloc>(
+                    //TODO: передавать данные в сам блок
+                    create: (context) => TableInfoBloc()
+                      ..add(TableInfoLoad(
+                        placeId: table.placeId,
+                        tableId: table.id,
+                      )),
+                  ),
+                ],
+                child: TableInfoScreen(
+                    tableNumber: table.number,
+                    tableGuests: table.guests,
+                    reservationsBloc: reservationsBloc),
+              )),
     );
   }
 
@@ -268,13 +283,37 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void _onReservationsTap(int placeId) {
-    widget.reservationsBloc.add(ReservationsLoad(
-        placeId: placeId,
-        start: DateTime.now().millisecondsSinceEpoch,
-        status: ReservationStatus.fresh));
+    final now = DateTime.now();
+    // context.read<ReservationsBloc>().add(ReservationsLoad(
+    //     placeId: placeId,
+    //     start: DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
+    //     end: DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch -
+    //         1,
+    //     status: ReservationStatus.fresh));
+
     Navigator.push<void>(
       context,
-      MaterialPageRoute(builder: (context) => const ReservationsScreen()),
+      MaterialPageRoute(
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => ReservationInfoBloc(),
+            ),
+            BlocProvider(
+              create: (context) => ReservationsBloc()
+                ..add(ReservationsLoad(
+                    placeId: placeId,
+                    start: DateTime(now.year, now.month, now.day)
+                        .millisecondsSinceEpoch,
+                    end: DateTime(now.year, now.month, now.day + 1)
+                            .millisecondsSinceEpoch -
+                        1,
+                    status: ReservationStatus.fresh)),
+            ),
+          ],
+          child: const ReservationsScreen(),
+        ),
+      ),
     );
   }
 }

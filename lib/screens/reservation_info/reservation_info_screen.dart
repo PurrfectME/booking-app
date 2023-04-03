@@ -8,7 +8,12 @@ import 'package:intl/intl.dart';
 
 class ReservationInfoScreen extends StatefulWidget {
   final int reservationId;
-  const ReservationInfoScreen({super.key, required this.reservationId});
+  final ReservationInfoBloc reservationInfoBloc;
+  const ReservationInfoScreen({
+    super.key,
+    required this.reservationId,
+    required this.reservationInfoBloc,
+  });
 
   @override
   State<ReservationInfoScreen> createState() => _ReservationInfoScreenState();
@@ -21,7 +26,14 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
           title: Text('Заявка №${widget.reservationId}'),
         ),
         body: BlocConsumer<ReservationInfoBloc, ReservationInfoState>(
-          listener: (context, state) {},
+          bloc: widget.reservationInfoBloc,
+          listener: (context, state) {
+            if (state is ReservationInfoUpdated) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Успешно обновлено')),
+              );
+            }
+          },
           builder: (context, state) {
             if (state is ReservationInfoLoading) {
               return const Center(
@@ -124,14 +136,17 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                           child: Container(
                             height: 60,
                             child: OutlinedButton(
-                                onPressed: null, child: Text('Ожидать')),
+                                onPressed: onReservationWait,
+                                child: Text('Ожидать')),
                           ),
                         ),
                         Expanded(
                           child: Container(
                             height: 60,
                             child: OutlinedButton(
-                                onPressed: null, child: Text('Открыть')),
+                                onPressed: () =>
+                                    onReservationOpen(state.data.placeId),
+                                child: const Text('Открыть')),
                           ),
                         ),
                       ],
@@ -143,7 +158,8 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                           child: Container(
                             height: 60,
                             child: OutlinedButton(
-                                onPressed: null, child: Text('Заменить стол')),
+                                onPressed: onReservationTableReplace,
+                                child: Text('Заменить стол')),
                           ),
                         ),
                         if (reservation.status == ReservationStatus.opened)
@@ -151,7 +167,8 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                             child: Container(
                               height: 60,
                               child: OutlinedButton(
-                                  onPressed: null, child: Text('Закрыть')),
+                                  onPressed: onReservationClose,
+                                  child: const Text('Закрыть')),
                             ),
                           ),
                         if (reservation.status == ReservationStatus.fresh ||
@@ -160,12 +177,14 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                             child: Container(
                                 height: 60,
                                 child: OutlinedButton(
-                                    onPressed: null, child: Text('Отменить'))),
+                                    onPressed: onReservationCancel,
+                                    child: Text('Отменить'))),
                           ),
                       ],
                     ),
                     OutlinedButton(
-                        onPressed: null, child: Text('Редактировать заявку'))
+                        onPressed: onReservationEdit,
+                        child: Text('Редактировать заявку'))
                   ],
                 ),
               );
@@ -175,4 +194,21 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
           },
         ),
       );
+
+  void onReservationOpen(int placeId) {
+    widget.reservationInfoBloc.add(ReservationOpen(
+      placeId: placeId,
+      reservationId: widget.reservationId,
+    ));
+  }
+
+  void onReservationClose() {}
+
+  void onReservationCancel() {}
+
+  void onReservationEdit() {}
+
+  void onReservationTableReplace() {}
+
+  void onReservationWait() {}
 }

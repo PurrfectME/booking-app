@@ -25,11 +25,14 @@ class ReservationLabel extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Свободно до ${DateFormat('d HH:mm', 'RU').format(start!)}'),
-              Text(
-                'Занят с ${DateFormat('d HH:mm', 'RU').format(start!)} до ${DateFormat('HH:mm', 'RU').format(end!)}',
-                style: TextStyle(fontSize: 13),
-              ),
+              if (!DateTime.now().isAfter(start!))
+                Text(
+                    'Свободно до ${DateFormat('d HH:mm', 'RU').format(start!)}')
+              else
+                Text(
+                  'Занят с ${DateFormat('d HH:mm', 'RU').format(start!)} до ${DateFormat('HH:mm', 'RU').format(end!)}',
+                  style: TextStyle(fontSize: 13),
+                ),
             ],
           ),
         );

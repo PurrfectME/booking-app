@@ -23,6 +23,7 @@ class ReservationInfoBloc
         emit(ReservationInfoLoaded(
             data: ReservationViewModel(
                 id: reservation.id!,
+                placeId: reservation.placeId,
                 tableId: reservation.tableId,
                 tableNumber: table!.number,
                 name: reservation.name!,
@@ -31,6 +32,12 @@ class ReservationInfoBloc
                 start: DateTime.fromMillisecondsSinceEpoch(reservation.start),
                 end: DateTime.fromMillisecondsSinceEpoch(reservation.end),
                 status: event.status)));
+      } else if (event is ReservationOpen) {
+        final isUpdated = await DbProvider.db
+            .openReservation(event.placeId, event.reservationId);
+        if (isUpdated) {
+          emit(ReservationInfoUpdated());
+        }
       }
     });
   }

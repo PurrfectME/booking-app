@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/local/reservation_vm.dart';
-import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:equatable/equatable.dart';
@@ -21,6 +19,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
             final result = await filterReservations(
               event.placeId,
               event.start,
+              event.end,
               false,
               event.status,
             );
@@ -37,6 +36,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
             final result = await filterReservations(
               event.placeId,
               event.start,
+              event.end,
               true,
               event.status,
             );
@@ -58,13 +58,14 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
   Future<List<ReservationViewModel>> filterReservations(
     int placeId,
     int start,
+    int end,
     bool isOpened,
     ReservationStatus status,
   ) async {
     final result = <ReservationViewModel>[];
 
     final reservations = await DbProvider.db
-        .getReservationsByTime(placeId, start, isOpened ? 1 : 0);
+        .getReservationsByTime(placeId, start, end, isOpened ? 1 : 0);
 
     if (reservations.isEmpty) {
       return [];
@@ -75,6 +76,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
 
       result.add(ReservationViewModel(
           id: x.id!,
+          placeId: x.placeId,
           tableId: x.tableId,
           tableNumber: table!.number,
           name: x.name!,
