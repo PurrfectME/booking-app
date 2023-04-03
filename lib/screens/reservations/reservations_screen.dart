@@ -174,15 +174,16 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
 
   void onReservationTap(int reservationId) {
     context.read<ReservationInfoBloc>().add(ReservationInfoLoad(
-          placeId: placeId,
-          reservationId: reservationId,
-        ));
+        placeId: placeId,
+        reservationId: reservationId,
+        status: selectedStatus));
 
     Navigator.push<void>(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              ReservationInfoScreen(reservationId: reservationId)),
+          builder: (context) => ReservationInfoScreen(
+                reservationId: reservationId,
+              )),
     );
   }
 

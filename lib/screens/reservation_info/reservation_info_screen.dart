@@ -41,16 +41,49 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
 
               final reservation = state.data;
 
-              return Column(
-                children: [
-                  ReservationLabel(
-                    hasReservationsToday: true,
-                    start: reservation.start,
-                    end: reservation.end,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
+              return Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ReservationLabel(
+                          hasReservationsToday: true,
+                          start: reservation.start,
+                          end: reservation.end,
+                        ),
+                        Container(
+                          width: 13,
+                          height: 13,
+                          decoration: BoxDecoration(
+                              color:
+                                  state.data.status == ReservationStatus.waiting
+                                      ? Colors.yellowAccent
+                                      : state.data.status ==
+                                              ReservationStatus.opened
+                                          ? Colors.red
+                                          : Colors.green,
+                              shape: BoxShape.circle),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: 90,
+                      height: 90,
+                      decoration: BoxDecoration(
+                          color: state.data.status == ReservationStatus.waiting
+                              ? Colors.yellowAccent
+                              : state.data.status == ReservationStatus.opened
+                                  ? Colors.red
+                                  : Colors.green,
+                          shape: BoxShape.circle),
+                      child:
+                          Center(child: Text('Стол ${state.data.tableNumber}')),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         color: color,
@@ -84,8 +117,57 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                         ],
                       ),
                     ),
-                  )
-                ],
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 60,
+                            child: OutlinedButton(
+                                onPressed: null, child: Text('Ожидать')),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 60,
+                            child: OutlinedButton(
+                                onPressed: null, child: Text('Открыть')),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 60,
+                            child: OutlinedButton(
+                                onPressed: null, child: Text('Заменить стол')),
+                          ),
+                        ),
+                        if (reservation.status == ReservationStatus.opened)
+                          Expanded(
+                            child: Container(
+                              height: 60,
+                              child: OutlinedButton(
+                                  onPressed: null, child: Text('Закрыть')),
+                            ),
+                          ),
+                        if (reservation.status == ReservationStatus.fresh ||
+                            reservation.status == ReservationStatus.waiting)
+                          Expanded(
+                            child: Container(
+                                height: 60,
+                                child: OutlinedButton(
+                                    onPressed: null, child: Text('Отменить'))),
+                          ),
+                      ],
+                    ),
+                    OutlinedButton(
+                        onPressed: null, child: Text('Редактировать заявку'))
+                  ],
+                ),
               );
             } else {
               return const SizedBox();

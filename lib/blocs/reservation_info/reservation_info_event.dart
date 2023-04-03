@@ -11,11 +11,13 @@ abstract class ReservationInfoEvent extends Equatable {
 class ReservationInfoLoad extends ReservationInfoEvent {
   final int placeId;
   final int reservationId;
+  final ReservationStatus status;
   const ReservationInfoLoad({
     required this.placeId,
     required this.reservationId,
+    required this.status,
   });
 
   @override
-  List<Object> get props => [placeId, reservationId];
+  List<Object> get props => [placeId, reservationId, status];
 }
