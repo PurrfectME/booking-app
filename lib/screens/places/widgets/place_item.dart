@@ -113,8 +113,8 @@ class PlaceItem extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) => BlocProvider(
                                         create: (context) =>
-                                            ReservationsBloc(place.tables)
-                                              ..add(ReservationsLoad(
+                                            TableReservationsBloc(place.tables)
+                                              ..add(TableReservationsLoad(
                                                   placeId: place.id)),
                                         child: const ReservationsScreen(),
                                       ))),
@@ -126,8 +126,8 @@ class PlaceItem extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) => BlocProvider(
                                         create: (context) =>
-                                            ReservationsBloc(place.tables)
-                                              ..add(ReservationsLoad(
+                                            TableReservationsBloc(place.tables)
+                                              ..add(TableReservationsLoad(
                                                   placeId: place.id)),
                                         child: const TablesScreen(),
                                       ))),

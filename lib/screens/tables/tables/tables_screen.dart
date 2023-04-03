@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/screens/table_info/table_info_screen.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:booking_app/screens/tables/tables/widgets/table_status.dart';
@@ -22,6 +23,7 @@ class TablesScreen extends StatefulWidget {
 class _TablesScreenState extends State<TablesScreen> {
   // DateTime n = DateTime.now();
   DateTime selectedDateTime = DateTime.now();
+  late int placeId;
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -31,19 +33,23 @@ class _TablesScreenState extends State<TablesScreen> {
           title: const Text('Столы'),
           actions: [
             IconButton(
+                onPressed: () => _onReservationsTap(placeId),
+                icon: Icon(Icons.request_page, color: Colors.black)),
+            IconButton(
                 onPressed: null, icon: Icon(Icons.edit, color: Colors.black)),
             IconButton(
                 onPressed: _onDateTimeTap,
                 icon: Icon(Icons.calendar_month, color: Colors.black))
           ],
         ),
-        body: BlocConsumer<ReservationsBloc, ReservationsState>(
+        body: BlocConsumer<TableReservationsBloc, TableReservationsState>(
           listener: (context, state) {},
           builder: (context, state) {
-            if (state is ReservationsLoading) {
+            if (state is TableReservationsLoading) {
               return const Center(
                   child: CupertinoActivityIndicator(radius: 20));
-            } else if (state is ReservationsLoaded) {
+            } else if (state is TableReservationsLoaded) {
+              placeId = 1;
               return Column(
                 children: [
                   Expanded(
@@ -222,7 +228,7 @@ class _TablesScreenState extends State<TablesScreen> {
     context
         .read<TableInfoBloc>()
         .add(TableInfoLoad(placeId: table.placeId, tableId: table.id));
-    final reservationsBloc = context.read<ReservationsBloc>();
+    final reservationsBloc = context.read<TableReservationsBloc>();
     Navigator.push<void>(
       context,
       MaterialPageRoute(
@@ -257,6 +263,17 @@ class _TablesScreenState extends State<TablesScreen> {
         });
       }
     }
+  }
+
+  void _onReservationsTap(int placeId) {
+    context.read<ReservationsBloc>().add(ReservationsLoad(
+        placeId: placeId,
+        start: DateTime.now().millisecondsSinceEpoch,
+        status: ReservationStatus.fresh));
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(builder: (context) => const ReservationsScreen()),
+    );
   }
 }
 

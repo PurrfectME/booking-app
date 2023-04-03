@@ -1,126 +1,190 @@
-import 'package:booking_app/models/db/reservation_model.dart';
-import 'package:booking_app/models/models.dart';
-import 'package:booking_app/screens/reservations/widgets/table_reservation_card.dart';
-import 'package:collection/collection.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../blocs/blocs.dart';
+import '../../blocs/reservations/reservations_bloc.dart';
 
 class ReservationsScreen extends StatefulWidget {
-  static String pageRoute = '/reservations';
-  const ReservationsScreen({super.key});
+  static const String pageRoute = '/reservations';
+  const ReservationsScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ReservationsScreen> createState() => _ReservationsScreenState();
 }
 
 class _ReservationsScreenState extends State<ReservationsScreen> {
-  DateTime selectedDateTime = DateTime.now();
+  ReservationStatus selectedStatus = ReservationStatus.fresh;
+  DateTime selectedDate = DateTime.now();
+  late int placeId;
 
   @override
-  Widget build(BuildContext context) =>
-      BlocListener<ReservationsBloc, ReservationsState>(
-        listener: (context, state) {
-          if (state is RemoveReservationSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content:
-                      Text('Бронь на ${state.tableNumber} стол отменена!')),
-            );
-          }
-        },
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            title: const Text('Резервации'),
-          ),
-          body: BlocBuilder<ReservationsBloc, ReservationsState>(
-            builder: (context, state) {
-              if (state is ReservationsLoading) {
-                return const Center(
-                    child: CupertinoActivityIndicator(radius: 20));
-              }
-              if (state is ReservationsLoaded) {
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Заявки'),
+          actions: [
+            IconButton(
+                onPressed: () => _onDateTimeTap(placeId),
+                icon: const Icon(Icons.calendar_month)),
+          ],
+        ),
+        body: BlocConsumer<ReservationsBloc, ReservationsState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state is ReservationsLoading) {
+              return const Center(
+                  child: CupertinoActivityIndicator(radius: 20));
+            } else if (state is ReservationsLoaded) {
+              placeId = state.placeId;
+              if (state.data.isEmpty) {
                 return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                      height: 50,
-                      child: Card(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        color: const Color.fromARGB(255, 59, 59, 59),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.black),
-                          ),
-                          onPressed: _onDateTimeTap,
-                          child: const Text(
-                            'Выбрать дату',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      child: Text(DateFormat('E, d MMM yyyy HH:mm', 'RU')
-                          .format(selectedDateTime)),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.symmetric(vertical: 24),
-                        itemCount: state.data.length,
-                        itemBuilder: (context, index) {
-                          UserReservationModel? nextReservation;
-                          if (state.data[index].reservations.isNotEmpty) {
-                            final dates = state.data[index].reservations.map(
-                                (e) => DateTime.fromMillisecondsSinceEpoch(
-                                    e.reservation.start));
-
-                            final now = selectedDateTime;
-                            final closestDateTimeToNow = dates.reduce((a, b) =>
-                                a.difference(now).abs() <
-                                        b.difference(now).abs()
-                                    ? a
-                                    : b);
-
-                            nextReservation = state.data[index].reservations
-                                .firstWhereOrNull((x) =>
-                                    x.reservation.start ==
-                                    closestDateTimeToNow
-                                        .millisecondsSinceEpoch);
-                          }
-
-                          return TableReservationCard(
-                              reservationsBloc: context.read(),
-                              tableModel: state.data[index].table,
-                              selectedDateTime: selectedDateTime,
-                              reservations: state.data[index].reservations,
-                              nextReservation: nextReservation);
-                        },
-                      ),
-                    ),
+                    const SizedBox(),
+                    const Center(child: Text('Нет резерваций')),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: OutlinedButton(
+                                onPressed: () => onReservationStatusChange(
+                                    ReservationStatus.waiting, state.placeId),
+                                child: const Text('Ожидаем'))),
+                        Expanded(
+                            child: OutlinedButton(
+                                onPressed: () => onReservationStatusChange(
+                                    ReservationStatus.opened, state.placeId),
+                                child: const Text('Открыты'))),
+                        Expanded(
+                            child: OutlinedButton(
+                                onPressed: () => onReservationStatusChange(
+                                    ReservationStatus.closing, state.placeId),
+                                child: const Text('Закрытие'))),
+                        Expanded(
+                            child: OutlinedButton(
+                                onPressed: () => onReservationStatusChange(
+                                    ReservationStatus.fresh, state.placeId),
+                                child: const Text('Новые'))),
+                      ],
+                    )
                   ],
                 );
-              } else {
-                return const SizedBox();
               }
-            },
-          ),
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    itemCount: state.data.length,
+                    itemBuilder: (context, i) {
+                      final Color color;
+                      switch (selectedStatus) {
+                        case ReservationStatus.fresh:
+                          color = Colors.blueAccent;
+                          break;
+                        case ReservationStatus.opened:
+                          color = Colors.greenAccent;
+                          break;
+                        default:
+                          color = Colors.greenAccent;
+                      }
+
+                      final reservation = state.data[i];
+
+                      return Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            color: color,
+                            border: Border.all(color: Colors.black),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Стол ${reservation.tableId}, Зал'),
+                                  Text(Status(selectedStatus).toString()),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    '${reservation.name}, ${reservation.guests} чел.',
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                reservation.phoneNumber,
+                              ),
+                              Text(
+                                '${DateFormat('HH:mm', 'RU').format(reservation.start)} - ${DateFormat('HH:mm', 'RU').format(reservation.end)}',
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: OutlinedButton(
+                              onPressed: () => onReservationStatusChange(
+                                  ReservationStatus.waiting, state.placeId),
+                              child: const Text('Ожидаем'))),
+                      Expanded(
+                          child: OutlinedButton(
+                              onPressed: () => onReservationStatusChange(
+                                  ReservationStatus.opened, state.placeId),
+                              child: const Text('Открыты'))),
+                      Expanded(
+                          child: OutlinedButton(
+                              onPressed: () => onReservationStatusChange(
+                                  ReservationStatus.closing, state.placeId),
+                              child: const Text('Закрытие'))),
+                      Expanded(
+                          child: OutlinedButton(
+                              onPressed: () => onReservationStatusChange(
+                                  ReservationStatus.fresh, state.placeId),
+                              child: const Text('Новые'))),
+                    ],
+                  )
+                ],
+              );
+            } else {
+              return const SizedBox();
+            }
+          },
         ),
       );
 
-  Future _onDateTimeTap() async {
+  void onReservationStatusChange(ReservationStatus status, int placeId) {
+    context.read<ReservationsBloc>().add(ReservationsLoad(
+        placeId: placeId,
+        start: selectedDate.millisecondsSinceEpoch,
+        status: status));
+
+    setState(() {
+      selectedStatus = status;
+    });
+  }
+
+  Future _onDateTimeTap(int placeId) async {
     final date = await showDatePicker(
         context: context,
-        initialDate: DateTime.now().toLocal(),
-        firstDate: DateTime.now().toLocal(),
-        lastDate: DateTime.now().toLocal().add(const Duration(days: 20000)));
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(const Duration(days: 20000)));
 
     if (date != null) {
       final time = await showTimePicker(
@@ -132,11 +196,47 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         ),
       );
       if (time != null) {
+        context.read<ReservationsBloc>().add(ReservationsLoad(
+            placeId: placeId,
+            start: DateTime(
+              date.year,
+              date.month,
+              date.day,
+              time.hour,
+              time.minute,
+            ).millisecondsSinceEpoch,
+            status: selectedStatus));
         setState(() {
-          selectedDateTime =
+          selectedDate =
               DateTime(date.year, date.month, date.day, time.hour, time.minute);
         });
       }
+    }
+  }
+}
+
+enum ReservationStatus { waiting, opened, closing, closed, fresh }
+
+class Status {
+  final ReservationStatus type;
+
+  Status(this.type);
+
+  @override
+  String toString() {
+    switch (type) {
+      case ReservationStatus.waiting:
+        return 'Ожидаем';
+      case ReservationStatus.opened:
+        return 'Открыта';
+      case ReservationStatus.closed:
+        return 'Закрыта';
+      case ReservationStatus.closing:
+        return 'Закрытие';
+      case ReservationStatus.fresh:
+        return 'Новая';
+      default:
+        return 'asd';
     }
   }
 }

@@ -1,13 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/screens/reservations/widgets/change_time_dialog.dart';
+import 'package:booking_app/screens/old_reservations/widgets/change_time_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ReservationDialog extends StatefulWidget {
-  final ReservationsBloc reservationsBloc;
+  final TableReservationsBloc reservationsBloc;
   int placeId;
   int tableId;
   int maxGuests;

@@ -1,17 +1,17 @@
-import 'package:booking_app/blocs/reservations/reservations_bloc.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/blocs/table_info/table_info_bloc.dart';
 import 'package:booking_app/models/local/reservation_time.dart';
-import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/reserve_table/widgets/datetime_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../blocs/table_reservations/table_reservations_bloc.dart';
+
 class ReserveTableScreen extends StatefulWidget {
   final int tableNumber;
-  final ReservationsBloc reservationsBloc;
+  final TableReservationsBloc reservationsBloc;
   const ReserveTableScreen(
       {super.key, required this.tableNumber, required this.reservationsBloc});
 
@@ -41,7 +41,7 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                   placeId: state.placeId, tableId: state.tableId));
 
               widget.reservationsBloc
-                  .add(ReservationsLoad(placeId: state.placeId));
+                  .add(TableReservationsLoad(placeId: state.placeId));
 
               Navigator.pop(context);
             }
@@ -261,8 +261,8 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
         placeId: placeId,
         tableId: tableId,
         guests: guestsCount,
-        start: DateTime(2023, 04, 1, 13, 30),
-        end: DateTime(2023, 04, 1, 16, 30),
+        start: DateTime(2023, 4, 3, 16, 30),
+        end: DateTime(2023, 4, 3, 19, 30),
         phoneNumber: phoneNumber,
         name: name,
         excludeReshuffle: excludeReshuffle));

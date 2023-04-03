@@ -248,6 +248,26 @@ class DbProvider {
     return userReservationsResult;
   }
 
+  Future<List<ReservationModel>> getReservationsByTime(
+      int placeId, int start, int isOpened) async {
+    final db = await database;
+    final res = await db.query('reservations',
+        where: 'placeId = ? AND start >= ? AND isOpened = ?',
+        whereArgs: [placeId, start, isOpened]);
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final reservationsResult = <ReservationModel>[];
+
+    for (final map in res) {
+      reservationsResult.add(ReservationModel.fromMap(map));
+    }
+
+    return reservationsResult;
+  }
+
   Future<TableModel?> getTableById(int placeId, int tableId) async {
     final db = await database;
     final res = await db.query('tables',

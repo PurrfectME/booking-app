@@ -17,7 +17,7 @@ class TableInfoScreen extends StatefulWidget {
   final int tableNumber;
   final int tableGuests;
   final ReserveTableBloc reserveTableBloc;
-  final ReservationsBloc reservationsBloc;
+  final TableReservationsBloc reservationsBloc;
   const TableInfoScreen({
     super.key,
     required this.tableNumber,

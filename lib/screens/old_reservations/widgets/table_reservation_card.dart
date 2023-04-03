@@ -1,6 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
-import 'package:booking_app/screens/reservations/widgets/reservation_dialog.dart';
+import 'package:booking_app/screens/old_reservations/widgets/reservation_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class TableReservationCard extends StatefulWidget {
-  final ReservationsBloc reservationsBloc;
+  final TableReservationsBloc reservationsBloc;
   final TableModel tableModel;
   final DateTime selectedDateTime;
   final List<UserReservationModel> reservations;
@@ -135,10 +135,11 @@ class _TableReservationCardState extends State<TableReservationCard> {
   Future _onCardTap(List<UserReservationModel> reservations) async {
     await showBarModalBottomSheet<void>(
         context: context,
-        builder: (context) => BlocBuilder<ReservationsBloc, ReservationsState>(
+        builder: (context) => BlocBuilder<TableReservationsBloc,
+                TableReservationsState>(
             bloc: widget.reservationsBloc,
             builder: (context, state) {
-              if (state is ReservationsLoaded) {
+              if (state is TableReservationsLoaded) {
                 final filteredReservations = state.data
                     .firstWhere((e) => e.table.id == widget.tableModel.id)
                     .reservations
@@ -304,7 +305,7 @@ class _TableReservationCardState extends State<TableReservationCard> {
           ));
 
   void _removeReservation(int reservationId, int placeId, int tableNumber) {
-    widget.reservationsBloc.add(RemoveReservation(
+    widget.reservationsBloc.add(TableRemoveReservation(
         reservationId: reservationId,
         placeId: placeId,
         tableNumber: tableNumber));

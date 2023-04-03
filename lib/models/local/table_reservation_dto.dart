@@ -2,14 +2,14 @@
 import 'package:booking_app/models/models.dart';
 import 'package:flutter/foundation.dart';
 
-class TableReservationViewModel {
+class TableReservationDto {
   TableModel table;
   int? from;
   int? to;
   bool isReservedByUser;
   List<Uint8List> imagesBytes;
 
-  TableReservationViewModel(
+  TableReservationDto(
     this.table,
     this.from,
     this.to,
@@ -17,7 +17,7 @@ class TableReservationViewModel {
     this.imagesBytes,
   );
 
-  TableReservationViewModel copyWith({
+  TableReservationDto copyWith({
     TableModel? table,
     int? from,
     int? to,
@@ -25,7 +25,7 @@ class TableReservationViewModel {
     String? placeName,
     List<Uint8List>? imagesBytes,
   }) =>
-      TableReservationViewModel(
+      TableReservationDto(
         table ?? this.table,
         from ?? this.from,
         to ?? this.to,

@@ -1,90 +1,77 @@
 import 'package:bloc/bloc.dart';
+import 'package:booking_app/models/local/reservation_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:equatable/equatable.dart';
 
 part 'reservations_event.dart';
 part 'reservations_state.dart';
 
 class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
-  final List<TableModel>? tables;
-  ReservationsBloc(this.tables) : super(ReservationsLoading()) {
+  ReservationsBloc() : super(ReservationsLoading()) {
     on<ReservationsEvent>((event, emit) async {
       if (event is ReservationsLoad) {
         emit(ReservationsLoading());
-        final result = await _initReservations(tables!, event.placeId);
 
-        emit(ReservationsLoaded(result));
-      } else if (event is AdminTableReserve) {
-        emit(ReservationsLoading());
-        final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
+        switch (event.status) {
+          case ReservationStatus.fresh:
+            //TODO: достать всю инфу одним запросом
+            final result =
+                await filterReservations(event.placeId, event.start, false);
 
-        final resId = await DbProvider.db.createReservation(ReservationModel(
-            id: null,
-            tableId: event.tableId,
-            placeId: event.placeId,
-            userId: user?.id,
-            phoneNumber: event.phoneNumber,
-            name: event.name,
-            start: event.start.millisecondsSinceEpoch,
-            end: event.end.millisecondsSinceEpoch,
-            guests: event.guests,
-            isOpened: false,
-            excludeReshuffle: false));
+            if (result.isEmpty) {
+              emit(ReservationsLoaded(data: const [], placeId: event.placeId));
+              break;
+            }
 
-        final currentTables = await DbProvider.db.getTables(event.placeId);
+            emit(ReservationsLoaded(data: result, placeId: event.placeId));
 
-        final result = await _initReservations(currentTables, event.placeId);
-        emit(ReservationsLoaded(result));
-      } else if (event is RemoveReservation) {
-        emit(ReservationsLoading());
+            break;
+          case ReservationStatus.opened:
+            final result =
+                await filterReservations(event.placeId, event.start, true);
 
-        final isDeleted = await DbProvider.db
-            .deleteReservation(event.reservationId, event.placeId);
+            if (result.isEmpty) {
+              emit(ReservationsLoaded(data: const [], placeId: event.placeId));
+              break;
+            }
 
-        emit(RemoveReservationSuccess(tableNumber: event.tableNumber));
-        emit(ReservationsLoaded(
-            await _initReservations(tables!, event.placeId)));
-      } else if (event is AdminEditReservation) {
-        emit(ReservationsLoading());
-
-        final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
-
-        final result = await DbProvider.db.updateReservation(ReservationModel(
-            id: event.reservationId,
-            placeId: event.placeId,
-            tableId: event.tableId,
-            start: event.start.millisecondsSinceEpoch,
-            end: event.end.millisecondsSinceEpoch,
-            guests: event.guests,
-            phoneNumber: event.phoneNumber,
-            name: event.name,
-            userId: user?.id,
-            isOpened: false,
-            excludeReshuffle: false));
-
-        emit(EditReservationSuccess());
-        emit(ReservationsLoaded(
-            await _initReservations(tables!, event.placeId)));
+            emit(ReservationsLoaded(data: result, placeId: event.placeId));
+            break;
+          default:
+            emit(ReservationsLoaded(placeId: event.placeId, data: const []));
+        }
       }
     });
   }
 
-  Future<List<ReservationViewModel>> _initReservations(
-      List<TableModel> tables, int placeId) async {
-    final userReservations = await DbProvider.db.getReservations(placeId);
-
+  Future<List<ReservationViewModel>> filterReservations(
+    int placeId,
+    int start,
+    bool isOpened,
+  ) async {
     final result = <ReservationViewModel>[];
 
-    for (final table in tables) {
-      final reservations = userReservations
-          .where((x) => x.reservation.tableId == table.id)
-          .toList();
+    final reservations = await DbProvider.db
+        .getReservationsByTime(placeId, start, isOpened ? 1 : 0);
 
-      reservations
-          .sort((a, b) => a.reservation.start.compareTo(b.reservation.start));
-      result
-          .add(ReservationViewModel(table: table, reservations: reservations));
+    if (reservations.isEmpty) {
+      return [];
+    }
+
+    for (final x in reservations) {
+      final table = await DbProvider.db.getTableById(x.placeId, x.tableId);
+
+      result.add(ReservationViewModel(
+          id: x.id!,
+          tableId: x.tableId,
+          tableNumber: table!.number,
+          name: x.name!,
+          guests: x.guests,
+          phoneNumber: x.phoneNumber!,
+          start: DateTime.fromMillisecondsSinceEpoch(x.start),
+          end: DateTime.fromMillisecondsSinceEpoch(x.end)));
     }
 
     return result;
