@@ -1,4 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,41 +96,44 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
 
                       final reservation = state.data[i];
 
-                      return Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          padding: const EdgeInsets.all(7),
-                          decoration: BoxDecoration(
-                            color: color,
-                            border: Border.all(color: Colors.black),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Стол ${reservation.tableId}, Зал'),
-                                  Text(Status(selectedStatus).toString()),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    '${reservation.name}, ${reservation.guests} чел.',
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                reservation.phoneNumber,
-                              ),
-                              Text(
-                                '${DateFormat('HH:mm', 'RU').format(reservation.start)} - ${DateFormat('HH:mm', 'RU').format(reservation.end)}',
-                              )
-                            ],
+                      return GestureDetector(
+                        onTap: () => onReservationTap(reservation.id),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: color,
+                              border: Border.all(color: Colors.black),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Стол ${reservation.tableId}, Зал'),
+                                    Text(Status(selectedStatus).toString()),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${reservation.name}, ${reservation.guests} чел.',
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  reservation.phoneNumber,
+                                ),
+                                Text(
+                                  '${DateFormat('HH:mm', 'RU').format(reservation.start)} - ${DateFormat('HH:mm', 'RU').format(reservation.end)}',
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -167,6 +171,20 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           },
         ),
       );
+
+  void onReservationTap(int reservationId) {
+    context.read<ReservationInfoBloc>().add(ReservationInfoLoad(
+          placeId: placeId,
+          reservationId: reservationId,
+        ));
+
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              ReservationInfoScreen(reservationId: reservationId)),
+    );
+  }
 
   void onReservationStatusChange(ReservationStatus status, int placeId) {
     context.read<ReservationsBloc>().add(ReservationsLoad(

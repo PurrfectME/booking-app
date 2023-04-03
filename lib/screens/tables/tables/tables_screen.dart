@@ -2,7 +2,6 @@ import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/screens.dart';
-import 'package:booking_app/screens/table_info/table_info_screen.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:booking_app/screens/tables/tables/widgets/table_status.dart';
 import 'package:collection/collection.dart';
@@ -10,18 +9,21 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:horizontal_picker/horizontal_picker.dart';
-import 'package:vertical_weight_slider/vertical_weight_slider.dart';
 
 class TablesScreen extends StatefulWidget {
-  const TablesScreen({super.key});
+  final ReservationsBloc reservationsBloc;
+  final ReservationInfoBloc reservationInfoBloc;
+  const TablesScreen({
+    Key? key,
+    required this.reservationsBloc,
+    required this.reservationInfoBloc,
+  }) : super(key: key);
 
   @override
   State<TablesScreen> createState() => _TablesScreenState();
 }
 
 class _TablesScreenState extends State<TablesScreen> {
-  // DateTime n = DateTime.now();
   DateTime selectedDateTime = DateTime.now();
   late int placeId;
 
@@ -266,7 +268,7 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void _onReservationsTap(int placeId) {
-    context.read<ReservationsBloc>().add(ReservationsLoad(
+    widget.reservationsBloc.add(ReservationsLoad(
         placeId: placeId,
         start: DateTime.now().millisecondsSinceEpoch,
         status: ReservationStatus.fresh));

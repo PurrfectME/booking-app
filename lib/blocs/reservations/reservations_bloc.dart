@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/local/reservation_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
@@ -17,8 +18,12 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
         switch (event.status) {
           case ReservationStatus.fresh:
             //TODO: достать всю инфу одним запросом
-            final result =
-                await filterReservations(event.placeId, event.start, false);
+            final result = await filterReservations(
+              event.placeId,
+              event.start,
+              false,
+              event.status,
+            );
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
@@ -29,8 +34,12 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
 
             break;
           case ReservationStatus.opened:
-            final result =
-                await filterReservations(event.placeId, event.start, true);
+            final result = await filterReservations(
+              event.placeId,
+              event.start,
+              true,
+              event.status,
+            );
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
@@ -50,6 +59,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
     int placeId,
     int start,
     bool isOpened,
+    ReservationStatus status,
   ) async {
     final result = <ReservationViewModel>[];
 
@@ -71,7 +81,8 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
           guests: x.guests,
           phoneNumber: x.phoneNumber!,
           start: DateTime.fromMillisecondsSinceEpoch(x.start),
-          end: DateTime.fromMillisecondsSinceEpoch(x.end)));
+          end: DateTime.fromMillisecondsSinceEpoch(x.end),
+          status: status));
     }
 
     return result;

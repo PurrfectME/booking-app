@@ -120,18 +120,6 @@ class PlaceItem extends StatelessWidget {
                                       ))),
                           child: const Text('Резервации')),
                       const SizedBox(width: 8),
-                      ElevatedButton(
-                          onPressed: () => Navigator.push<void>(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BlocProvider(
-                                        create: (context) =>
-                                            TableReservationsBloc(place.tables)
-                                              ..add(TableReservationsLoad(
-                                                  placeId: place.id)),
-                                        child: const TablesScreen(),
-                                      ))),
-                          child: const Text('NEW APP')),
                     ],
                   )
                 ],

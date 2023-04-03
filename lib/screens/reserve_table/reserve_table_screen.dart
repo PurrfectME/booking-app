@@ -261,8 +261,8 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
         placeId: placeId,
         tableId: tableId,
         guests: guestsCount,
-        start: DateTime(2023, 4, 3, 16, 30),
-        end: DateTime(2023, 4, 3, 19, 30),
+        start: DateTime(2023, 4, 3, 18, 30),
+        end: DateTime(2023, 4, 3, 22, 30),
         phoneNumber: phoneNumber,
         name: name,
         excludeReshuffle: excludeReshuffle));

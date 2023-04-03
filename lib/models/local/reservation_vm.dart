@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math';
 
+import 'package:booking_app/screens/screens.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
@@ -13,6 +14,7 @@ class ReservationViewModel extends Equatable {
   final String phoneNumber;
   final DateTime start;
   final DateTime end;
+  final ReservationStatus status;
   const ReservationViewModel({
     required this.id,
     required this.tableId,
@@ -22,6 +24,7 @@ class ReservationViewModel extends Equatable {
     required this.phoneNumber,
     required this.start,
     required this.end,
+    required this.status,
   });
 
   ReservationViewModel copyWith({
@@ -33,19 +36,20 @@ class ReservationViewModel extends Equatable {
     String? phoneNumber,
     DateTime? start,
     DateTime? end,
+    ReservationStatus? status,
   }) =>
       ReservationViewModel(
-        id: id ?? this.id,
-        tableId: tableId ?? this.tableId,
-        tableNumber: tableNumber ?? this.tableNumber,
-        name: name ?? this.name,
-        guests: guests ?? this.guests,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        start: start ?? this.start,
-        end: end ?? this.end,
-      );
+          id: id ?? this.id,
+          tableId: tableId ?? this.tableId,
+          tableNumber: tableNumber ?? this.tableNumber,
+          name: name ?? this.name,
+          guests: guests ?? this.guests,
+          phoneNumber: phoneNumber ?? this.phoneNumber,
+          start: start ?? this.start,
+          end: end ?? this.end,
+          status: status ?? this.status);
 
   @override
   List<Object?> get props =>
-      [id, tableId, tableNumber, name, phoneNumber, guests, start, end];
+      [id, tableId, tableNumber, name, phoneNumber, guests, start, end, status];
 }

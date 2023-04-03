@@ -30,6 +30,7 @@ void main() {
       BlocProvider(create: (context) => TableInfoBloc()),
       BlocProvider(create: (context) => ReserveTableBloc()),
       BlocProvider(create: (context) => ReservationsBloc()),
+      BlocProvider(create: (context) => ReservationInfoBloc()),
       // BlocProvider(create: (context) => UpdatePlaceBloc()),
       // BlocProvider(create: (context) => UpdateTableBloc()),
       // BlocProvider(create: (context) => ReservationsBloc([])),
@@ -84,8 +85,6 @@ class MyApp extends StatelessWidget {
             builder = (context) => const MainScreen();
           } else if (path == UpdatePlaceScreen.pageRoute) {
             builder = (context) => const UpdatePlaceScreen();
-          } else if (path == ReservationsScreen.pageRoute) {
-            builder = (context) => const ReservationsScreen();
           } else {
             builder ??= (context) => const LoginScreen();
           }
