@@ -74,7 +74,9 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
                   phoneNumber: x.phoneNumber!,
                   start: DateTime.fromMillisecondsSinceEpoch(x.start),
                   end: DateTime.fromMillisecondsSinceEpoch(x.end),
-                  status: event.status));
+                  status: event.status,
+                  comment: x.comment,
+                  excludeReshuffle: x.excludeReshuffle));
             }
 
             emit(ReservationsLoaded(data: a, placeId: event.placeId));
@@ -106,16 +108,19 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
       final table = await DbProvider.db.getTableById(x.placeId, x.tableId);
 
       result.add(ReservationViewModel(
-          id: x.id!,
-          placeId: x.placeId,
-          tableId: x.tableId,
-          tableNumber: table!.number,
-          name: x.name!,
-          guests: x.guests,
-          phoneNumber: x.phoneNumber!,
-          start: DateTime.fromMillisecondsSinceEpoch(x.start),
-          end: DateTime.fromMillisecondsSinceEpoch(x.end),
-          status: status));
+        id: x.id!,
+        placeId: x.placeId,
+        tableId: x.tableId,
+        tableNumber: table!.number,
+        name: x.name!,
+        guests: x.guests,
+        phoneNumber: x.phoneNumber!,
+        start: DateTime.fromMillisecondsSinceEpoch(x.start),
+        end: DateTime.fromMillisecondsSinceEpoch(x.end),
+        status: status,
+        excludeReshuffle: x.excludeReshuffle,
+        comment: x.comment,
+      ));
     }
 
     return result;

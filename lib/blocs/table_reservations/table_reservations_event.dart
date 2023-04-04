@@ -65,19 +65,29 @@ class AdminEditReservation extends TableReservationsEvent {
   final DateTime end;
   final String phoneNumber;
   final String name;
+  final String comment;
 
-  const AdminEditReservation({
-    required this.reservationId,
-    required this.placeId,
-    required this.tableId,
-    required this.guests,
-    required this.start,
-    required this.end,
-    required this.phoneNumber,
-    required this.name,
-  });
+  const AdminEditReservation(
+      {required this.reservationId,
+      required this.placeId,
+      required this.tableId,
+      required this.guests,
+      required this.start,
+      required this.end,
+      required this.phoneNumber,
+      required this.name,
+      required this.comment});
 
   @override
-  List<Object> get props =>
-      [reservationId, placeId, tableId, guests, start, end, phoneNumber, name];
+  List<Object> get props => [
+        reservationId,
+        placeId,
+        tableId,
+        guests,
+        start,
+        end,
+        phoneNumber,
+        name,
+        comment
+      ];
 }

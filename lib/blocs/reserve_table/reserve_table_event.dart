@@ -29,6 +29,8 @@ class AdminReserveTable extends ReserveTableEvent {
   final String phoneNumber;
   final String name;
   final bool excludeReshuffle;
+  final String comment;
+
   const AdminReserveTable({
     required this.placeId,
     required this.tableId,
@@ -38,6 +40,7 @@ class AdminReserveTable extends ReserveTableEvent {
     required this.phoneNumber,
     required this.name,
     required this.excludeReshuffle,
+    required this.comment,
   });
 
   @override
@@ -49,6 +52,7 @@ class AdminReserveTable extends ReserveTableEvent {
         end,
         phoneNumber,
         name,
-        excludeReshuffle
+        excludeReshuffle,
+        comment,
       ];
 }

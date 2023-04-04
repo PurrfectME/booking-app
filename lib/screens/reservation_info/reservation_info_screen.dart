@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../reserve_table/reserve_table_screen.dart';
+
 class ReservationInfoScreen extends StatefulWidget {
   final int reservationId;
   final ReservationInfoBloc reservationInfoBloc;
@@ -262,7 +264,17 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
     );
   }
 
-  void onReservationEdit() {}
+  void onReservationEdit() {
+    // Navigator.push<void>(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => ReserveTableScreen(
+    //               tableNumber: state.data.table.number,
+    //               reservationsBloc: widget.reservationsBloc,
+    //               reserveTableBloc: rtBloc,
+    //               tableInfoBloc: tiBloc,
+    //             )));
+  }
 
   void onReservationTableReplace() {}
 

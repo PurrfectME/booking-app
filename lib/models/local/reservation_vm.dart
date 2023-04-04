@@ -13,6 +13,8 @@ class ReservationViewModel extends Equatable {
   final DateTime start;
   final DateTime end;
   final ReservationStatus status;
+  final String? comment;
+  final bool excludeReshuffle;
 
   const ReservationViewModel({
     required this.id,
@@ -25,6 +27,8 @@ class ReservationViewModel extends Equatable {
     required this.start,
     required this.end,
     required this.status,
+    required this.comment,
+    required this.excludeReshuffle,
   });
 
   ReservationViewModel copyWith({
@@ -38,18 +42,23 @@ class ReservationViewModel extends Equatable {
     DateTime? start,
     DateTime? end,
     ReservationStatus? status,
+    String? comment,
+    bool? excludeReshuffle,
   }) =>
       ReservationViewModel(
-          id: id ?? this.id,
-          placeId: placeId ?? this.placeId,
-          tableId: tableId ?? this.tableId,
-          tableNumber: tableNumber ?? this.tableNumber,
-          name: name ?? this.name,
-          guests: guests ?? this.guests,
-          phoneNumber: phoneNumber ?? this.phoneNumber,
-          start: start ?? this.start,
-          end: end ?? this.end,
-          status: status ?? this.status);
+        id: id ?? this.id,
+        placeId: placeId ?? this.placeId,
+        tableId: tableId ?? this.tableId,
+        tableNumber: tableNumber ?? this.tableNumber,
+        name: name ?? this.name,
+        guests: guests ?? this.guests,
+        phoneNumber: phoneNumber ?? this.phoneNumber,
+        start: start ?? this.start,
+        end: end ?? this.end,
+        status: status ?? this.status,
+        comment: comment ?? this.comment,
+        excludeReshuffle: excludeReshuffle ?? this.excludeReshuffle,
+      );
 
   @override
   List<Object?> get props => [
@@ -62,6 +71,8 @@ class ReservationViewModel extends Equatable {
         guests,
         start,
         end,
-        status
+        status,
+        comment,
+        excludeReshuffle,
       ];
 }

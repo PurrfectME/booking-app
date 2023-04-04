@@ -16,6 +16,7 @@ class ReservationModel extends Equatable {
   final bool isOpened;
   final bool isCancelled;
   final bool excludeReshuffle;
+  final String? comment;
 
   const ReservationModel({
     this.id,
@@ -30,6 +31,7 @@ class ReservationModel extends Equatable {
     required this.isOpened,
     required this.isCancelled,
     required this.excludeReshuffle,
+    required this.comment,
   });
 
   ReservationModel copyWith({
@@ -45,6 +47,7 @@ class ReservationModel extends Equatable {
     bool? isOpened,
     bool? isCancelled,
     bool? excludeReshuffle,
+    String? comment,
   }) =>
       ReservationModel(
         id: id ?? this.id,
@@ -59,6 +62,7 @@ class ReservationModel extends Equatable {
         isOpened: isOpened ?? this.isOpened,
         isCancelled: isCancelled ?? this.isCancelled,
         excludeReshuffle: excludeReshuffle ?? this.excludeReshuffle,
+        comment: comment ?? this.comment,
       );
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -74,23 +78,26 @@ class ReservationModel extends Equatable {
         'isOpened': isOpened ? 1 : 0,
         'isCancelled': isCancelled ? 1 : 0,
         'excludeReshuffle': excludeReshuffle ? 1 : 0,
+        'comment': comment,
       };
 
   factory ReservationModel.fromMap(Map<String, dynamic> map) =>
       ReservationModel(
-          id: map['id'] != null ? map['id'] as int : null,
-          placeId: map['placeId'] as int,
-          tableId: map['tableId'] as int,
-          userId: map['userId'] != null ? map['userId'] as int : null,
-          phoneNumber:
-              map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
-          name: map['name'] != null ? map['name'] as String : null,
-          start: map['start'] as int,
-          end: map['end'] as int,
-          guests: map['guests'] as int,
-          isOpened: map['isOpened'] == 1,
-          isCancelled: map['isCancelled'] == 1,
-          excludeReshuffle: map['excludeReshuffle'] == 1);
+        id: map['id'] != null ? map['id'] as int : null,
+        placeId: map['placeId'] as int,
+        tableId: map['tableId'] as int,
+        userId: map['userId'] != null ? map['userId'] as int : null,
+        phoneNumber:
+            map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
+        name: map['name'] != null ? map['name'] as String : null,
+        start: map['start'] as int,
+        end: map['end'] as int,
+        guests: map['guests'] as int,
+        isOpened: map['isOpened'] == 1,
+        isCancelled: map['isCancelled'] == 1,
+        excludeReshuffle: map['excludeReshuffle'] == 1,
+        comment: map['comment'] != null ? map['comment'] as String : null,
+      );
 
   String toJson() => json.encode(toMap());
 

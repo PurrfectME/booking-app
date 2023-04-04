@@ -64,7 +64,8 @@ class TableReservationsBloc
             userId: user?.id,
             isOpened: false,
             isCancelled: false,
-            excludeReshuffle: false));
+            excludeReshuffle: false,
+            comment: event.));
 
         emit(TableEditReservationSuccess());
         emit(TableReservationsLoaded(

@@ -102,7 +102,8 @@ class ReservationInfoBloc
                       updatedReservation.start),
                   end: DateTime.fromMillisecondsSinceEpoch(
                       updatedReservation.end),
-                  status: ReservationStatus.cancelled)));
+                  status: ReservationStatus.cancelled,
+                  comment: updatedReservation)));
         } else {
           emit(const ReservationInfoError(error: 'Ошибка отмены заявки'));
         }

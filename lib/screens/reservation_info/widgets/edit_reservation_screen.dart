@@ -1,64 +1,57 @@
-import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
-import 'package:booking_app/blocs/table_info/table_info_bloc.dart';
-import 'package:booking_app/models/local/reservation_time.dart';
-import 'package:booking_app/screens/reserve_table/widgets/datetime_selector.dart';
+import 'package:booking_app/blocs/reservation_info/reservation_info_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../blocs/table_reservations/table_reservations_bloc.dart';
+import '../../../models/local/reservation_time.dart';
+import '../../reserve_table/widgets/datetime_selector.dart';
 
-class ReserveTableScreen extends StatefulWidget {
-  final int tableNumber;
-  final TableReservationsBloc reservationsBloc;
-  final ReserveTableBloc reserveTableBloc;
-  final TableInfoBloc tableInfoBloc;
-  const ReserveTableScreen({
-    super.key,
-    required this.tableNumber,
-    required this.reservationsBloc,
-    required this.reserveTableBloc,
-    required this.tableInfoBloc,
-  });
+class EditReservationScreen extends StatefulWidget {
+  final int reservationId;
+  const EditReservationScreen({super.key, required this.reservationId});
 
   @override
-  State<ReserveTableScreen> createState() => _ReserveTableScreenState();
+  State<EditReservationScreen> createState() => _EditReservationScreenState();
 }
 
-class _ReserveTableScreenState extends State<ReserveTableScreen> {
-  String phoneNumber = '';
-  String name = '';
-  int guestsCount = 1;
-  DateTime start = DateTime.now();
-  DateTime end = DateTime.now();
-  String comment = '';
-  bool excludeReshuffle = false;
+class _EditReservationScreenState extends State<EditReservationScreen> {
+  late String phoneNumber = '';
+  late String name = '';
+  late int guestsCount = 1;
+  late DateTime start = DateTime.now();
+  late DateTime end = DateTime.now();
+  late String comment = '';
+  late bool excludeReshuffle = false;
   bool dateIsSet = false;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Забронировать стол №${widget.tableNumber}'),
+          title: Text('РЕДАКТИРОВАНИЕ ЗАЯВКИ №${widget.reservationId}'),
         ),
-        body: BlocConsumer<ReserveTableBloc, ReserveTableState>(
-          bloc: widget.reserveTableBloc,
+        body: BlocConsumer<ReservationInfoBloc, ReservationInfoState>(
+          // bloc: widget.reserveTableBloc,
           listener: (context, state) {
-            if (state is ReserveTableSuccess) {
-              widget.tableInfoBloc.add(TableInfoLoad(
-                  placeId: state.placeId, tableId: state.tableId));
-
-              widget.reservationsBloc
-                  .add(TableReservationsLoad(placeId: state.placeId));
-
+            if (state is ReservationInfoEdited) {
               Navigator.pop(context);
             }
           },
           builder: (context, state) {
-            if (state is ReserveTableLoading) {
+            if (state is ReservationInfoLoading) {
               return const Center(
                   child: CupertinoActivityIndicator(radius: 20));
-            } else if (state is ReserveTableLoaded) {
+            } else if (state is ReservationInfoLoaded) {
+              final reservation = state.data;
+
+              phoneNumber = reservation.phoneNumber;
+              name = reservation.name;
+              guestsCount = reservation.guests;
+              start = reservation.start;
+              end = reservation.end;
+              comment = reservation.comment;
+              excludeReshuffle = reservation.excludeReshuffle;
+
               return Padding(
                 padding: const EdgeInsets.all(18),
                 child: Form(
@@ -205,8 +198,8 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.black)),
-                          onPressed: () =>
-                              reserveTable(state.placeId, state.tableId),
+                          onPressed: () => updateReservation(
+                              state.data.placeId, state.data.tableId),
                           child: const Text(
                             'Забронировать',
                             style: TextStyle(color: Colors.white),
@@ -224,6 +217,8 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
         ),
       );
 
+  void updateReservation(int placeId, int reservationId) {}
+
   Future _onDatePress() async {
     final result = await showDialog<ReservationTime>(
         context: context, builder: (context) => const DatetimeSelector());
@@ -235,17 +230,5 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
         dateIsSet = true;
       });
     }
-  }
-
-  void reserveTable(int placeId, int tableId) {
-    widget.reserveTableBloc.add(AdminReserveTable(
-        placeId: placeId,
-        tableId: tableId,
-        guests: guestsCount,
-        start: DateTime.now().add(const Duration(minutes: 30)),
-        end: DateTime.now().add(const Duration(hours: 2)),
-        phoneNumber: phoneNumber,
-        name: name,
-        excludeReshuffle: excludeReshuffle));
   }
 }

@@ -19,18 +19,20 @@ class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
         final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
 
         final resId = await DbProvider.db.createReservation(ReservationModel(
-            id: null,
-            tableId: event.tableId,
-            placeId: event.placeId,
-            userId: user?.id,
-            phoneNumber: event.phoneNumber,
-            name: event.name,
-            start: event.start.millisecondsSinceEpoch,
-            end: event.end.millisecondsSinceEpoch,
-            guests: event.guests,
-            isOpened: false,
-            isCancelled: false,
-            excludeReshuffle: event.excludeReshuffle));
+          id: null,
+          tableId: event.tableId,
+          placeId: event.placeId,
+          userId: user?.id,
+          phoneNumber: event.phoneNumber,
+          name: event.name,
+          start: event.start.millisecondsSinceEpoch,
+          end: event.end.millisecondsSinceEpoch,
+          guests: event.guests,
+          isOpened: false,
+          isCancelled: false,
+          excludeReshuffle: event.excludeReshuffle,
+          comment: event.comment,
+        ));
 
         // final currentTables = await DbProvider.db.getTables(event.placeId);
 

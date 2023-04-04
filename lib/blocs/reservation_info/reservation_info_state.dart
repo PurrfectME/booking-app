@@ -31,3 +31,5 @@ class ReservationInfoLoaded extends ReservationInfoState {
 }
 
 class ReservationInfoUpdated extends ReservationInfoState {}
+
+class ReservationInfoEdited extends ReservationInfoState {}

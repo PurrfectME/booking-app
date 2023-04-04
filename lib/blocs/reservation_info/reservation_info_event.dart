@@ -47,3 +47,40 @@ class ReservationCancel extends ReservationInfoEvent {
   @override
   List<Object> get props => [placeId, reservationId];
 }
+
+class ReservationInfoEdit extends ReservationInfoEvent {
+  final int reservationId;
+  final int placeId;
+  final int tableId;
+  final int guests;
+  final DateTime start;
+  final DateTime end;
+  final String phoneNumber;
+  final String name;
+  final bool excludeReshuffle;
+
+  const ReservationInfoEdit({
+    required this.reservationId,
+    required this.placeId,
+    required this.tableId,
+    required this.guests,
+    required this.start,
+    required this.end,
+    required this.phoneNumber,
+    required this.name,
+    required this.excludeReshuffle,
+  });
+
+  @override
+  List<Object> get props => [
+        reservationId,
+        placeId,
+        tableId,
+        guests,
+        start,
+        end,
+        phoneNumber,
+        name,
+        excludeReshuffle
+      ];
+}
