@@ -31,6 +31,7 @@ class TableReservationsBloc
             end: event.end.millisecondsSinceEpoch,
             guests: event.guests,
             isOpened: false,
+            isCancelled: false,
             excludeReshuffle: false));
 
         final currentTables = await DbProvider.db.getTables(event.placeId);
@@ -62,6 +63,7 @@ class TableReservationsBloc
             name: event.name,
             userId: user?.id,
             isOpened: false,
+            isCancelled: false,
             excludeReshuffle: false));
 
         emit(TableEditReservationSuccess());
@@ -73,7 +75,8 @@ class TableReservationsBloc
 
   Future<List<TableReservationViewModel>> _initReservations(
       List<TableModel> tables, int placeId) async {
-    final userReservations = await DbProvider.db.getReservations(placeId);
+    final userReservations = (await DbProvider.db.getReservations(placeId))
+        .where((x) => !x.reservation.isCancelled);
 
     final result = <TableReservationViewModel>[];
 

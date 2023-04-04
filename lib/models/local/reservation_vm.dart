@@ -13,6 +13,7 @@ class ReservationViewModel extends Equatable {
   final DateTime start;
   final DateTime end;
   final ReservationStatus status;
+
   const ReservationViewModel({
     required this.id,
     required this.placeId,

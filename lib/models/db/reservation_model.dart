@@ -14,6 +14,7 @@ class ReservationModel extends Equatable {
   final int end;
   final int guests;
   final bool isOpened;
+  final bool isCancelled;
   final bool excludeReshuffle;
 
   const ReservationModel({
@@ -27,6 +28,7 @@ class ReservationModel extends Equatable {
     required this.end,
     required this.guests,
     required this.isOpened,
+    required this.isCancelled,
     required this.excludeReshuffle,
   });
 
@@ -41,6 +43,7 @@ class ReservationModel extends Equatable {
     int? end,
     int? guests,
     bool? isOpened,
+    bool? isCancelled,
     bool? excludeReshuffle,
   }) =>
       ReservationModel(
@@ -54,6 +57,7 @@ class ReservationModel extends Equatable {
         end: end ?? this.end,
         guests: guests ?? this.guests,
         isOpened: isOpened ?? this.isOpened,
+        isCancelled: isCancelled ?? this.isCancelled,
         excludeReshuffle: excludeReshuffle ?? this.excludeReshuffle,
       );
 
@@ -68,6 +72,7 @@ class ReservationModel extends Equatable {
         'end': end,
         'guests': guests,
         'isOpened': isOpened ? 1 : 0,
+        'isCancelled': isCancelled ? 1 : 0,
         'excludeReshuffle': excludeReshuffle ? 1 : 0,
       };
 
@@ -84,6 +89,7 @@ class ReservationModel extends Equatable {
           end: map['end'] as int,
           guests: map['guests'] as int,
           isOpened: map['isOpened'] == 1,
+          isCancelled: map['isCancelled'] == 1,
           excludeReshuffle: map['excludeReshuffle'] == 1);
 
   String toJson() => json.encode(toMap());
@@ -103,6 +109,7 @@ class ReservationModel extends Equatable {
         end,
         guests,
         isOpened,
+        isCancelled,
         excludeReshuffle
       ];
 }

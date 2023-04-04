@@ -78,6 +78,34 @@ class ReservationInfoBloc
         } else {
           emit(const ReservationInfoError(error: 'Ошибка открытия заявки'));
         }
+      } else if (event is ReservationCancel) {
+        final isCancelled = await DbProvider.db
+            .cancelReservation(event.placeId, event.reservationId);
+
+        if (isCancelled) {
+          final updatedReservation = await DbProvider.db
+              .getReservationsById(event.placeId, event.reservationId);
+
+          final table = await DbProvider.db
+              .getTableById(event.placeId, updatedReservation.tableId);
+
+          emit(ReservationInfoLoaded(
+              data: ReservationViewModel(
+                  id: updatedReservation.id!,
+                  placeId: updatedReservation.placeId,
+                  tableId: updatedReservation.tableId,
+                  tableNumber: table!.number,
+                  name: updatedReservation.name!,
+                  guests: updatedReservation.guests,
+                  phoneNumber: updatedReservation.phoneNumber!,
+                  start: DateTime.fromMillisecondsSinceEpoch(
+                      updatedReservation.start),
+                  end: DateTime.fromMillisecondsSinceEpoch(
+                      updatedReservation.end),
+                  status: ReservationStatus.cancelled)));
+        } else {
+          emit(const ReservationInfoError(error: 'Ошибка отмены заявки'));
+        }
       }
     });
   }

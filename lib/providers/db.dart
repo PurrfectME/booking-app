@@ -252,8 +252,29 @@ class DbProvider {
       int placeId, int start, int end, int isOpened) async {
     final db = await database;
     final res = await db.query('reservations',
-        where: 'placeId = ? AND start BETWEEN ? AND ? AND isOpened = ?',
+        where:
+            'placeId = ? AND start BETWEEN ? AND ? AND isOpened = ? AND isCancelled = 0',
         whereArgs: [placeId, start, end, isOpened]);
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final reservationsResult = <ReservationModel>[];
+
+    for (final map in res) {
+      reservationsResult.add(ReservationModel.fromMap(map));
+    }
+
+    return reservationsResult;
+  }
+
+  Future<List<ReservationModel>> getArchivedReservations(
+      int placeId, int currentTime, int isCancelled) async {
+    final db = await database;
+    final res = await db.query('reservations',
+        where: 'placeId = ? AND (end <= ? OR isCancelled = ?)',
+        whereArgs: [placeId, currentTime, isCancelled]);
 
     if (res.isEmpty) {
       return [];
@@ -287,6 +308,24 @@ class DbProvider {
       {
         'isOpened': 1,
         'start': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'placeId = ? AND id = ?',
+      whereArgs: [placeId, id],
+    );
+
+    if (res == 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> cancelReservation(int placeId, int id) async {
+    final db = await database;
+    final res = await db.update(
+      'reservations',
+      {
+        'isCancelled': 1,
       },
       where: 'placeId = ? AND id = ?',
       whereArgs: [placeId, id],

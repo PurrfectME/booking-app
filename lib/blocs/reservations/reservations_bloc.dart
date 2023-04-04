@@ -48,6 +48,37 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
 
             emit(ReservationsLoaded(data: result, placeId: event.placeId));
             break;
+
+          case ReservationStatus.cancelled:
+            final result = await DbProvider.db.getArchivedReservations(
+                event.placeId, DateTime.now().millisecondsSinceEpoch, 1);
+
+            if (result.isEmpty) {
+              emit(ReservationsLoaded(data: const [], placeId: event.placeId));
+              break;
+            }
+
+            final a = <ReservationViewModel>[];
+
+            for (final x in result) {
+              final table =
+                  await DbProvider.db.getTableById(x.placeId, x.tableId);
+
+              a.add(ReservationViewModel(
+                  id: x.id!,
+                  placeId: x.placeId,
+                  tableId: x.tableId,
+                  tableNumber: table!.number,
+                  name: x.name!,
+                  guests: x.guests,
+                  phoneNumber: x.phoneNumber!,
+                  start: DateTime.fromMillisecondsSinceEpoch(x.start),
+                  end: DateTime.fromMillisecondsSinceEpoch(x.end),
+                  status: event.status));
+            }
+
+            emit(ReservationsLoaded(data: a, placeId: event.placeId));
+            break;
           default:
             emit(ReservationsLoaded(placeId: event.placeId, data: const []));
         }

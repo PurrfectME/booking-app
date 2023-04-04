@@ -29,6 +29,7 @@ class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
             end: event.end.millisecondsSinceEpoch,
             guests: event.guests,
             isOpened: false,
+            isCancelled: false,
             excludeReshuffle: event.excludeReshuffle));
 
         // final currentTables = await DbProvider.db.getTables(event.placeId);

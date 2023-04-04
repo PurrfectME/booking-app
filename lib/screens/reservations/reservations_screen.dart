@@ -55,6 +55,11 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         Expanded(
                             child: OutlinedButton(
                                 onPressed: () => onReservationStatusChange(
+                                    ReservationStatus.cancelled, state.placeId),
+                                child: const Text('Отмена'))),
+                        Expanded(
+                            child: OutlinedButton(
+                                onPressed: () => onReservationStatusChange(
                                     ReservationStatus.waiting, state.placeId),
                                 child: const Text('Ожидаем'))),
                         Expanded(
@@ -93,6 +98,9 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                           break;
                         case ReservationStatus.opened:
                           color = Colors.greenAccent;
+                          break;
+                        case ReservationStatus.cancelled:
+                          color = Colors.grey;
                           break;
                         default:
                           color = Colors.greenAccent;
@@ -145,6 +153,11 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                   ),
                   Row(
                     children: [
+                      Expanded(
+                          child: OutlinedButton(
+                              onPressed: () => onReservationStatusChange(
+                                  ReservationStatus.cancelled, state.placeId),
+                              child: const Text('Отмена'))),
                       Expanded(
                           child: OutlinedButton(
                               onPressed: () => onReservationStatusChange(
@@ -239,7 +252,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   }
 }
 
-enum ReservationStatus { waiting, opened, closing, closed, fresh }
+enum ReservationStatus { waiting, opened, closing, closed, fresh, cancelled }
 
 class Status {
   final ReservationStatus type;

@@ -61,7 +61,8 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ReservationLabel(
-                          hasReservationsToday: true,
+                          hasReservationsToday:
+                              reservation.status != ReservationStatus.cancelled,
                           start: reservation.start,
                           end: reservation.end,
                         ),
@@ -177,8 +178,9 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                             child: Container(
                                 height: 60,
                                 child: OutlinedButton(
-                                    onPressed: onReservationCancel,
-                                    child: Text('Отменить'))),
+                                    onPressed: () =>
+                                        onReservationCancel(state.data.placeId),
+                                    child: const Text('Отменить'))),
                           ),
                       ],
                     ),
@@ -231,7 +233,34 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
 
   void onReservationClose() {}
 
-  void onReservationCancel() {}
+  void onReservationCancel(int placeId) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Вы точно хотите отменить заявку?',
+          style: TextStyle(color: Colors.black),
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Да'),
+            onPressed: () {
+              widget.reservationInfoBloc.add(ReservationCancel(
+                placeId: placeId,
+                reservationId: widget.reservationId,
+              ));
+
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Нет'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
 
   void onReservationEdit() {}
 
