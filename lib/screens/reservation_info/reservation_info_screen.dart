@@ -144,8 +144,8 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                           child: Container(
                             height: 60,
                             child: OutlinedButton(
-                                onPressed: () =>
-                                    onReservationOpen(state.data.placeId),
+                                onPressed: () => onReservationOpen(
+                                    state.data.placeId, state.data.start),
                                 child: const Text('Открыть')),
                           ),
                         ),
@@ -195,11 +195,38 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
         ),
       );
 
-  void onReservationOpen(int placeId) {
-    widget.reservationInfoBloc.add(ReservationOpen(
-      placeId: placeId,
-      reservationId: widget.reservationId,
-    ));
+  void onReservationOpen(int placeId, DateTime start) {
+    final now = DateTime.now();
+    if (now.isBefore(start)) {
+      final difference = DateTime.fromMillisecondsSinceEpoch(
+          start.difference(now).inMilliseconds);
+      showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            'Открыть заявку раньше на ${difference.hour == 0 ? '' : '${DateFormat('HH', 'RU').format(difference)} ч.'} ${difference.minute == 0 ? '' : '${DateFormat('mm', 'RU').format(difference)} м.'}',
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Да'),
+              onPressed: () {
+                widget.reservationInfoBloc.add(ReservationOpen(
+                  placeId: placeId,
+                  reservationId: widget.reservationId,
+                ));
+
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Нет'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   void onReservationClose() {}

@@ -109,9 +109,9 @@ class PlacesScreenState extends State<PlacesScreen> {
                     // BlocProvider(
                     //   create: (context) => ReserveTab(),
                     // ),
-                    BlocProvider(
-                      create: (context) => ReservationInfoBloc(),
-                    ),
+                    // BlocProvider(
+                    //   create: (context) => ReservationInfoBloc(),
+                    // ),
                     BlocProvider(
                       create: (context) => TableReservationsBloc(tables)
                         ..add(TableReservationsLoad(placeId: placeId)),

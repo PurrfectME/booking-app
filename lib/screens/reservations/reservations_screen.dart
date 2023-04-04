@@ -9,8 +9,9 @@ import '../../blocs/reservations/reservations_bloc.dart';
 
 class ReservationsScreen extends StatefulWidget {
   static const String pageRoute = '/reservations';
-  // final ReservationsBloc reservationsBloc;
-  const ReservationsScreen({Key? key}) : super(key: key);
+  final ReservationsBloc reservationsBloc;
+  const ReservationsScreen({Key? key, required this.reservationsBloc})
+      : super(key: key);
 
   @override
   State<ReservationsScreen> createState() => _ReservationsScreenState();
@@ -35,6 +36,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           ],
         ),
         body: BlocConsumer<ReservationsBloc, ReservationsState>(
+          bloc: widget.reservationsBloc,
           listener: (context, state) {},
           builder: (context, state) {
             if (state is ReservationsLoading) {
@@ -193,7 +195,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   }
 
   void onReservationStatusChange(ReservationStatus status, int placeId) {
-    context.read<ReservationsBloc>().add(ReservationsLoad(
+    widget.reservationsBloc.add(ReservationsLoad(
         placeId: placeId,
         start: selectedDate.millisecondsSinceEpoch,
         end: DateTime(

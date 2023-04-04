@@ -284,12 +284,16 @@ class _TablesScreenState extends State<TablesScreen> {
 
   void _onReservationsTap(int placeId) {
     final now = DateTime.now();
-    // context.read<ReservationsBloc>().add(ReservationsLoad(
-    //     placeId: placeId,
-    //     start: DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
-    //     end: DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch -
-    //         1,
-    //     status: ReservationStatus.fresh));
+
+    final trBloc = context.read<TableReservationsBloc>();
+    final rBloc = context.read<ReservationsBloc>()
+      ..add(ReservationsLoad(
+          placeId: placeId,
+          start: DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
+          end: DateTime(now.year, now.month, now.day + 1)
+                  .millisecondsSinceEpoch -
+              1,
+          status: ReservationStatus.fresh));
 
     Navigator.push<void>(
       context,
@@ -297,21 +301,11 @@ class _TablesScreenState extends State<TablesScreen> {
         builder: (context) => MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => ReservationInfoBloc(),
-            ),
-            BlocProvider(
-              create: (context) => ReservationsBloc()
-                ..add(ReservationsLoad(
-                    placeId: placeId,
-                    start: DateTime(now.year, now.month, now.day)
-                        .millisecondsSinceEpoch,
-                    end: DateTime(now.year, now.month, now.day + 1)
-                            .millisecondsSinceEpoch -
-                        1,
-                    status: ReservationStatus.fresh)),
+              create: (context) =>
+                  ReservationInfoBloc(trBloc: trBloc, rBloc: rBloc),
             ),
           ],
-          child: const ReservationsScreen(),
+          child: ReservationsScreen(reservationsBloc: rBloc),
         ),
       ),
     );

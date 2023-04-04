@@ -284,7 +284,10 @@ class DbProvider {
     final db = await database;
     final res = await db.update(
       'reservations',
-      {'isOpened': 1},
+      {
+        'isOpened': 1,
+        'start': DateTime.now().millisecondsSinceEpoch,
+      },
       where: 'placeId = ? AND id = ?',
       whereArgs: [placeId, id],
     );
