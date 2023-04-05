@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class TableWrapper extends StatelessWidget {
   final VoidCallback onDateTimeTap;
   final DateTime selectedDateTime;
-  final List<TableReservationViewModel?> data;
+  final List<TableReservationDto?> data;
   final void Function(TableModel) showTableReserveDialog;
   final int? reservedTableId;
 

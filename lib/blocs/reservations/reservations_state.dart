@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'reservations_bloc.dart';
 
 abstract class ReservationsState extends Equatable {
@@ -20,23 +21,13 @@ class ReservationsError extends ReservationsState {
 }
 
 class ReservationsLoaded extends ReservationsState {
+  final int placeId;
   final List<ReservationViewModel> data;
-
-  const ReservationsLoaded(this.data);
-
-  @override
-  List<Object> get props => [data];
-}
-
-class RemoveReservationSuccess extends ReservationsState {
-  final int tableNumber;
-
-  const RemoveReservationSuccess({
-    required this.tableNumber,
+  const ReservationsLoaded({
+    required this.placeId,
+    required this.data,
   });
 
   @override
-  List<Object> get props => [tableNumber];
+  List<Object> get props => [data, placeId];
 }
-
-class EditReservationSuccess extends ReservationsState {}

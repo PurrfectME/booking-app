@@ -47,14 +47,26 @@ class PlacesScreenState extends State<PlacesScreen> {
             } else if (state is PlacesError) {
               return Text(state.error);
             } else if (state is PlacesLoaded) {
-              return ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                itemCount: state.data.length,
-                itemBuilder: (context, index) => PlaceItem(
-                  place: state.data[index],
-                  onTap: _onPlaceTap,
-                ),
-                separatorBuilder: (context, _) => const SizedBox(height: 16),
+              return Column(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        newAppPress(
+                            state.data.first.tables, state.data.first.id);
+                      },
+                      child: const Text('NEW APP')),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    itemCount: state.data.length,
+                    itemBuilder: (context, index) => PlaceItem(
+                      place: state.data[index],
+                      onTap: _onPlaceTap,
+                    ),
+                    separatorBuilder: (context, _) =>
+                        const SizedBox(height: 16),
+                  ),
+                ],
               );
             } else {
               //если билдер не нашёл стейт в обработке ифов
@@ -81,6 +93,33 @@ class PlacesScreenState extends State<PlacesScreen> {
           ],
         ),
       );
+
+  void newAppPress(List<TableModel> tables, int placeId) {
+    Navigator.push<void>(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => ReservationsBloc(),
+                    ),
+                    BlocProvider(
+                      create: (context) => TableInfoBloc(),
+                    ),
+                    // BlocProvider(
+                    //   create: (context) => ReserveTab(),
+                    // ),
+                    // BlocProvider(
+                    //   create: (context) => ReservationInfoBloc(),
+                    // ),
+                    BlocProvider(
+                      create: (context) => TableReservationsBloc(tables)
+                        ..add(TableReservationsLoad(placeId: placeId)),
+                    ),
+                  ],
+                  child: const TablesScreen(),
+                )));
+  }
 
   void _onFiltersTap() {
     showBarModalBottomSheet<void>(

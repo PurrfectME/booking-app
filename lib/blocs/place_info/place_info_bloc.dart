@@ -16,7 +16,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
   final int id;
 
   PlaceModel? place;
-  List<TableReservationViewModel> availableTables = [];
+  List<TableReservationDto> availableTables = [];
 
   PlaceInfoBloc({
     required this.id,
@@ -102,7 +102,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 
             if (!reserved) {
               tableIds.add(table.id);
-              availableTables.add(TableReservationViewModel(
+              availableTables.add(TableReservationDto(
                   table,
                   null,
                   null,
@@ -114,15 +114,14 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
           }
         } else {
           tableIds.addAll(place!.tables.map((e) => e.id));
-          availableTables
-              .addAll(place!.tables.map((e) => TableReservationViewModel(
-                  e,
-                  null,
-                  null,
-                  // userReservedTables[currentUserReservationIndex].from,
-                  // userReservedTables[currentUserReservationIndex].to,
-                  false,
-                  [])));
+          availableTables.addAll(place!.tables.map((e) => TableReservationDto(
+              e,
+              null,
+              null,
+              // userReservedTables[currentUserReservationIndex].from,
+              // userReservedTables[currentUserReservationIndex].to,
+              false,
+              [])));
         }
 
         final a = await DbProvider.db.getUserReservationsLastUpdateDate();
@@ -135,8 +134,7 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
 //TODO: optimize here
         if (tableImages.isNotEmpty) {
           for (var i = 0; i < availableTables.length; i++) {
-            final tempTables =
-                List<TableReservationViewModel>.from(availableTables);
+            final tempTables = List<TableReservationDto>.from(availableTables);
             availableTables.forEachIndexed((table, index) {
               final imagesModel = tableImages
                   .where((x) => x.tableId == table.table.id)
@@ -183,7 +181,11 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
               phoneNumber: currentUser.login,
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
-              guests: event.guests));
+              guests: event.guests,
+              isOpened: false,
+              isCancelled: false,
+              excludeReshuffle: false,
+              comment: 'user.comment'));
 
           final tableIndex = availableTables
               .indexWhere((table) => table.table.id == event.tableId);

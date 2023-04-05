@@ -1,10 +1,12 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
-import 'package:booking_app/screens/reservations/reservations_screen.dart';
-import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/services/image/image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../old_reservations/reservations_screen.dart';
+import '../../tables/tables/tables_screen.dart';
+import '../../update_place/update_place_screen.dart';
 
 class PlaceItem extends StatelessWidget {
   final PlaceModel place;
@@ -112,12 +114,13 @@ class PlaceItem extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) => BlocProvider(
                                         create: (context) =>
-                                            ReservationsBloc(place.tables)
-                                              ..add(ReservationsLoad(
+                                            TableReservationsBloc(place.tables)
+                                              ..add(TableReservationsLoad(
                                                   placeId: place.id)),
                                         child: const ReservationsScreen(),
                                       ))),
                           child: const Text('Резервации')),
+                      const SizedBox(width: 8),
                     ],
                   )
                 ],

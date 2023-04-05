@@ -2,19 +2,19 @@
 import 'package:booking_app/models/models.dart';
 import 'package:equatable/equatable.dart';
 
-class ReservationViewModel extends Equatable {
+class TableReservationViewModel extends Equatable {
   final TableModel table;
   final List<UserReservationModel> reservations;
-  const ReservationViewModel({
+  const TableReservationViewModel({
     required this.table,
     required this.reservations,
   });
 
-  ReservationViewModel copyWith({
+  TableReservationViewModel copyWith({
     TableModel? table,
     List<UserReservationModel>? reservations,
   }) =>
-      ReservationViewModel(
+      TableReservationViewModel(
         table: table ?? this.table,
         reservations: reservations ?? this.reservations,
       );

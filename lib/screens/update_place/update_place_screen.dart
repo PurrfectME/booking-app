@@ -4,12 +4,13 @@ import 'dart:ui';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/models/models.dart';
-import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/services/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../old_tables/tables_screen.dart';
 
 class UpdatePlaceScreen extends StatefulWidget {
   static const pageRoute = '/update-place';

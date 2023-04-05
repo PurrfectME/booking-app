@@ -248,7 +248,142 @@ class DbProvider {
     return userReservationsResult;
   }
 
-  Future<int> updateReservation(ReservationModel model) async {
+  Future<List<ReservationModel>> getReservationsByTime(
+      int placeId, int start, int end, int isOpened) async {
+    final db = await database;
+    final res = await db.query('reservations',
+        where:
+            'placeId = ? AND start BETWEEN ? AND ? AND isOpened = ? AND isCancelled = 0',
+        whereArgs: [placeId, start, end, isOpened]);
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final reservationsResult = <ReservationModel>[];
+
+    for (final map in res) {
+      reservationsResult.add(ReservationModel.fromMap(map));
+    }
+
+    return reservationsResult;
+  }
+
+  Future<List<ReservationModel>> getArchivedReservations(
+      int placeId, int currentTime, int isCancelled) async {
+    final db = await database;
+    final query =
+        'placeId = ? AND ${isCancelled == 1 ? 'isCancelled = ?' : 'end <= ?'}';
+    final args = [placeId, isCancelled == 1 ? isCancelled : currentTime];
+    final res = await db.query('reservations', where: query, whereArgs: args);
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final reservationsResult = <ReservationModel>[];
+
+    for (final map in res) {
+      reservationsResult.add(ReservationModel.fromMap(map));
+    }
+
+    return reservationsResult;
+  }
+
+  Future<ReservationModel> getReservationsById(int placeId, int id) async {
+    final db = await database;
+    final res = await db.query('reservations',
+        where: 'placeId = ? AND id = ?', whereArgs: [placeId, id]);
+
+    return ReservationModel.fromMap(res.first);
+  }
+
+  Future<bool> openReservation(int placeId, int id) async {
+    final db = await database;
+    final res = await db.update(
+      'reservations',
+      {
+        'isOpened': 1,
+        'start': DateTime.now().millisecondsSinceEpoch,
+      },
+      where: 'placeId = ? AND id = ?',
+      whereArgs: [placeId, id],
+    );
+
+    if (res == 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> updateReservation(
+      int placeId, int id, Map<String, Object?> map) async {
+    final db = await database;
+    final res = await db.update(
+      'reservations',
+      map,
+      where: 'placeId = ? AND id = ?',
+      whereArgs: [placeId, id],
+    );
+
+    if (res == 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> cancelReservation(int placeId, int id) async {
+    final db = await database;
+    final res = await db.update(
+      'reservations',
+      {
+        'isCancelled': 1,
+      },
+      where: 'placeId = ? AND id = ?',
+      whereArgs: [placeId, id],
+    );
+
+    if (res == 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<TableModel?> getTableById(int placeId, int tableId) async {
+    final db = await database;
+    final res = await db.query('tables',
+        where: 'placeId = ? AND id = ?', whereArgs: [placeId, tableId]);
+
+    if (res.isEmpty) {
+      return null;
+    }
+
+    return TableModel.fromMap(res.first);
+  }
+
+  Future<List<ReservationModel>> getTableReservations(
+      int placeId, int tableId) async {
+    final db = await database;
+    final res = await db.rawQuery(
+        'SELECT * from reservations WHERE reservations.placeId = $placeId AND reservations.tableId = $tableId');
+
+    if (res.isEmpty) {
+      return [];
+    }
+
+    final reservationsResult = <ReservationModel>[];
+
+    for (final map in res) {
+      reservationsResult.add(ReservationModel.fromMap(map));
+    }
+
+    return reservationsResult;
+  }
+
+  Future<int> updateReservationOld(ReservationModel model) async {
     final db = await database;
     final result = await db.update('reservations', model.toMap(),
         where: 'id = ?',

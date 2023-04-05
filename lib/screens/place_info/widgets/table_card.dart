@@ -1,11 +1,11 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/local/table_reservation_vm.dart';
+import 'package:booking_app/models/local/table_reservation_dto.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TableCard extends StatefulWidget {
-  final TableReservationViewModel model;
+  final TableReservationDto model;
   final DateTime selectedDateTime;
   const TableCard(
       {super.key, required this.model, required this.selectedDateTime});
