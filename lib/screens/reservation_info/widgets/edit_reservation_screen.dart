@@ -8,21 +8,24 @@ import '../../../models/local/reservation_time.dart';
 import '../../reserve_table/widgets/datetime_selector.dart';
 
 class EditReservationScreen extends StatefulWidget {
+  // final int placeId;
   final int reservationId;
-  const EditReservationScreen({super.key, required this.reservationId});
+  final ReservationInfoBloc riBloc;
+  const EditReservationScreen(
+      {super.key, required this.reservationId, required this.riBloc});
 
   @override
   State<EditReservationScreen> createState() => _EditReservationScreenState();
 }
 
 class _EditReservationScreenState extends State<EditReservationScreen> {
-  late String phoneNumber = '';
-  late String name = '';
-  late int guestsCount = 1;
-  late DateTime start = DateTime.now();
-  late DateTime end = DateTime.now();
-  late String comment = '';
-  late bool excludeReshuffle = false;
+  late String phoneNumber;
+  late String name;
+  late int guestsCount;
+  late DateTime start;
+  late DateTime end;
+  late String? comment;
+  late bool excludeReshuffle;
   bool dateIsSet = false;
 
   @override
@@ -31,12 +34,8 @@ class _EditReservationScreenState extends State<EditReservationScreen> {
           title: Text('РЕДАКТИРОВАНИЕ ЗАЯВКИ №${widget.reservationId}'),
         ),
         body: BlocConsumer<ReservationInfoBloc, ReservationInfoState>(
-          // bloc: widget.reserveTableBloc,
-          listener: (context, state) {
-            if (state is ReservationInfoEdited) {
-              Navigator.pop(context);
-            }
-          },
+          bloc: widget.riBloc,
+          listener: (context, state) {},
           builder: (context, state) {
             if (state is ReservationInfoLoading) {
               return const Center(
@@ -70,7 +69,7 @@ class _EditReservationScreenState extends State<EditReservationScreen> {
                               'C ${DateFormat('dd MMMM HH:mm', 'RU').format(start)} | До ${DateFormat('dd MMMM HH:mm', 'RU').format(end)}',
                             ),
                           TextFormField(
-                            initialValue: '',
+                            initialValue: phoneNumber,
                             decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black),
@@ -198,10 +197,10 @@ class _EditReservationScreenState extends State<EditReservationScreen> {
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.black)),
-                          onPressed: () => updateReservation(
+                          onPressed: () => editReservation(
                               state.data.placeId, state.data.tableId),
                           child: const Text(
-                            'Забронировать',
+                            'Сохранить изменения',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -217,7 +216,22 @@ class _EditReservationScreenState extends State<EditReservationScreen> {
         ),
       );
 
-  void updateReservation(int placeId, int reservationId) {}
+  void editReservation(int placeId, int tableId) {
+    widget.riBloc.add(ReservationInfoEdit(
+      reservationId: widget.reservationId,
+      placeId: placeId,
+      tableId: tableId,
+      guests: guestsCount,
+      start: start,
+      end: end,
+      phoneNumber: phoneNumber,
+      name: name,
+      excludeReshuffle: excludeReshuffle,
+      comment: comment,
+    ));
+
+    Navigator.pop(context);
+  }
 
   Future _onDatePress() async {
     final result = await showDialog<ReservationTime>(

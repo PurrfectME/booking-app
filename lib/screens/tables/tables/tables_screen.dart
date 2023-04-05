@@ -115,15 +115,6 @@ class _TablesScreenState extends State<TablesScreen> {
                               if (nextReservation.reservation.isOpened) {
                                 tableStatus = TableStatus.red;
                               }
-
-                              // if ((start.isAtSameMomentAs(now) || start.isAfter(now)) &&
-                              //     end.isAfter(now)) {
-                              //   if (!nextReservation.isOpened && start) {
-                              //     tableStatus = TableStatus.yellow;
-                              //   } else {
-                              //     tableStatus = TableStatus.red;
-                              //   }
-                              // }
                             }
                           }
                         }

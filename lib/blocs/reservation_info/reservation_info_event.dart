@@ -48,6 +48,19 @@ class ReservationCancel extends ReservationInfoEvent {
   List<Object> get props => [placeId, reservationId];
 }
 
+class ReservationWait extends ReservationInfoEvent {
+  final int placeId;
+  final int reservationId;
+
+  const ReservationWait({
+    required this.placeId,
+    required this.reservationId,
+  });
+
+  @override
+  List<Object> get props => [placeId, reservationId];
+}
+
 class ReservationInfoEdit extends ReservationInfoEvent {
   final int reservationId;
   final int placeId;
@@ -58,6 +71,7 @@ class ReservationInfoEdit extends ReservationInfoEvent {
   final String phoneNumber;
   final String name;
   final bool excludeReshuffle;
+  final String? comment;
 
   const ReservationInfoEdit({
     required this.reservationId,
@@ -69,6 +83,7 @@ class ReservationInfoEdit extends ReservationInfoEvent {
     required this.phoneNumber,
     required this.name,
     required this.excludeReshuffle,
+    required this.comment,
   });
 
   @override
@@ -81,6 +96,6 @@ class ReservationInfoEdit extends ReservationInfoEvent {
         end,
         phoneNumber,
         name,
-        excludeReshuffle
+        excludeReshuffle,
       ];
 }

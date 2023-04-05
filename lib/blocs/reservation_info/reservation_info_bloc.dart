@@ -26,16 +26,21 @@ class ReservationInfoBloc
 
         emit(ReservationInfoLoaded(
             data: ReservationViewModel(
-                id: reservation.id!,
-                placeId: reservation.placeId,
-                tableId: reservation.tableId,
-                tableNumber: table!.number,
-                name: reservation.name!,
-                guests: reservation.guests,
-                phoneNumber: reservation.phoneNumber!,
-                start: DateTime.fromMillisecondsSinceEpoch(reservation.start),
-                end: DateTime.fromMillisecondsSinceEpoch(reservation.end),
-                status: event.status)));
+          id: reservation.id!,
+          placeId: reservation.placeId,
+          tableId: reservation.tableId,
+          tableNumber: table!.number,
+          name: reservation.name!,
+          guests: reservation.guests,
+          phoneNumber: reservation.phoneNumber!,
+          start: DateTime.fromMillisecondsSinceEpoch(reservation.start),
+          end: DateTime.fromMillisecondsSinceEpoch(reservation.end),
+          status: event.status,
+          comment: reservation.comment,
+          excludeReshuffle: reservation.excludeReshuffle,
+          isOpened: reservation.isOpened,
+          isCancelled: reservation.isCancelled,
+        )));
       } else if (event is ReservationOpen) {
         final isUpdated = await DbProvider.db
             .openReservation(event.placeId, event.reservationId);
@@ -61,7 +66,11 @@ class ReservationInfoBloc
                       updatedReservation.start),
                   end: DateTime.fromMillisecondsSinceEpoch(
                       updatedReservation.end),
-                  status: ReservationStatus.opened)));
+                  status: ReservationStatus.opened,
+                  comment: updatedReservation.comment,
+                  excludeReshuffle: updatedReservation.excludeReshuffle,
+                  isOpened: updatedReservation.isOpened,
+                  isCancelled: updatedReservation.isCancelled)));
 
           final now = DateTime.now();
           rBloc.add(ReservationsLoad(
@@ -103,9 +112,72 @@ class ReservationInfoBloc
                   end: DateTime.fromMillisecondsSinceEpoch(
                       updatedReservation.end),
                   status: ReservationStatus.cancelled,
-                  comment: updatedReservation)));
+                  comment: updatedReservation.comment,
+                  excludeReshuffle: updatedReservation.excludeReshuffle,
+                  isOpened: updatedReservation.isOpened,
+                  isCancelled: updatedReservation.isCancelled)));
+
+          //load reservs
+          final now = DateTime.now();
+          rBloc.add(ReservationsLoad(
+              placeId: event.placeId,
+              start:
+                  DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
+              end: DateTime(now.year, now.month, now.day + 1)
+                      .millisecondsSinceEpoch -
+                  1,
+              status: ReservationStatus.opened));
+
+          trBloc.add(TableReservationsLoad(placeId: event.placeId));
         } else {
           emit(const ReservationInfoError(error: 'Ошибка отмены заявки'));
+        }
+      } else if (event is ReservationInfoEdit) {
+        final map = {
+          'phoneNumber': event.phoneNumber,
+          'name': event.name,
+          'guests': event.guests,
+          'start': event.start.millisecondsSinceEpoch,
+          'end': event.end.millisecondsSinceEpoch,
+          'excludeReshuffle': event.excludeReshuffle,
+          'comment': event.comment,
+        };
+        final isUpdated = await DbProvider.db
+            .updateReservation(event.placeId, event.reservationId, map);
+
+        if (isUpdated) {
+          final updatedReservation = await DbProvider.db
+              .getReservationsById(event.placeId, event.reservationId);
+
+          final table = await DbProvider.db
+              .getTableById(event.placeId, updatedReservation.tableId);
+
+          final a = updatedReservation.isOpened
+              ? ReservationStatus.opened
+              : updatedReservation.isCancelled
+                  ? ReservationStatus.cancelled
+                  : ReservationStatus.fresh;
+
+          emit(ReservationInfoLoaded(
+              data: ReservationViewModel(
+                  id: updatedReservation.id!,
+                  placeId: updatedReservation.placeId,
+                  tableId: updatedReservation.tableId,
+                  tableNumber: table!.number,
+                  name: updatedReservation.name!,
+                  guests: updatedReservation.guests,
+                  phoneNumber: updatedReservation.phoneNumber!,
+                  start: DateTime.fromMillisecondsSinceEpoch(
+                      updatedReservation.start),
+                  end: DateTime.fromMillisecondsSinceEpoch(
+                      updatedReservation.end),
+                  status: a,
+                  comment: updatedReservation.comment,
+                  excludeReshuffle: updatedReservation.excludeReshuffle,
+                  isOpened: updatedReservation.isOpened,
+                  isCancelled: updatedReservation.isCancelled)));
+        } else {
+          emit(const ReservationInfoError(error: 'Ошибка обновления заявки'));
         }
       }
     });

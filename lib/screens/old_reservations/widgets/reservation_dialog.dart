@@ -212,7 +212,8 @@ class _ReservationDialogState extends State<ReservationDialog> {
                       const Duration(hours: 3),
                     ),
                     phoneNumber: widget.phoneNumber,
-                    name: widget.name));
+                    name: widget.name,
+                    comment: 'event.'));
               }
 
               Navigator.of(context).pop();

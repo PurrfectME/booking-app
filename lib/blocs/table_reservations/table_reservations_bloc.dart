@@ -32,7 +32,8 @@ class TableReservationsBloc
             guests: event.guests,
             isOpened: false,
             isCancelled: false,
-            excludeReshuffle: false));
+            excludeReshuffle: false,
+            comment: 'event.'));
 
         final currentTables = await DbProvider.db.getTables(event.placeId);
 
@@ -52,20 +53,22 @@ class TableReservationsBloc
 
         final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
 
-        final result = await DbProvider.db.updateReservation(ReservationModel(
-            id: event.reservationId,
-            placeId: event.placeId,
-            tableId: event.tableId,
-            start: event.start.millisecondsSinceEpoch,
-            end: event.end.millisecondsSinceEpoch,
-            guests: event.guests,
-            phoneNumber: event.phoneNumber,
-            name: event.name,
-            userId: user?.id,
-            isOpened: false,
-            isCancelled: false,
-            excludeReshuffle: false,
-            comment: event.));
+        final result =
+            await DbProvider.db.updateReservationOld(ReservationModel(
+          id: event.reservationId,
+          placeId: event.placeId,
+          tableId: event.tableId,
+          start: event.start.millisecondsSinceEpoch,
+          end: event.end.millisecondsSinceEpoch,
+          guests: event.guests,
+          phoneNumber: event.phoneNumber,
+          name: event.name,
+          userId: user?.id,
+          isOpened: false,
+          isCancelled: false,
+          excludeReshuffle: false,
+          comment: event.comment,
+        ));
 
         emit(TableEditReservationSuccess());
         emit(TableReservationsLoaded(

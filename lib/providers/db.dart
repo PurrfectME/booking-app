@@ -272,9 +272,10 @@ class DbProvider {
   Future<List<ReservationModel>> getArchivedReservations(
       int placeId, int currentTime, int isCancelled) async {
     final db = await database;
-    final res = await db.query('reservations',
-        where: 'placeId = ? AND (end <= ? OR isCancelled = ?)',
-        whereArgs: [placeId, currentTime, isCancelled]);
+    final query =
+        'placeId = ? AND ${isCancelled == 1 ? 'isCancelled = ?' : 'end <= ?'}';
+    final args = [placeId, isCancelled == 1 ? isCancelled : currentTime];
+    final res = await db.query('reservations', where: query, whereArgs: args);
 
     if (res.isEmpty) {
       return [];
@@ -294,10 +295,6 @@ class DbProvider {
     final res = await db.query('reservations',
         where: 'placeId = ? AND id = ?', whereArgs: [placeId, id]);
 
-    // if (res.isEmpty) {
-    //   return null;
-    // }
-
     return ReservationModel.fromMap(res.first);
   }
 
@@ -309,6 +306,23 @@ class DbProvider {
         'isOpened': 1,
         'start': DateTime.now().millisecondsSinceEpoch,
       },
+      where: 'placeId = ? AND id = ?',
+      whereArgs: [placeId, id],
+    );
+
+    if (res == 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> updateReservation(
+      int placeId, int id, Map<String, Object?> map) async {
+    final db = await database;
+    final res = await db.update(
+      'reservations',
+      map,
       where: 'placeId = ? AND id = ?',
       whereArgs: [placeId, id],
     );
@@ -369,7 +383,7 @@ class DbProvider {
     return reservationsResult;
   }
 
-  Future<int> updateReservation(ReservationModel model) async {
+  Future<int> updateReservationOld(ReservationModel model) async {
     final db = await database;
     final result = await db.update('reservations', model.toMap(),
         where: 'id = ?',

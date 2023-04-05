@@ -102,8 +102,14 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         case ReservationStatus.cancelled:
                           color = Colors.grey;
                           break;
+                        case ReservationStatus.waiting:
+                          color = Colors.yellowAccent;
+                          break;
+                        case ReservationStatus.closing:
+                          color = Colors.redAccent;
+                          break;
                         default:
-                          color = Colors.greenAccent;
+                          color = Colors.purple;
                       }
 
                       final reservation = state.data[i];
@@ -230,7 +236,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         lastDate: DateTime.now().add(const Duration(days: 20000)));
 
     if (date != null) {
-      context.read<ReservationsBloc>().add(ReservationsLoad(
+      widget.reservationsBloc.add(ReservationsLoad(
           placeId: placeId,
           start: DateTime(
             date.year,
@@ -272,6 +278,8 @@ class Status {
         return 'Закрытие';
       case ReservationStatus.fresh:
         return 'Новая';
+      case ReservationStatus.cancelled:
+        return 'Отменена';
       default:
         return 'asd';
     }

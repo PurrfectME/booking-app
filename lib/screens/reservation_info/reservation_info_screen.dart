@@ -1,4 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/screens/reservation_info/widgets/edit_reservation_screen.dart';
 import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,8 +50,19 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                 case ReservationStatus.opened:
                   color = Colors.greenAccent;
                   break;
-                default:
+                case ReservationStatus.waiting:
+                  color = Colors.yellowAccent;
+                  break;
+                case ReservationStatus.cancelled:
                   color = Colors.grey;
+                  break;
+                default:
+                  if (!state.data.isOpened &&
+                      DateTime.now().isAfter(state.data.start)) {
+                    color = Colors.yellowAccent;
+                  } else {
+                    color = Colors.grey;
+                  }
               }
 
               final reservation = state.data;
@@ -113,7 +125,7 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Стол ${reservation.tableId}, Зал'),
-                              Text(Status(reservation.status).toString()),
+                              Text(Status(reservation.status!).toString()),
                             ],
                           ),
                           Row(
@@ -265,15 +277,16 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
   }
 
   void onReservationEdit() {
-    // Navigator.push<void>(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => ReserveTableScreen(
-    //               tableNumber: state.data.table.number,
-    //               reservationsBloc: widget.reservationsBloc,
-    //               reserveTableBloc: rtBloc,
-    //               tableInfoBloc: tiBloc,
-    //             )));
+    Navigator.push<void>(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditReservationScreen(
+                  reservationId: widget.reservationId,
+                  riBloc: widget.reservationInfoBloc,
+                  // reservationsBloc: widget.reservationsBloc,
+                  // reserveTableBloc: rtBloc,
+                  // tableInfoBloc: tiBloc,
+                )));
   }
 
   void onReservationTableReplace() {}
