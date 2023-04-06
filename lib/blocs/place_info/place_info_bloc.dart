@@ -4,7 +4,9 @@ import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/local/place_info_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/services/image/image_service.dart';
+import 'package:booking_app/utils/status_helper.dart';
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -182,10 +184,9 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
               start: event.start.millisecondsSinceEpoch,
               end: event.end.millisecondsSinceEpoch,
               guests: event.guests,
-              isOpened: false,
-              isCancelled: false,
               excludeReshuffle: false,
-              comment: 'user.comment'));
+              comment: 'user.comment',
+              status: StatusHelper.fromStatus(ReservationStatus.fresh)));
 
           final tableIndex = availableTables
               .indexWhere((table) => table.table.id == event.tableId);

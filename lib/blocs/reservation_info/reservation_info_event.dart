@@ -5,7 +5,7 @@ abstract class ReservationInfoEvent extends Equatable {
   const ReservationInfoEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class ReservationInfoLoad extends ReservationInfoEvent {
@@ -25,14 +25,16 @@ class ReservationInfoLoad extends ReservationInfoEvent {
 class ReservationOpen extends ReservationInfoEvent {
   final int placeId;
   final int reservationId;
+  final int? start;
 
   const ReservationOpen({
     required this.placeId,
     required this.reservationId,
+    this.start,
   });
 
   @override
-  List<Object> get props => [placeId, reservationId];
+  List<Object?> get props => [placeId, reservationId, start];
 }
 
 class ReservationCancel extends ReservationInfoEvent {

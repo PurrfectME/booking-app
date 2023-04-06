@@ -258,7 +258,15 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   }
 }
 
-enum ReservationStatus { waiting, opened, closing, closed, fresh, cancelled }
+enum ReservationStatus {
+  waiting,
+  opened,
+  closing,
+  closed,
+  fresh,
+  cancelled,
+  none
+}
 
 class Status {
   final ReservationStatus type;

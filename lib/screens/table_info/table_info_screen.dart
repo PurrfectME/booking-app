@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../utils/status_helper.dart';
+import '../reservations/reservations_screen.dart';
 import '../tables/tables/widgets/table_status.dart';
 
 class TableInfoScreen extends StatefulWidget {
@@ -77,11 +79,14 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
 
                       hasReservationsToday = true;
 
-                      if (!nextReservation.isOpened && now.isAfter(start)) {
+                      if (StatusHelper.toStatus(nextReservation.status) !=
+                              ReservationStatus.opened &&
+                          now.isAfter(start)) {
                         tableStatus = TableStatus.yellow;
                       }
 
-                      if (nextReservation.isOpened) {
+                      if (StatusHelper.toStatus(nextReservation.status) ==
+                          ReservationStatus.opened) {
                         tableStatus = TableStatus.red;
                       }
                     }

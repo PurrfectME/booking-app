@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/screens/screens.dart';
+import 'package:booking_app/utils/status_helper.dart';
 import 'package:equatable/equatable.dart';
 
 part 'table_info_event.dart';
@@ -15,9 +17,10 @@ class TableInfoBloc extends Bloc<TableInfoEvent, TableInfoState> {
         final table =
             await DbProvider.db.getTableById(event.placeId, event.tableId);
 
-        final tableReservations =
-            (await DbProvider.db.getTableReservations(table!.placeId, table.id))
-                .where((x) => !x.isCancelled);
+        final tableReservations = (await DbProvider.db
+                .getTableReservations(table!.placeId, table.id))
+            .where((x) =>
+                StatusHelper.toStatus(x.status) != ReservationStatus.cancelled);
 
         final res = tableReservations.where((x) {
           final start = DateTime.fromMillisecondsSinceEpoch(x.start);

@@ -4,6 +4,7 @@ import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:booking_app/screens/tables/tables/widgets/table_status.dart';
+import 'package:booking_app/utils/status_helper.dart';
 import 'package:collection/collection.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -107,12 +108,16 @@ class _TablesScreenState extends State<TablesScreen> {
 
                               hasReservationsToday = true;
 
-                              if (!nextReservation.reservation.isOpened &&
+                              if (StatusHelper.toStatus(
+                                          nextReservation.reservation.status) !=
+                                      ReservationStatus.opened &&
                                   now.isAfter(start)) {
                                 tableStatus = TableStatus.yellow;
                               }
 
-                              if (nextReservation.reservation.isOpened) {
+                              if (StatusHelper.toStatus(
+                                      nextReservation.reservation.status) ==
+                                  ReservationStatus.opened) {
                                 tableStatus = TableStatus.red;
                               }
                             }

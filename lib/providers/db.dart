@@ -1,7 +1,9 @@
 import 'package:booking_app/models/db/table_image_model.dart';
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/scripts/scripts.dart';
+import 'package:booking_app/utils/status_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -249,12 +251,20 @@ class DbProvider {
   }
 
   Future<List<ReservationModel>> getReservationsByTime(
-      int placeId, int start, int end, int isOpened) async {
+      int placeId, int start, int end, int? status) async {
+    //TODO: есть баг(условный) если создать заявку где старт прям сейчас,
+    //а конец менее чем через 20 минут, то эта заявка имеет статус fresh,
+    //но отображаться будет в вкладке ожидания, а если её отменить, то она
+    //будет и в вкладке отменённые и во вкладке ожидания
     final db = await database;
     final res = await db.query('reservations',
         where:
-            'placeId = ? AND start BETWEEN ? AND ? AND isOpened = ? AND isCancelled = 0',
-        whereArgs: [placeId, start, end, isOpened]);
+            'placeId = ? AND start BETWEEN ? AND ? ${status != null ? 'AND status = ?' : 'AND status != ?'}',
+        whereArgs: [placeId, start, end, status]);
+
+    final asd = await db.query('reservations',
+        where: 'placeId = ? AND start BETWEEN ? AND ? AND status = 1',
+        whereArgs: [placeId, start, end]);
 
     if (res.isEmpty) {
       return [];
@@ -270,11 +280,11 @@ class DbProvider {
   }
 
   Future<List<ReservationModel>> getArchivedReservations(
-      int placeId, int currentTime, int isCancelled) async {
+      int placeId, int currentTime, int? status) async {
     final db = await database;
     final query =
-        'placeId = ? AND ${isCancelled == 1 ? 'isCancelled = ?' : 'end <= ?'}';
-    final args = [placeId, isCancelled == 1 ? isCancelled : currentTime];
+        'placeId = ? AND ${status != null ? 'status = ?' : 'end <= ?'}';
+    final args = [placeId, status ?? currentTime];
     final res = await db.query('reservations', where: query, whereArgs: args);
 
     if (res.isEmpty) {
@@ -298,13 +308,13 @@ class DbProvider {
     return ReservationModel.fromMap(res.first);
   }
 
-  Future<bool> openReservation(int placeId, int id) async {
+  Future<bool> openReservation(int placeId, int id, int? start) async {
     final db = await database;
     final res = await db.update(
       'reservations',
       {
-        'isOpened': 1,
-        'start': DateTime.now().millisecondsSinceEpoch,
+        'status': StatusHelper.fromStatus(ReservationStatus.opened),
+        if (start != null) 'start': start,
       },
       where: 'placeId = ? AND id = ?',
       whereArgs: [placeId, id],
@@ -339,7 +349,7 @@ class DbProvider {
     final res = await db.update(
       'reservations',
       {
-        'isCancelled': 1,
+        'status': StatusHelper.fromStatus(ReservationStatus.cancelled),
       },
       where: 'placeId = ? AND id = ?',
       whereArgs: [placeId, id],
