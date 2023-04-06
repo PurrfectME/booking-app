@@ -28,7 +28,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Заявки'),
+          title: Text('Заявки ${selectedStatus.name}'),
           actions: [
             IconButton(
                 onPressed: () => _onDateTimeTap(placeId),
@@ -43,12 +43,13 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
               return const Center(
                   child: CupertinoActivityIndicator(radius: 20));
             } else if (state is ReservationsLoaded) {
+              //так делать нельзя
               placeId = state.placeId;
               if (state.data.isEmpty) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(),
+                    const SizedBox.shrink(),
                     const Center(child: Text('Нет резерваций')),
                     Row(
                       children: [
@@ -86,77 +87,86 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    itemCount: state.data.length,
-                    itemBuilder: (context, i) {
-                      final Color color;
-                      switch (selectedStatus) {
-                        case ReservationStatus.fresh:
-                          color = Colors.blueAccent;
-                          break;
-                        case ReservationStatus.opened:
-                          color = Colors.greenAccent;
-                          break;
-                        case ReservationStatus.cancelled:
-                          color = Colors.grey;
-                          break;
-                        case ReservationStatus.waiting:
-                          color = Colors.yellowAccent;
-                          break;
-                        case ReservationStatus.closing:
-                          color = Colors.redAccent;
-                          break;
-                        default:
-                          color = Colors.purple;
-                      }
+                  if (state.data.first.status != selectedStatus)
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        SizedBox.shrink(),
+                        Center(child: Text('Нет резерваций'))
+                      ],
+                    )
+                  else
+                    ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      itemCount: state.data.length,
+                      itemBuilder: (context, i) {
+                        final Color color;
+                        switch (selectedStatus) {
+                          case ReservationStatus.fresh:
+                            color = Colors.blueAccent;
+                            break;
+                          case ReservationStatus.opened:
+                            color = Colors.greenAccent;
+                            break;
+                          case ReservationStatus.cancelled:
+                            color = Colors.grey;
+                            break;
+                          case ReservationStatus.waiting:
+                            color = Colors.yellowAccent;
+                            break;
+                          case ReservationStatus.closing:
+                            color = Colors.redAccent;
+                            break;
+                          default:
+                            color = Colors.purple;
+                        }
 
-                      final reservation = state.data[i];
+                        final reservation = state.data[i];
 
-                      return GestureDetector(
-                        onTap: () => onReservationTap(reservation.id),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Container(
-                            padding: const EdgeInsets.all(7),
-                            decoration: BoxDecoration(
-                              color: color,
-                              border: Border.all(color: Colors.black),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(8)),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Стол ${reservation.tableId}, Зал'),
-                                    Text(Status(selectedStatus).toString()),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      '${reservation.name}, ${reservation.guests} чел.',
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  reservation.phoneNumber,
-                                ),
-                                Text(
-                                  '${DateFormat('HH:mm', 'RU').format(reservation.start)} - ${DateFormat('HH:mm', 'RU').format(reservation.end)}',
-                                )
-                              ],
+                        return GestureDetector(
+                          onTap: () => onReservationTap(reservation.id),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Container(
+                              padding: const EdgeInsets.all(7),
+                              decoration: BoxDecoration(
+                                color: color,
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Стол ${reservation.tableId}, Зал'),
+                                      Text(Status(selectedStatus).toString()),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '${reservation.name}, ${reservation.guests} чел.',
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    reservation.phoneNumber,
+                                  ),
+                                  Text(
+                                    '${DateFormat('HH:mm', 'RU').format(reservation.start)} - ${DateFormat('HH:mm', 'RU').format(reservation.end)}',
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
                   Row(
                     children: [
                       Expanded(

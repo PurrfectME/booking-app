@@ -251,20 +251,19 @@ class DbProvider {
   }
 
   Future<List<ReservationModel>> getReservationsByTime(
-      int placeId, int start, int end, int? status) async {
+      int placeId, int start, int end, int status) async {
     //TODO: есть баг(условный) если создать заявку где старт прям сейчас,
     //а конец менее чем через 20 минут, то эта заявка имеет статус fresh,
     //но отображаться будет в вкладке ожидания, а если её отменить, то она
     //будет и в вкладке отменённые и во вкладке ожидания
     final db = await database;
     final res = await db.query('reservations',
-        where:
-            'placeId = ? AND start BETWEEN ? AND ? ${status != null ? 'AND status = ?' : 'AND status != ?'}',
+        where: 'placeId = ? AND start BETWEEN ? AND ? AND status = ?',
         whereArgs: [placeId, start, end, status]);
 
-    final asd = await db.query('reservations',
-        where: 'placeId = ? AND start BETWEEN ? AND ? AND status = 1',
-        whereArgs: [placeId, start, end]);
+    // final asd = await db.query('reservations',
+    //     where: 'placeId = ? AND start BETWEEN ? AND ? AND status = 1',
+    //     whereArgs: [placeId, start, end]);
 
     if (res.isEmpty) {
       return [];

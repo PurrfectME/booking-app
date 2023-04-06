@@ -77,6 +77,7 @@ class ReservationInfoBloc
               end: DateTime(now.year, now.month, now.day + 1)
                       .millisecondsSinceEpoch -
                   1,
+              //TODO: при открытии стола, когда возвращаемся назад на скрин с резервациями, то та резервация которая была фреш и которую мы открыли созраняет старое значение
               status: ReservationStatus.opened));
 
           //TODO: здесь не рендериться нормально когда с резер инфо нажимаешь назад на резервации
