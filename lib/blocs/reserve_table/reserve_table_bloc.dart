@@ -2,7 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../utils/status_helper.dart';
 
 part 'reserve_table_event.dart';
 part 'reserve_table_state.dart';
@@ -19,20 +22,18 @@ class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
         final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
 
         final resId = await DbProvider.db.createReservation(ReservationModel(
-          id: null,
-          tableId: event.tableId,
-          placeId: event.placeId,
-          userId: user?.id,
-          phoneNumber: event.phoneNumber,
-          name: event.name,
-          start: event.start.millisecondsSinceEpoch,
-          end: event.end.millisecondsSinceEpoch,
-          guests: event.guests,
-          isOpened: false,
-          isCancelled: false,
-          excludeReshuffle: event.excludeReshuffle,
-          comment: event.comment,
-        ));
+            id: null,
+            tableId: event.tableId,
+            placeId: event.placeId,
+            userId: user?.id,
+            phoneNumber: event.phoneNumber,
+            name: event.name,
+            start: event.start.millisecondsSinceEpoch,
+            end: event.end.millisecondsSinceEpoch,
+            guests: event.guests,
+            excludeReshuffle: event.excludeReshuffle,
+            comment: event.comment,
+            status: StatusHelper.fromStatus(ReservationStatus.fresh)));
 
         // final currentTables = await DbProvider.db.getTables(event.placeId);
 

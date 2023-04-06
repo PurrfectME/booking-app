@@ -57,12 +57,7 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                   color = Colors.grey;
                   break;
                 default:
-                  if (!state.data.isOpened &&
-                      DateTime.now().isAfter(state.data.start)) {
-                    color = Colors.yellowAccent;
-                  } else {
-                    color = Colors.grey;
-                  }
+                  color = Colors.grey;
               }
 
               final reservation = state.data;
@@ -125,7 +120,7 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Стол ${reservation.tableId}, Зал'),
-                              Text(Status(reservation.status!).toString()),
+                              Text(Status(reservation.status).toString()),
                             ],
                           ),
                           Row(
@@ -151,7 +146,11 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                           child: Container(
                             height: 60,
                             child: OutlinedButton(
-                                onPressed: onReservationWait,
+                                onPressed: reservation.status ==
+                                        ReservationStatus.fresh
+                                    ? null
+                                    : () =>
+                                        onReservationWait(reservation.placeId),
                                 child: Text('Ожидать')),
                           ),
                         ),
@@ -228,9 +227,9 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
               child: const Text('Да'),
               onPressed: () {
                 widget.reservationInfoBloc.add(ReservationOpen(
-                  placeId: placeId,
-                  reservationId: widget.reservationId,
-                ));
+                    placeId: placeId,
+                    reservationId: widget.reservationId,
+                    start: DateTime.now().millisecondsSinceEpoch));
 
                 Navigator.of(context).pop();
               },
@@ -242,6 +241,12 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
           ],
         ),
       );
+    } else {
+      //заявка уже в статусе ожидания => просто открываем её
+      widget.reservationInfoBloc.add(ReservationOpen(
+        placeId: placeId,
+        reservationId: widget.reservationId,
+      ));
     }
   }
 
@@ -291,5 +296,10 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
 
   void onReservationTableReplace() {}
 
-  void onReservationWait() {}
+  void onReservationWait(int placeId) {
+    widget.reservationInfoBloc.add(ReservationWait(
+      placeId: placeId,
+      reservationId: widget.reservationId,
+    ));
+  }
 }

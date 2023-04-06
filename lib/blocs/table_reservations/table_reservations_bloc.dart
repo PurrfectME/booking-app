@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../utils/status_helper.dart';
 
 part 'table_reservations_event.dart';
 part 'table_reservations_state.dart';
@@ -30,10 +33,9 @@ class TableReservationsBloc
             start: event.start.millisecondsSinceEpoch,
             end: event.end.millisecondsSinceEpoch,
             guests: event.guests,
-            isOpened: false,
-            isCancelled: false,
             excludeReshuffle: false,
-            comment: 'event.'));
+            comment: 'event.',
+            status: StatusHelper.fromStatus(ReservationStatus.fresh)));
 
         final currentTables = await DbProvider.db.getTables(event.placeId);
 
@@ -53,22 +55,20 @@ class TableReservationsBloc
 
         final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
 
-        final result =
-            await DbProvider.db.updateReservationOld(ReservationModel(
-          id: event.reservationId,
-          placeId: event.placeId,
-          tableId: event.tableId,
-          start: event.start.millisecondsSinceEpoch,
-          end: event.end.millisecondsSinceEpoch,
-          guests: event.guests,
-          phoneNumber: event.phoneNumber,
-          name: event.name,
-          userId: user?.id,
-          isOpened: false,
-          isCancelled: false,
-          excludeReshuffle: false,
-          comment: event.comment,
-        ));
+        final result = await DbProvider.db.updateReservationOld(
+            ReservationModel(
+                id: event.reservationId,
+                placeId: event.placeId,
+                tableId: event.tableId,
+                start: event.start.millisecondsSinceEpoch,
+                end: event.end.millisecondsSinceEpoch,
+                guests: event.guests,
+                phoneNumber: event.phoneNumber,
+                name: event.name,
+                userId: user?.id,
+                excludeReshuffle: false,
+                comment: event.comment,
+                status: 0));
 
         emit(TableEditReservationSuccess());
         emit(TableReservationsLoaded(
@@ -80,7 +80,9 @@ class TableReservationsBloc
   Future<List<TableReservationViewModel>> _initReservations(
       List<TableModel> tables, int placeId) async {
     final userReservations = (await DbProvider.db.getReservations(placeId))
-        .where((x) => !x.reservation.isCancelled);
+        .where((x) =>
+            StatusHelper.toStatus(x.reservation.status) !=
+            ReservationStatus.cancelled);
 
     final result = <TableReservationViewModel>[];
 

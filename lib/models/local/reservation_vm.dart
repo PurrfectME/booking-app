@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:booking_app/utils/status_helper.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:booking_app/screens/screens.dart';
@@ -15,11 +16,9 @@ class ReservationViewModel extends Equatable {
   final String phoneNumber;
   final DateTime start;
   final DateTime end;
-  final ReservationStatus? status;
+  final ReservationStatus status;
   final String? comment;
   final bool excludeReshuffle;
-  final bool isOpened;
-  final bool isCancelled;
 
   const ReservationViewModel({
     required this.id,
@@ -34,8 +33,6 @@ class ReservationViewModel extends Equatable {
     required this.status,
     required this.comment,
     required this.excludeReshuffle,
-    required this.isCancelled,
-    required this.isOpened,
   });
 
   ReservationViewModel copyWith({
@@ -66,9 +63,7 @@ class ReservationViewModel extends Equatable {
           end: end ?? this.end,
           status: status ?? this.status,
           comment: comment ?? this.comment,
-          excludeReshuffle: excludeReshuffle ?? this.excludeReshuffle,
-          isCancelled: isCancelled ?? this.isCancelled,
-          isOpened: isOpened ?? this.isOpened);
+          excludeReshuffle: excludeReshuffle ?? this.excludeReshuffle);
 
   @override
   List<Object?> get props => [
@@ -84,8 +79,6 @@ class ReservationViewModel extends Equatable {
         status,
         comment,
         excludeReshuffle,
-        isCancelled,
-        isOpened,
       ];
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -98,11 +91,9 @@ class ReservationViewModel extends Equatable {
         'phoneNumber': phoneNumber,
         'start': start.millisecondsSinceEpoch,
         'end': end.millisecondsSinceEpoch,
-        // 'status': status.toMap(),
+        'status': StatusHelper.fromStatus(status),
         'comment': comment,
         'excludeReshuffle': excludeReshuffle,
-        'isCancelled': isCancelled,
-        'isOpened': isOpened,
       };
 
   factory ReservationViewModel.fromMap(Map<String, dynamic> map) =>
@@ -116,11 +107,9 @@ class ReservationViewModel extends Equatable {
         phoneNumber: map['phoneNumber'] as String,
         start: DateTime.fromMillisecondsSinceEpoch(map['start'] as int),
         end: DateTime.fromMillisecondsSinceEpoch(map['end'] as int),
-        status: null,
+        status: StatusHelper.toStatus(map['status'] as int),
         comment: map['comment'] != null ? map['comment'] as String : null,
         excludeReshuffle: map['excludeReshuffle'] as bool,
-        isCancelled: map['isCancelled'] == 1,
-        isOpened: map['isOpened'] == 1,
       );
 
   String toJson() => json.encode(toMap());

@@ -4,6 +4,8 @@ import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../utils/status_helper.dart';
+
 part 'reservations_event.dart';
 part 'reservations_state.dart';
 
@@ -13,6 +15,9 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
       if (event is ReservationsLoad) {
         emit(ReservationsLoading());
 
+        //TODO: вытягивать всегда сразу все резервации,
+        //TODO: сортровать по переменным статуса и держать в блоке
+
         switch (event.status) {
           case ReservationStatus.fresh:
             //TODO: достать всю инфу одним запросом
@@ -20,43 +25,57 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
               event.placeId,
               event.start,
               event.end,
-              false,
-              event.status,
+              StatusHelper.fromStatus(ReservationStatus.fresh),
             );
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
               break;
             } else {
-              final List<ReservationViewModel> res;
+              //костыль на то, чтобы поменять статус на waiting
+              final now = DateTime.now();
+              final waitings = result
+                  .where((x) =>
+                      x.start.millisecondsSinceEpoch <
+                          DateTime(now.year, now.month, now.day, now.hour,
+                                  now.minute)
+                              .millisecondsSinceEpoch &&
+                      x.end.millisecondsSinceEpoch >
+                          DateTime(now.year, now.month, now.day, now.hour,
+                                  now.minute)
+                              .millisecondsSinceEpoch)
+                  .toList();
 
-              res =
-                  result.where((x) => x.start.isAfter(DateTime.now())).toList();
-              emit(ReservationsLoaded(data: res, placeId: event.placeId));
+              result.removeWhere((x) =>
+                  x.start.millisecondsSinceEpoch <
+                      DateTime(now.year, now.month, now.day, now.hour,
+                              now.minute)
+                          .millisecondsSinceEpoch &&
+                  x.end.millisecondsSinceEpoch >
+                      DateTime(now.year, now.month, now.day, now.hour,
+                              now.minute)
+                          .millisecondsSinceEpoch);
+
+              for (final x in waitings) {
+                await DbProvider.db.updateReservation(event.placeId, x.id, {
+                  'status': StatusHelper.fromStatus(ReservationStatus.waiting)
+                });
+              }
             }
 
+            emit(ReservationsLoaded(data: result, placeId: event.placeId));
             break;
           case ReservationStatus.opened:
             final result = await filterReservations(
               event.placeId,
               event.start,
               event.end,
-              true,
-              event.status,
+              StatusHelper.fromStatus(ReservationStatus.opened),
             );
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
               break;
-            } else {
-              final List<ReservationViewModel> res;
-
-              res = result
-                  .where((x) =>
-                      x.end.isAfter(DateTime.now()) &&
-                      DateTime.now().difference(x.end).inMinutes > 20)
-                  .toList();
-              emit(ReservationsLoaded(data: res, placeId: event.placeId));
             }
 
             emit(ReservationsLoaded(data: result, placeId: event.placeId));
@@ -66,21 +85,15 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
               event.placeId,
               event.start,
               event.end,
-              false,
-              event.status,
+              StatusHelper.fromStatus(ReservationStatus.waiting),
             );
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
               break;
-            } else {
-              final List<ReservationViewModel> res;
-
-              res = result
-                  .where((x) => x.start.isBefore(DateTime.now()))
-                  .toList();
-              emit(ReservationsLoaded(data: res, placeId: event.placeId));
             }
+
+            emit(ReservationsLoaded(data: result, placeId: event.placeId));
 
             break;
           case ReservationStatus.closing:
@@ -88,27 +101,22 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
               event.placeId,
               event.start,
               event.end,
-              true,
-              event.status,
+              StatusHelper.fromStatus(ReservationStatus.closing),
             );
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
               break;
-            } else {
-              final List<ReservationViewModel> res;
-
-              res = result
-                  .where(
-                      (x) => DateTime.now().difference(x.end).inMinutes <= 20)
-                  .toList();
-              emit(ReservationsLoaded(data: res, placeId: event.placeId));
             }
+
+            emit(ReservationsLoaded(data: result, placeId: event.placeId));
 
             break;
           case ReservationStatus.cancelled:
             final result = await DbProvider.db.getArchivedReservations(
-                event.placeId, DateTime.now().millisecondsSinceEpoch, 1);
+                event.placeId,
+                DateTime.now().millisecondsSinceEpoch,
+                StatusHelper.fromStatus(ReservationStatus.cancelled));
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
@@ -134,8 +142,6 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
                 status: event.status,
                 comment: x.comment,
                 excludeReshuffle: x.excludeReshuffle,
-                isOpened: x.isOpened,
-                isCancelled: x.isCancelled,
               ));
             }
 
@@ -152,13 +158,12 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
     int placeId,
     int start,
     int end,
-    bool isOpened,
-    ReservationStatus status,
+    int status,
   ) async {
     final result = <ReservationViewModel>[];
 
-    final reservations = await DbProvider.db
-        .getReservationsByTime(placeId, start, end, isOpened ? 1 : 0);
+    final reservations =
+        await DbProvider.db.getReservationsByTime(placeId, start, end, status);
 
     if (reservations.isEmpty) {
       return [];
@@ -177,11 +182,9 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
         phoneNumber: x.phoneNumber!,
         start: DateTime.fromMillisecondsSinceEpoch(x.start),
         end: DateTime.fromMillisecondsSinceEpoch(x.end),
-        status: status,
+        status: StatusHelper.toStatus(x.status),
         excludeReshuffle: x.excludeReshuffle,
         comment: x.comment,
-        isOpened: x.isOpened,
-        isCancelled: x.isCancelled,
       ));
     }
 

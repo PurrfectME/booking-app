@@ -1,7 +1,9 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
+import 'package:booking_app/models/local/reservation_time.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/reserve_table/reserve_table_screen.dart';
+import 'package:booking_app/screens/reserve_table/widgets/datetime_selector.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:collection/collection.dart';
 import 'package:dartx/dartx.dart';
@@ -10,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../utils/status_helper.dart';
+import '../reservations/reservations_screen.dart';
 import '../tables/tables/widgets/table_status.dart';
 
 class TableInfoScreen extends StatefulWidget {
@@ -77,11 +81,14 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
 
                       hasReservationsToday = true;
 
-                      if (!nextReservation.isOpened && now.isAfter(start)) {
+                      if (StatusHelper.toStatus(nextReservation.status) !=
+                              ReservationStatus.opened &&
+                          now.isAfter(start)) {
                         tableStatus = TableStatus.yellow;
                       }
 
-                      if (nextReservation.isOpened) {
+                      if (StatusHelper.toStatus(nextReservation.status) ==
+                          ReservationStatus.opened) {
                         tableStatus = TableStatus.red;
                       }
                     }
@@ -223,7 +230,10 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                                       backgroundColor:
                                           MaterialStateProperty.all(
                                               Colors.black)),
-                                  onPressed: null,
+                                  onPressed: nextReservation?.status ==
+                                          ReservationStatus.waiting
+                                      ? _onCancelReservationPress
+                                      : _onTimeReservationPress,
                                   child: const Text(
                                     'По факту',
                                     style: TextStyle(
@@ -241,4 +251,17 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
               }
             }),
       );
+
+  //по факту
+  Future _onTimeReservationPress() async {
+    final result = await showDialog<ReservationTime>(
+        context: context, builder: (context) => const DatetimeSelector());
+  }
+
+  void _onCancelReservationPress() {
+    // widget.reservationInfoBloc.add(ReservationCancel(
+    //             placeId: placeId,
+    //             reservationId: widget.reservationId,
+    //           ));
+  }
 }
