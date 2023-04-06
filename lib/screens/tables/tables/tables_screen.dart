@@ -236,6 +236,9 @@ class _TablesScreenState extends State<TablesScreen> {
                   BlocProvider(
                     create: (context) => ReserveTableBloc(),
                   ),
+                  // BlocProvider(
+                  //   create: (context) => ReservationInfoBloc(trBloc: reservationsBloc, rBloc: ),
+                  // ),
                   BlocProvider<TableInfoBloc>(
                     //TODO: передавать данные в сам блок
                     create: (context) => TableInfoBloc()

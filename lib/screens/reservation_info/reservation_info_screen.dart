@@ -120,7 +120,7 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Стол ${reservation.tableId}, Зал'),
-                              Text(Status(reservation.status!).toString()),
+                              Text(Status(reservation.status).toString()),
                             ],
                           ),
                           Row(
@@ -146,7 +146,11 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                           child: Container(
                             height: 60,
                             child: OutlinedButton(
-                                onPressed: onReservationWait,
+                                onPressed: reservation.status ==
+                                        ReservationStatus.fresh
+                                    ? null
+                                    : () =>
+                                        onReservationWait(reservation.placeId),
                                 child: Text('Ожидать')),
                           ),
                         ),
@@ -292,5 +296,10 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
 
   void onReservationTableReplace() {}
 
-  void onReservationWait() {}
+  void onReservationWait(int placeId) {
+    widget.reservationInfoBloc.add(ReservationWait(
+      placeId: placeId,
+      reservationId: widget.reservationId,
+    ));
+  }
 }

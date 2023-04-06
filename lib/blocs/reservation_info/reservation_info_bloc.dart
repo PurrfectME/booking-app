@@ -167,8 +167,67 @@ class ReservationInfoBloc
             comment: updatedReservation.comment,
             excludeReshuffle: updatedReservation.excludeReshuffle,
           )));
+
+          final now = DateTime.now();
+          rBloc.add(ReservationsLoad(
+              placeId: event.placeId,
+              start:
+                  DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
+              end: DateTime(now.year, now.month, now.day + 1)
+                      .millisecondsSinceEpoch -
+                  1,
+              status: ReservationStatus.fresh));
+
+          trBloc.add(TableReservationsLoad(placeId: event.placeId));
         } else {
           emit(const ReservationInfoError(error: 'Ошибка обновления заявки'));
+        }
+      } else if (event is ReservationWait) {
+        final isAwaited = await DbProvider.db.updateReservation(
+          event.placeId,
+          event.reservationId,
+          {'status': StatusHelper.fromStatus(ReservationStatus.waiting)},
+        );
+
+        if (isAwaited) {
+          final updatedReservation = await DbProvider.db
+              .getReservationsById(event.placeId, event.reservationId);
+
+          final table = await DbProvider.db
+              .getTableById(event.placeId, updatedReservation.tableId);
+
+          emit(ReservationInfoLoaded(
+              data: ReservationViewModel(
+            id: updatedReservation.id!,
+            placeId: updatedReservation.placeId,
+            tableId: updatedReservation.tableId,
+            tableNumber: table!.number,
+            name: updatedReservation.name!,
+            guests: updatedReservation.guests,
+            phoneNumber: updatedReservation.phoneNumber!,
+            start:
+                DateTime.fromMillisecondsSinceEpoch(updatedReservation.start),
+            end: DateTime.fromMillisecondsSinceEpoch(updatedReservation.end),
+            status: StatusHelper.toStatus(updatedReservation.status),
+            comment: updatedReservation.comment,
+            excludeReshuffle: updatedReservation.excludeReshuffle,
+          )));
+
+          //load reservs
+          final now = DateTime.now();
+          rBloc.add(ReservationsLoad(
+              placeId: event.placeId,
+              start:
+                  DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
+              end: DateTime(now.year, now.month, now.day + 1)
+                      .millisecondsSinceEpoch -
+                  1,
+              status: ReservationStatus.waiting));
+
+          trBloc.add(TableReservationsLoad(placeId: event.placeId));
+        } else {
+          emit(const ReservationInfoError(
+              error: 'Ошибка смены статуса на ожидание'));
         }
       }
     });

@@ -242,7 +242,7 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
         placeId: placeId,
         tableId: tableId,
         guests: guestsCount,
-        start: DateTime.now().add(Duration(minutes: 22)),
+        start: DateTime.now().add(Duration(minutes: 1)),
         end: DateTime.now().add(Duration(hours: 3)),
         phoneNumber: phoneNumber,
         name: name,
