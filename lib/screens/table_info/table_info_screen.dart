@@ -95,6 +95,10 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                   }
                 }
 
+                final isWaitingStatus = nextReservation != null &&
+                    StatusHelper.toStatus(nextReservation.status) ==
+                        ReservationStatus.waiting;
+
                 return Column(
                   children: [
                     Container(
@@ -230,13 +234,17 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                                       backgroundColor:
                                           MaterialStateProperty.all(
                                               Colors.black)),
-                                  onPressed: nextReservation?.status ==
-                                          ReservationStatus.waiting
-                                      ? _onCancelReservationPress
-                                      : _onTimeReservationPress,
-                                  child: const Text(
-                                    'По факту',
-                                    style: TextStyle(
+                                  onPressed: isWaitingStatus
+                                      ? () => _onCancelReservationPress(
+                                          nextReservation!.placeId,
+                                          nextReservation.id!,
+                                          nextReservation.tableId)
+                                      : () => _onTimeReservationPress(),
+                                  child: Text(
+                                    isWaitingStatus
+                                        ? 'Отменить(гости не пришли)'
+                                        : 'По факту',
+                                    style: const TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   )),
                             ),
@@ -258,10 +266,14 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
         context: context, builder: (context) => const DatetimeSelector());
   }
 
-  void _onCancelReservationPress() {
-    // widget.reservationInfoBloc.add(ReservationCancel(
-    //             placeId: placeId,
-    //             reservationId: widget.reservationId,
-    //           ));
+  void _onCancelReservationPress(int placeId, int reservationId, int tableId) {
+    context.read<ReservationInfoBloc>().add(ReservationCancel(
+          placeId: placeId,
+          reservationId: reservationId,
+        ));
+
+    context
+        .read<TableInfoBloc>()
+        .add(TableInfoLoad(placeId: placeId, tableId: tableId));
   }
 }
