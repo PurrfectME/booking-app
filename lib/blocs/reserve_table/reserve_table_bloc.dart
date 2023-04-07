@@ -33,7 +33,9 @@ class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
             guests: event.guests,
             excludeReshuffle: event.excludeReshuffle,
             comment: event.comment,
-            status: StatusHelper.fromStatus(ReservationStatus.fresh)));
+            status: event.inFact
+                ? StatusHelper.fromStatus(ReservationStatus.opened)
+                : StatusHelper.fromStatus(ReservationStatus.fresh)));
 
         // final currentTables = await DbProvider.db.getTables(event.placeId);
 

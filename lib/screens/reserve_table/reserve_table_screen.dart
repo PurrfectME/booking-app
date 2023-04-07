@@ -2,6 +2,7 @@ import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/blocs/table_info/table_info_bloc.dart';
 import 'package:booking_app/models/local/reservation_time.dart';
 import 'package:booking_app/screens/reserve_table/widgets/datetime_selector.dart';
+import 'package:booking_app/screens/table_info/table_info_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,15 +12,19 @@ import '../../blocs/table_reservations/table_reservations_bloc.dart';
 
 class ReserveTableScreen extends StatefulWidget {
   final int tableNumber;
-  final TableReservationsBloc reservationsBloc;
+  final TableReservationsBloc tableReservationsBloc;
   final ReserveTableBloc reserveTableBloc;
   final TableInfoBloc tableInfoBloc;
+  final DateTime? initialStart;
+  final DateTime? initialEnd;
   const ReserveTableScreen({
     super.key,
     required this.tableNumber,
-    required this.reservationsBloc,
+    required this.tableReservationsBloc,
     required this.reserveTableBloc,
     required this.tableInfoBloc,
+    this.initialStart,
+    this.initialEnd,
   });
 
   @override
@@ -37,9 +42,22 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
   bool dateIsSet = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialStart != null) {
+      dateIsSet = true;
+      start = widget.initialStart!;
+      end = widget.initialEnd!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Забронировать стол №${widget.tableNumber}'),
+          title: Text(widget.initialStart != null
+              ? 'Открыть стол №${widget.tableNumber}'
+              : 'Забронировать стол №${widget.tableNumber}'),
         ),
         body: BlocConsumer<ReserveTableBloc, ReserveTableState>(
           bloc: widget.reserveTableBloc,
@@ -48,10 +66,15 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
               widget.tableInfoBloc.add(TableInfoLoad(
                   placeId: state.placeId, tableId: state.tableId));
 
-              widget.reservationsBloc
+              widget.tableReservationsBloc
                   .add(TableReservationsLoad(placeId: state.placeId));
 
-              Navigator.pop(context);
+              if (widget.initialStart != null) {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              } else {
+                Navigator.pop(context);
+              }
             }
           },
           builder: (context, state) {
@@ -71,13 +94,16 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                         children: [
                           OutlinedButton(
                               onPressed: () async => await _onDatePress(),
-                              child: Text('Дата и время бронирования')),
+                              child: const Text('Дата и время бронирования')),
                           if (dateIsSet)
                             Text(
                               'C ${DateFormat('dd MMMM HH:mm', 'RU').format(start)} | До ${DateFormat('dd MMMM HH:mm', 'RU').format(end)}',
                             ),
                           TextFormField(
-                            initialValue: '',
+                            readOnly: widget.initialStart != null,
+                            initialValue: widget.initialStart != null
+                                ? 'Без телефона'
+                                : '',
                             decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black),
@@ -99,7 +125,10 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                             children: [
                               Expanded(
                                 child: TextFormField(
-                                  initialValue: name,
+                                  readOnly: widget.initialStart != null,
+                                  initialValue: widget.initialStart != null
+                                      ? 'Без имени'
+                                      : name,
                                   decoration: const InputDecoration(
                                       enabledBorder: UnderlineInputBorder(
                                         borderSide:
@@ -207,9 +236,11 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                                   MaterialStateProperty.all(Colors.black)),
                           onPressed: () =>
                               reserveTable(state.placeId, state.tableId),
-                          child: const Text(
-                            'Забронировать',
-                            style: TextStyle(color: Colors.white),
+                          child: Text(
+                            widget.initialStart != null
+                                ? 'Открыть до ${DateFormat('HH:mm', 'RU').format(widget.initialEnd!)}'
+                                : 'Забронировать',
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
@@ -239,14 +270,16 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
 
   void reserveTable(int placeId, int tableId) {
     widget.reserveTableBloc.add(AdminReserveTable(
-        placeId: placeId,
-        tableId: tableId,
-        guests: guestsCount,
-        start: DateTime.now().add(Duration(minutes: 1)),
-        end: DateTime.now().add(Duration(hours: 3)),
-        phoneNumber: phoneNumber,
-        name: name,
-        excludeReshuffle: excludeReshuffle,
-        comment: comment));
+      placeId: placeId,
+      tableId: tableId,
+      guests: guestsCount,
+      start: DateTime.now().add(Duration(minutes: 1)),
+      end: DateTime.now().add(Duration(hours: 3)),
+      phoneNumber: phoneNumber,
+      name: name,
+      excludeReshuffle: excludeReshuffle,
+      comment: comment,
+      inFact: widget.initialStart != null,
+    ));
   }
 }

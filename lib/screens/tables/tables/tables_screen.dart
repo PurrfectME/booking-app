@@ -253,7 +253,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 child: TableInfoScreen(
                     tableNumber: table.number,
                     tableGuests: table.guests,
-                    reservationsBloc: tableReservationsBloc),
+                    tableReservationsBloc: tableReservationsBloc),
               )),
     );
   }

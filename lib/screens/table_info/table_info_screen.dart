@@ -20,12 +20,12 @@ class TableInfoScreen extends StatefulWidget {
   static const String pageRoute = '/tableInfo';
   final int tableNumber;
   final int tableGuests;
-  final TableReservationsBloc reservationsBloc;
+  final TableReservationsBloc tableReservationsBloc;
   const TableInfoScreen({
     super.key,
     required this.tableNumber,
     required this.tableGuests,
-    required this.reservationsBloc,
+    required this.tableReservationsBloc,
   });
 
   @override
@@ -205,8 +205,8 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                                                 ReserveTableScreen(
                                                   tableNumber:
                                                       state.data.table.number,
-                                                  reservationsBloc:
-                                                      widget.reservationsBloc,
+                                                  tableReservationsBloc: widget
+                                                      .tableReservationsBloc,
                                                   reserveTableBloc: rtBloc,
                                                   tableInfoBloc: tiBloc,
                                                 )));
@@ -239,7 +239,10 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                                           nextReservation!.placeId,
                                           nextReservation.id!,
                                           nextReservation.tableId)
-                                      : () => _onTimeReservationPress(),
+                                      : () => _onTimeReservationPress(
+                                            state.data.table.placeId,
+                                            state.data.table.id,
+                                          ),
                                   child: Text(
                                     isWaitingStatus
                                         ? 'Отменить(гости не пришли)'
@@ -261,9 +264,23 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
       );
 
   //по факту
-  Future _onTimeReservationPress() async {
-    final result = await showDialog<ReservationTime>(
-        context: context, builder: (context) => const DatetimeSelector());
+  Future _onTimeReservationPress(int placeId, int tableId) async {
+    final tiBloc = context.read<TableInfoBloc>();
+    final rtBloc = context.read<ReserveTableBloc>();
+    final now = DateTime.now();
+    final result = await Navigator.push<ReservationTime>(
+        context,
+        MaterialPageRoute(
+            builder: (context) => DatetimeSelector(
+                  initialStart: DateTime(
+                      now.year, now.month, now.day, now.hour, now.minute),
+                  placeId: placeId,
+                  tableId: tableId,
+                  tableNumber: widget.tableNumber,
+                  tableReservationsBloc: widget.tableReservationsBloc,
+                  tiBloc: tiBloc,
+                  rtBloc: rtBloc,
+                )));
   }
 
   void _onCancelReservationPress(int placeId, int reservationId, int tableId) {

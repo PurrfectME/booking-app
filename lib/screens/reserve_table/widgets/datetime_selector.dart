@@ -1,10 +1,32 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/local/reservation_time.dart';
 import 'package:booking_app/screens/reserve_table/widgets/hour_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../reserve_table_screen.dart';
+
 class DatetimeSelector extends StatefulWidget {
-  const DatetimeSelector({super.key});
+  final DateTime? initialStart;
+  final int? placeId;
+  final int? tableNumber;
+  final int? tableId;
+  final TableReservationsBloc? tableReservationsBloc;
+  final TableInfoBloc? tiBloc;
+  final ReserveTableBloc? rtBloc;
+  const DatetimeSelector({
+    Key? key,
+    this.initialStart,
+    this.placeId,
+    this.tableNumber,
+    this.tableId,
+    this.tableReservationsBloc,
+    this.tiBloc,
+    this.rtBloc,
+  }) : super(key: key);
 
   @override
   State<DatetimeSelector> createState() => _DatetimeSelectorState();
@@ -23,11 +45,23 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
   bool isToVisible = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialStart != null) {
+      start = widget.initialStart;
+      isFromVisible = false;
+      isToVisible = true;
+      startTimeIsSet = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('ДАТА И ВРЕМЯ'),
-          actions: [
-            const IconButton(onPressed: null, icon: Icon(Icons.calendar_month))
+          actions: const [
+            IconButton(onPressed: null, icon: Icon(Icons.calendar_month))
           ],
         ),
         body: Container(
@@ -43,10 +77,12 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                         foregroundColor: Colors.black,
                         backgroundColor:
                             isFromVisible ? Colors.greenAccent : Colors.white),
-                    onPressed: () => setState(() {
-                      isFromVisible = true;
-                      isToVisible = false;
-                    }),
+                    onPressed: widget.initialStart != null
+                        ? null
+                        : () => setState(() {
+                              isFromVisible = true;
+                              isToVisible = false;
+                            }),
                     child: Container(
                       height: 75,
                       width: 120,
@@ -221,7 +257,7 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
                   onMinutesTabPress: onMinutesTabPress,
                   onHourTilePress: onHourTilePress,
                   onMinuteTilePress: onMinuteTilePress,
-                  start: start,
+                  start: end,
                   selectedTime: selectedTime,
                 )
             ],
@@ -273,13 +309,30 @@ class _DatetimeSelectorState extends State<DatetimeSelector> {
         // startTimeIsSet = true;
       });
 
-      Navigator.pop(
-          context,
-          ReservationTime(
-              start: DateTime(start!.year, start!.month, start!.day,
-                  start!.hour, start!.minute),
-              end: DateTime(
-                  end!.year, end!.month, end!.day, end!.hour, end!.minute)));
+      final reservationTime = ReservationTime(
+          start: DateTime(start!.year, start!.month, start!.day, start!.hour,
+              start!.minute),
+          end: DateTime(
+              end!.year, end!.month, end!.day, end!.hour, end!.minute));
+
+      if (widget.initialStart != null) {
+        widget.rtBloc!.add(ReserveTableLoad(
+            tableId: widget.tableId!, placeId: widget.placeId!));
+
+        Navigator.push<void>(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ReserveTableScreen(
+                      tableNumber: widget.tableNumber!,
+                      tableReservationsBloc: widget.tableReservationsBloc!,
+                      reserveTableBloc: widget.rtBloc!,
+                      tableInfoBloc: widget.tiBloc!,
+                      initialStart: reservationTime.start,
+                      initialEnd: reservationTime.end,
+                    )));
+      } else {
+        Navigator.pop(context, reservationTime);
+      }
     }
   }
 
