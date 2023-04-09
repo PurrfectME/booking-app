@@ -5,6 +5,7 @@ import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../services/reshuffle/reshuffle_service.dart';
 import '../../utils/status_helper.dart';
 
 part 'reserve_table_event.dart';
@@ -36,6 +37,8 @@ class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
             status: event.inFact
                 ? StatusHelper.fromStatus(ReservationStatus.opened)
                 : StatusHelper.fromStatus(ReservationStatus.fresh)));
+
+        await const ReshuffleService().makeReshuffle(event.placeId);
 
         // final currentTables = await DbProvider.db.getTables(event.placeId);
 
