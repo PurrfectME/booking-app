@@ -9,9 +9,6 @@ class ReshuffleService {
     //TODO: столы которые имеют статус активной брони или ожидание гостя
     //TODO: делать им excludeReshuffle = true
 
-    //перед любой манипуляцией с бронью(от юзера или админа)
-    //сначала дёргать makeReshuffle, а уже потом создавать новую бронь
-
     final tables = await DbProvider.db.getTables(placeId);
 
     final shufflingMap = <int, Map<int, List<TableModel>>>{};
@@ -22,7 +19,9 @@ class ReshuffleService {
 
         shufflingMap.addAll(map);
       }
+    }
 
+    for (final table in tables) {
       final tableReservations =
           await DbProvider.db.getTableReservations(placeId, table.id);
 
@@ -31,7 +30,7 @@ class ReshuffleService {
           0,
           (value) {
             final result = <TableModel>[];
-            value.map(result.add);
+            value.map(result.add).toList();
             result.add(table);
             return result;
           },
@@ -53,7 +52,7 @@ class ReshuffleService {
             reservation.guests,
             (value) {
               final result = <TableModel>[];
-              value.map(result.add);
+              value.map(result.add).toList();
               result.add(table);
               return result;
             },
