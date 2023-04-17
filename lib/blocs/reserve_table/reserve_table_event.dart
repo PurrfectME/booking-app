@@ -30,6 +30,7 @@ class AdminReserveTable extends ReserveTableEvent {
   final String name;
   final bool excludeReshuffle;
   final String comment;
+  final bool inFact;
 
   const AdminReserveTable({
     required this.placeId,
@@ -41,6 +42,7 @@ class AdminReserveTable extends ReserveTableEvent {
     required this.name,
     required this.excludeReshuffle,
     required this.comment,
+    required this.inFact,
   });
 
   @override
@@ -54,5 +56,6 @@ class AdminReserveTable extends ReserveTableEvent {
         name,
         excludeReshuffle,
         comment,
+        inFact,
       ];
 }

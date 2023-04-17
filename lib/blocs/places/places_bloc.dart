@@ -31,7 +31,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
             DateTime(2022, 11, 30, 17, 20).millisecondsSinceEpoch,
             [
               TableModel(1, 1, 6, 1),
-              TableModel(2, 2, 2, 1),
+              TableModel(2, 2, 6, 1),
               TableModel(3, 3, 3, 1),
               TableModel(4, 4, 5, 1),
             ],

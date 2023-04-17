@@ -227,7 +227,8 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void _onTablePress(TableModel table) {
-    final reservationsBloc = context.read<TableReservationsBloc>();
+    final tableReservationsBloc = context.read<TableReservationsBloc>();
+    final reservationsBloc = context.read<ReservationsBloc>();
     Navigator.push<void>(
       context,
       MaterialPageRoute(
@@ -236,9 +237,10 @@ class _TablesScreenState extends State<TablesScreen> {
                   BlocProvider(
                     create: (context) => ReserveTableBloc(),
                   ),
-                  // BlocProvider(
-                  //   create: (context) => ReservationInfoBloc(trBloc: reservationsBloc, rBloc: ),
-                  // ),
+                  BlocProvider(
+                    create: (context) => ReservationInfoBloc(
+                        trBloc: tableReservationsBloc, rBloc: reservationsBloc),
+                  ),
                   BlocProvider<TableInfoBloc>(
                     //TODO: передавать данные в сам блок
                     create: (context) => TableInfoBloc()
@@ -251,7 +253,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 child: TableInfoScreen(
                     tableNumber: table.number,
                     tableGuests: table.guests,
-                    reservationsBloc: reservationsBloc),
+                    tableReservationsBloc: tableReservationsBloc),
               )),
     );
   }
