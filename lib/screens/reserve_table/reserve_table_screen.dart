@@ -174,6 +174,18 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                                         DropdownMenuItem(
                                           child: Text('3'),
                                           value: 3,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('4'),
+                                          value: 4,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('5'),
+                                          value: 5,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('6'),
+                                          value: 6,
                                         )
                                       ],
                                       onChanged: (value) => setState(() {

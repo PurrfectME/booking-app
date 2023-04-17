@@ -33,6 +33,7 @@ dependencies:
   url_launcher: ^6.1.10
   horizontal_picker: ^1.2.0
   vertical_weight_slider: ^2.5.0
+  hive: ^2.2.3
 
 dev_dependencies:
   flutter_test:
