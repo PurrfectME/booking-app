@@ -1,36 +1,75 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class ReservationModel extends Equatable {
+part 'reservation_model.g.dart';
+
+@HiveType(typeId: 2)
+@JsonSerializable()
+class ReservationModel extends HiveObject {
+  @HiveField(0)
+  @JsonKey(name: 'id')
   final int? id;
+
+  @HiveField(1)
+  @JsonKey(name: 'placeId')
   final int placeId;
+
+  @HiveField(2)
+  @JsonKey(name: 'tableId')
   final int tableId;
+
+  @HiveField(3)
+  @JsonKey(name: 'userId')
   final int? userId;
+
+  @HiveField(4)
+  @JsonKey(name: 'phoneNumber')
   final String? phoneNumber;
+
+  @HiveField(5)
+  @JsonKey(name: 'name')
   final String? name;
+
+  @HiveField(6)
+  @JsonKey(name: 'start')
   final int start;
+
+  @HiveField(7)
+  @JsonKey(name: 'end')
   final int end;
+
+  @HiveField(8)
+  @JsonKey(name: 'guests')
   final int guests;
+
+  @HiveField(9)
+  @JsonKey(name: 'excludeReshuffle')
   final bool excludeReshuffle;
+
+  @HiveField(10)
+  @JsonKey(name: 'comment')
   final String? comment;
+
+  @HiveField(11)
+  @JsonKey(name: 'status')
   final int status;
 
-  const ReservationModel({
-    this.id,
-    required this.placeId,
-    required this.tableId,
-    this.userId,
-    this.phoneNumber,
-    this.name,
-    required this.start,
-    required this.end,
-    required this.guests,
-    required this.excludeReshuffle,
-    required this.comment,
-    required this.status,
-  });
+  ReservationModel(
+      {required this.id,
+      required this.placeId,
+      required this.tableId,
+      required this.userId,
+      required this.phoneNumber,
+      required this.name,
+      required this.start,
+      required this.end,
+      required this.guests,
+      required this.excludeReshuffle,
+      required this.comment,
+      required this.status});
 
   ReservationModel copyWith({
     int? id,
@@ -98,19 +137,4 @@ class ReservationModel extends Equatable {
 
   factory ReservationModel.fromJson(String source) =>
       ReservationModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  List<Object?> get props => [
-        id,
-        placeId,
-        tableId,
-        userId,
-        phoneNumber,
-        name,
-        start,
-        end,
-        guests,
-        excludeReshuffle,
-        status
-      ];
 }

@@ -15,7 +15,7 @@ class ExtraInfoBloc extends Bloc<ExtraInfoEvent, ExtraInfoState> {
         emit(ExtraInfoLoaded(event.user));
       } else if (event is UpdateProfileName) {
         // call post: /profile
-        final result = await DbProvider.db.updateUser(event.user);
+        // final result = await DbProvider.db.updateUser(event.user);
 
         emit(ExtraInfoUpdated());
       }

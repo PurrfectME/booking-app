@@ -30,10 +30,8 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
             null,
             DateTime(2022, 11, 30, 17, 20).millisecondsSinceEpoch,
             [
-              TableModel(1, 1, 6, 1),
-              TableModel(2, 2, 6, 1),
-              TableModel(3, 3, 3, 1),
-              TableModel(4, 4, 5, 1),
+              TableModel(id: 1, number: 1, guests: 6, placeId: 1),
+              TableModel(id: 2, number: 2, guests: 4, placeId: 1),
             ],
           ),
           PlaceModel(
@@ -44,9 +42,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
             null,
             DateTime.now().millisecondsSinceEpoch,
             [
-              TableModel(5, 2, 2, 2),
-              TableModel(6, 3, 3, 2),
-              TableModel(7, 4, 5, 2),
+              TableModel(id: 1, number: 1, guests: 6, placeId: 2),
             ],
           ),
         ];

@@ -24,7 +24,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           refreshToken: 'response.refreshToken',
         );
 
-        user = user.copyWith(id: await DbProvider.db.createUser(user));
+        // user = user.copyWith(id: await DbProvider.db.createUser(user));
         // if (user.firstSignIn) {
         //   user.id = await DbProvider.db.createUser(user);
         // }

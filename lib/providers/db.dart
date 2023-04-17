@@ -125,12 +125,18 @@ class DbProvider {
 
       final index = places.indexWhere((x) => x.id == placeId);
       if (index != -1) {
-        places[index].tables.add(TableModel(map['tableId'] as int,
-            map['number'] as int, map['guests'] as int, map['placeId'] as int));
+        places[index].tables.add(TableModel(
+            id: map['tableId'] as int,
+            number: map['number'] as int,
+            guests: map['guests'] as int,
+            placeId: map['placeId'] as int));
       } else {
         final placeToAdd = PlaceModel.fromMap(map);
-        placeToAdd.tables.add(TableModel(map['tableId'] as int,
-            map['number'] as int, map['guests'] as int, map['placeId'] as int));
+        placeToAdd.tables.add(TableModel(
+            id: map['tableId'] as int,
+            number: map['number'] as int,
+            guests: map['guests'] as int,
+            placeId: map['placeId'] as int));
 
         places.add(placeToAdd);
       }
@@ -149,8 +155,11 @@ class DbProvider {
     final place = PlaceModel.fromMap(result[0]);
 
     for (final map in result) {
-      place.tables.add(TableModel(map['tableId'] as int, map['number'] as int,
-          map['guests'] as int, map['placeId'] as int));
+      place.tables.add(TableModel(
+          id: map['tableId'] as int,
+          number: map['number'] as int,
+          guests: map['guests'] as int,
+          placeId: map['placeId'] as int));
     }
 
     return place;

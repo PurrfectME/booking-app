@@ -1,21 +1,37 @@
+import 'dart:io';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
+import 'package:booking_app/models/db/place_model.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'blocs/simple_bloc_observer.dart';
 import 'navigation.dart';
 
-void main() {
-  //TODO: initialize DbProvider here to create it on app init
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  //TODO: initialize DbProvider here to create it on app init
+  await Hive.initFlutter();
+  Hive
+    ..registerAdapter<PlaceModel>(PlaceModelAdapter())
+    ..registerAdapter<TableModel>(TableModelAdapter())
+    ..registerAdapter<ReservationModel>(ReservationModelAdapter())
+    ..registerAdapter<UserModel>(UserModelAdapter());
+
+  // var a = await Hive.openBox<PlaceModel>('places');
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   Bloc.observer = SimpleBlocObserver();
   Bloc.transformer = sequential<dynamic>();

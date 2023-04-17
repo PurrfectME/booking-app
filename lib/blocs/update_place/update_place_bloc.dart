@@ -16,8 +16,9 @@ class UpdatePlaceBloc extends Bloc<UpdatePlaceEvent, UpdatePlaceState> {
 
         emit(UpdatePlaceLoaded(place));
       } else if (event is UpdatePlace) {
-        event.data.updateDate = DateTime.now().millisecondsSinceEpoch;
-        await DbProvider.db.updatePlace(event.data);
+        final data = event.data
+            .copyWith(updateDate: DateTime.now().millisecondsSinceEpoch);
+        await DbProvider.db.updatePlace(data);
 
         emit(UpdatePlaceSuccess());
       }

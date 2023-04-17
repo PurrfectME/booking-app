@@ -2,21 +2,44 @@
 import 'dart:convert';
 
 import 'package:booking_app/models/models.dart';
+import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class PlaceModel {
-  int id;
-  String name;
-  String description;
-  int logoId;
-  String? base64Logo;
-  int updateDate;
-  List<TableModel> tables;
+part 'place_model.g.dart';
+
+@HiveType(typeId: 1)
+@JsonSerializable()
+class PlaceModel extends HiveObject {
+  @HiveField(0)
+  @JsonKey(name: 'id')
+  final int id;
+
+  @HiveField(1)
+  @JsonKey(name: 'name')
+  final String name;
+
+  @HiveField(2)
+  @JsonKey(name: 'description')
+  final String description;
+
+  @HiveField(3)
+  @JsonKey(name: 'logoId')
+  final int logoId;
+
+  @HiveField(4)
+  @JsonKey(name: 'base64Logo')
+  final String? base64Logo;
+
+  @HiveField(5)
+  @JsonKey(name: 'updateDate')
+  final int updateDate;
+
+  @HiveField(6)
+  @JsonKey(name: 'tables')
+  final List<TableModel> tables;
 
   PlaceModel(this.id, this.name, this.description, this.logoId, this.base64Logo,
       this.updateDate, this.tables);
-
-  List<Object?> get props =>
-      [id, name, description, logoId, base64Logo, updateDate, tables];
 
   PlaceModel copyWith({
     int? id,

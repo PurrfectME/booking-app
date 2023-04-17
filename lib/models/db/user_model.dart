@@ -1,18 +1,38 @@
 import 'dart:convert';
+import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import 'package:equatable/equatable.dart';
+part 'user_model.g.dart';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-class UserModel extends Equatable {
+@HiveType(typeId: 3)
+@JsonSerializable()
+class UserModel extends HiveObject {
+  @HiveField(0)
+  @JsonKey(name: 'id')
   final int? id;
+
+  @HiveField(1)
+  @JsonKey(name: 'login')
   final String login;
+
+  @HiveField(2)
+  @JsonKey(name: 'firstSignIn')
   final bool firstSignIn;
+
+  @HiveField(3)
+  @JsonKey(name: 'accessToken')
   final String accessToken;
+
+  @HiveField(4)
+  @JsonKey(name: 'refreshToken')
   final String refreshToken;
+
   // TODO: not null
+  @HiveField(5)
+  @JsonKey(name: 'name')
   final String? name;
 
-  const UserModel({
+  UserModel({
     this.id,
     required this.login,
     required this.firstSignIn,
@@ -86,14 +106,4 @@ class UserModel extends Equatable {
         refreshToken: refreshToken ?? this.refreshToken,
         name: name ?? this.name,
       );
-
-  @override
-  List<Object?> get props => [
-        id,
-        login,
-        firstSignIn,
-        accessToken,
-        refreshToken,
-        name,
-      ];
 }

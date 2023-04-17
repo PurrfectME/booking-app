@@ -81,34 +81,37 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                             child: Column(
                               children: [
                                 TextFormField(
-                                  initialValue: state.data.name,
-                                  decoration: const InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.black),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.black),
-                                      ),
-                                      labelText: 'Название',
-                                      labelStyle:
-                                          TextStyle(color: Colors.black)),
-                                  keyboardType: TextInputType.text,
-                                  onSaved: (newValue) {
-                                    localObj.name = newValue!;
-                                  },
-                                  onChanged: (value) => localObj.name = value,
-                                  // The validator receives the text that the user has entered.
-                                  // validator: validatePhoneNumber),
-                                ),
+                                    initialValue: state.data.name,
+                                    decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.black),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.black),
+                                        ),
+                                        labelText: 'Название',
+                                        labelStyle:
+                                            TextStyle(color: Colors.black)),
+                                    keyboardType: TextInputType.text,
+                                    onSaved: (newValue) {
+                                      localObj =
+                                          localObj.copyWith(name: newValue!);
+                                    },
+                                    onChanged: (value) => localObj =
+                                        localObj.copyWith(name: value)
+                                    // The validator receives the text that the user has entered.
+                                    // validator: validatePhoneNumber),
+                                    ),
                                 TextFormField(
                                   initialValue: state.data.description,
                                   onSaved: (newValue) {
-                                    localObj.description = newValue!;
+                                    localObj = localObj.copyWith(
+                                        description: newValue!);
                                   },
-                                  onChanged: (value) =>
-                                      localObj.description = value,
+                                  onChanged: (value) => localObj =
+                                      localObj.copyWith(description: value),
                                   decoration: const InputDecoration(
                                       enabledBorder: UnderlineInputBorder(
                                         borderSide:
@@ -267,7 +270,8 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
           _isBlurredImageVisible = false;
 
           if (imageBytes != null) {
-            localObj.base64Logo = ImageService.base64String(imageBytes);
+            localObj = localObj.copyWith(
+                base64Logo: ImageService.base64String(imageBytes));
           }
         });
         // Navigator.of(context).pop();
