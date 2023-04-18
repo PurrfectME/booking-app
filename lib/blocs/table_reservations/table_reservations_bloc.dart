@@ -4,6 +4,7 @@ import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../providers/hive_db.dart';
 import '../../utils/status_helper.dart';
 
 part 'table_reservations_event.dart';
@@ -21,9 +22,9 @@ class TableReservationsBloc
         emit(TableReservationsLoaded(result));
       } else if (event is AdminTableReserve) {
         emit(TableReservationsLoading());
-        final user = await DbProvider.db.getByPhoneNumber(event.phoneNumber);
+        final user = await HiveProvider.getUserByPhoneNumber(event.phoneNumber);
 
-        final resId = await DbProvider.db.createReservation(ReservationModel(
+        final resId = await HiveProvider.createReservation(ReservationModel(
             id: null,
             tableId: event.tableId,
             placeId: event.placeId,
@@ -37,7 +38,7 @@ class TableReservationsBloc
             comment: 'event.',
             status: StatusHelper.fromStatus(ReservationStatus.fresh)));
 
-        final currentTables = await DbProvider.db.getTables(event.placeId);
+        final currentTables = await HiveProvider.getTables(event.placeId);
 
         final result = await _initReservations(currentTables, event.placeId);
         emit(TableReservationsLoaded(result));
@@ -79,20 +80,17 @@ class TableReservationsBloc
 
   Future<List<TableReservationViewModel>> _initReservations(
       List<TableModel> tables, int placeId) async {
-    final userReservations = (await DbProvider.db.getReservations(placeId))
+    final userReservations = (await HiveProvider.getReservations(placeId))
         .where((x) =>
-            StatusHelper.toStatus(x.reservation.status) !=
-            ReservationStatus.cancelled);
+            StatusHelper.toStatus(x.status) != ReservationStatus.cancelled);
 
     final result = <TableReservationViewModel>[];
 
     for (final table in tables) {
-      final reservations = userReservations
-          .where((x) => x.reservation.tableId == table.id)
-          .toList();
+      final reservations =
+          userReservations.where((x) => x.tableId == table.id).toList();
 
-      reservations
-          .sort((a, b) => a.reservation.start.compareTo(b.reservation.start));
+      reservations.sort((a, b) => a.start.compareTo(b.start));
       result.add(
           TableReservationViewModel(table: table, reservations: reservations));
     }

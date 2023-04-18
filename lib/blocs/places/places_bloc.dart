@@ -1,5 +1,6 @@
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/providers/hive_db.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,14 +11,14 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   PlacesBloc() : super(PlacesLoading()) {
     on<PlacesEvent>((event, emit) async {
       if (event is PlacesLoad) {
-        await DbProvider.db.deleteAllPlaceModels();
-        await DbProvider.db.deleteAllTables();
+        await HiveProvider.deleteAllPlaces();
+        await HiveProvider.deleteAllTables();
         // await DbProvider.db.deleteAllUsers();
 
         emit(PlacesLoading());
 
-        final lastUpdate = await DbProvider.db.getPlacesLastUpdateDate();
-        final a = DateTime.fromMillisecondsSinceEpoch(lastUpdate);
+        // final lastUpdate = await DbProvider.db.getPlacesLastUpdateDate();
+        // final a = DateTime.fromMillisecondsSinceEpoch(lastUpdate);
 
         //TODO: `get: /places?update_date=date`
 
@@ -47,9 +48,9 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
           ),
         ];
 
-        await DbProvider.db.createPlaceModels(placesResponse);
+        await HiveProvider.createPlaces(placesResponse);
 
-        final actualPlaces = await DbProvider.db.getAllPlaceModels();
+        final actualPlaces = await HiveProvider.getPlaces();
 
         //if no places emit NotFoundState
 

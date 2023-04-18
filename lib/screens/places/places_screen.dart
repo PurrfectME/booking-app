@@ -47,7 +47,8 @@ class PlacesScreenState extends State<PlacesScreen> {
             } else if (state is PlacesError) {
               return Text(state.error);
             } else if (state is PlacesLoaded) {
-              return Column(
+              return SingleChildScrollView(
+                  child: Column(
                 children: [
                   ElevatedButton(
                       onPressed: () {
@@ -67,7 +68,7 @@ class PlacesScreenState extends State<PlacesScreen> {
                         const SizedBox(height: 16),
                   ),
                 ],
-              );
+              ));
             } else {
               //если билдер не нашёл стейт в обработке ифов
               return const SizedBox();

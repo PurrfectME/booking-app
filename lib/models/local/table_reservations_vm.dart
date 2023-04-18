@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 
 class TableReservationViewModel extends Equatable {
   final TableModel table;
-  final List<UserReservationModel> reservations;
+  final List<ReservationModel> reservations;
   const TableReservationViewModel({
     required this.table,
     required this.reservations,
@@ -12,7 +12,7 @@ class TableReservationViewModel extends Equatable {
 
   TableReservationViewModel copyWith({
     TableModel? table,
-    List<UserReservationModel>? reservations,
+    List<ReservationModel>? reservations,
   }) =>
       TableReservationViewModel(
         table: table ?? this.table,

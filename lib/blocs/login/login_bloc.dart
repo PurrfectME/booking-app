@@ -5,6 +5,8 @@ import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/services/auth/auth_service.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../providers/hive_db.dart';
+
 part 'login_event.dart';
 part 'login_state.dart';
 
@@ -24,10 +26,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           refreshToken: 'response.refreshToken',
         );
 
-        // user = user.copyWith(id: await DbProvider.db.createUser(user));
-        // if (user.firstSignIn) {
-        //   user.id = await DbProvider.db.createUser(user);
-        // }
+        // user = user.copyWith(id: await HiveProvider.createUser(user));
+        if (user.firstSignIn) {
+          user = user.copyWith(id: await HiveProvider.createUser(user));
+        }
+
+        // final a = await HiveProvider.getUsers();
 
         emit(LoginSuccess(user: user));
       }

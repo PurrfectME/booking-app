@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:booking_app/models/db/table_image_model.dart';
 import 'package:booking_app/models/db/user_reservation_model.dart';
 import 'package:booking_app/models/local/place_info_vm.dart';
 import 'package:booking_app/models/models.dart';
@@ -10,6 +11,8 @@ import 'package:booking_app/utils/status_helper.dart';
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../providers/hive_db.dart';
 
 part 'place_info_event.dart';
 part 'place_info_state.dart';
@@ -24,44 +27,14 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
     required this.id,
   }) : super(PlaceInfoLoading()) {
     on<PlaceInfoEvent>((event, emit) async {
-      place = await DbProvider.db.getPlaceById(id);
+      place = await HiveProvider.getPlaceById(id);
 
       if (event is PlaceInfoLoad) {
         emit(PlaceInfoLoading());
         availableTables.clear();
 
-        //мы сохраняем локально в бд резервации юзера, а просто таблицу со всеми резервациями нет
-        //а как менеджить момент когда с одного телефона два юзера разных зайдут,(бд одна)
-        //тогда помимо юзер резерваций нужно сохранять и в обычные
-        //TODO: `get: /place/{event.placeId}/tables`
-        // final reservedTablesResponse = [
-        //   ReservationModel(
-        //     2,
-        //     7,
-        //     DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
-        //     DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
-        //   ),
-        //   ReservationModel(
-        //     1,
-        //     5,
-        //     DateTime(2022, 12, 7, 22).millisecondsSinceEpoch,
-        //     DateTime(2022, 12, 7, 23).millisecondsSinceEpoch,
-        //   ),
-        // ];
-
-        //TODO: `get: /profile/tables`
-        // final userReservedTablesResponse = [
-        //   UserReservationModel(
-        //       1,
-        //       2,
-        //       5,
-        //       reservedTablesResponse[0].start,
-        //       reservedTablesResponse[0].end,
-        //       DateTime.now().millisecondsSinceEpoch)
-        // ];
-
         final reservedTablesResponse =
-            await DbProvider.db.getReservations(place!.id);
+            await HiveProvider.getReservations(place!.id);
 
         // final userReservedTablesResponse =
         //     await DbProvider.db.getAllUserReservations();
@@ -78,13 +51,11 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
         if (reservedTablesResponse.isNotEmpty) {
           for (final table in place!.tables) {
             final reserved = reservedTablesResponse.any((x) {
-              final start =
-                  DateTime.fromMillisecondsSinceEpoch(x.reservation.start);
-              final end =
-                  DateTime.fromMillisecondsSinceEpoch(x.reservation.end);
+              final start = DateTime.fromMillisecondsSinceEpoch(x.start);
+              final end = DateTime.fromMillisecondsSinceEpoch(x.end);
               final selected = event.selectedDateTime;
 
-              if (table.id == x.reservation.tableId) {
+              if (table.id == x.tableId) {
                 if (selected.isAfter(start) && selected.isBefore(end)) {
                   return true;
                 }
@@ -126,10 +97,10 @@ class PlaceInfoBloc extends Bloc<PlaceInfoEvent, PlaceInfoState> {
               [])));
         }
 
-        final a = await DbProvider.db.getUserReservationsLastUpdateDate();
+        // final a = await DbProvider.db.getUserReservationsLastUpdateDate();
 
-        final tableImages = await DbProvider.db.getTableImages(tableIds);
-
+        // final tableImages = await DbProvider.db.getTableImages(tableIds);
+        final tableImages = <TableImageModel>[];
         //TODO: better performance when sorted tableImages, availableTables?
         // tableImages.sort((a, b) => a.tableId.compareTo(b.tableId));
 
