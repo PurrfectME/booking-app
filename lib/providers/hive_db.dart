@@ -58,17 +58,22 @@ class HiveProvider {
   }
 
   static Future deleteAllPlaces() async {
-    await (await Hive.openBox<PlaceModel>('places')).deleteFromDisk();
+    await (await Hive.openBox<PlaceModel>('places')).clear();
   }
 
   static Future deleteAllTables() async {
-    await (await Hive.openBox<TableModel>('tables')).deleteFromDisk();
+    await (await Hive.openBox<TableModel>('tables')).clear();
   }
 
   static Future<List<UserModel>> getUsers() async {
     final users = (await Hive.openBox<UserModel>('users')).values.toList();
     return users;
   }
+
+  static Future<UserModel> getUserById(int id) async =>
+      (await Hive.openBox<UserModel>('users'))
+          .values
+          .firstWhere((x) => x.id == id);
 
   static Future<UserModel?> getUserByPhoneNumber(String number) async {
     final user = (await Hive.openBox<UserModel>('users'))

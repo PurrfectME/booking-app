@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/providers/hive_db.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:booking_app/screens/tables/tables/widgets/table_status.dart';
@@ -78,8 +79,7 @@ class _TablesScreenState extends State<TablesScreen> {
                         //TODO: вытягивать резервации актуальные
                         if (reservationVm.reservations.isNotEmpty) {
                           var dates = reservationVm.reservations.map((e) =>
-                              DateTime.fromMillisecondsSinceEpoch(
-                                  e.reservation.start));
+                              DateTime.fromMillisecondsSinceEpoch(e.start));
 
                           final now = selectedDateTime;
 
@@ -93,30 +93,36 @@ class _TablesScreenState extends State<TablesScreen> {
                                     ? a
                                     : b);
 
-                            nextReservation = reservationVm.reservations
+                            final a = reservationVm.reservations
                                 .firstWhereOrNull((x) =>
-                                    x.reservation.start ==
+                                    x.start ==
                                     closestDateTimeToNow
                                         .millisecondsSinceEpoch);
+                            if (a != null) {
+                              HiveProvider.getUserById(a.userId!).then(
+                                  (value) => nextReservation =
+                                      UserReservationModel(
+                                          user: value, reservation: a));
+                            }
 
                             if (nextReservation != null) {
                               start = DateTime.fromMillisecondsSinceEpoch(
-                                  nextReservation.reservation.start);
+                                  nextReservation!.reservation.start);
 
                               end = DateTime.fromMillisecondsSinceEpoch(
-                                  nextReservation.reservation.end);
+                                  nextReservation!.reservation.end);
 
                               hasReservationsToday = true;
 
-                              if (StatusHelper.toStatus(
-                                          nextReservation.reservation.status) !=
+                              if (StatusHelper.toStatus(nextReservation!
+                                          .reservation.status) !=
                                       ReservationStatus.opened &&
                                   now.isAfter(start)) {
                                 tableStatus = TableStatus.yellow;
                               }
 
                               if (StatusHelper.toStatus(
-                                      nextReservation.reservation.status) ==
+                                      nextReservation!.reservation.status) ==
                                   ReservationStatus.opened) {
                                 tableStatus = TableStatus.red;
                               }
