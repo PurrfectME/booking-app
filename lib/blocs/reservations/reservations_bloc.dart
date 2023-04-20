@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/local/reservation_vm.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/providers/hive_db.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:equatable/equatable.dart';
 
@@ -57,9 +59,13 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
                           .millisecondsSinceEpoch);
 
               for (final x in waitings) {
-                await DbProvider.db.updateReservation(event.placeId, x.id, {
-                  'status': StatusHelper.fromStatus(ReservationStatus.waiting)
-                });
+                await HiveProvider.updateReservation(
+                  event.placeId,
+                  x.id,
+                  {
+                    'status': StatusHelper.fromStatus(ReservationStatus.waiting)
+                  },
+                );
               }
             }
 
@@ -113,7 +119,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
 
             break;
           case ReservationStatus.cancelled:
-            final result = await DbProvider.db.getArchivedReservations(
+            final result = await HiveProvider.getArchivedReservations(
                 event.placeId,
                 DateTime.now().millisecondsSinceEpoch,
                 StatusHelper.fromStatus(ReservationStatus.cancelled));
@@ -127,7 +133,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
 
             for (final x in result) {
               final table =
-                  await DbProvider.db.getTableById(x.placeId, x.tableId);
+                  await HiveProvider.getTableById(x.placeId, x.tableId);
 
               a.add(ReservationViewModel(
                 id: x.id!,
@@ -163,14 +169,14 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
     final result = <ReservationViewModel>[];
 
     final reservations =
-        await DbProvider.db.getReservationsByTime(placeId, start, end, status);
+        await HiveProvider.getReservationsByTime(placeId, start, end, status);
 
     if (reservations.isEmpty) {
       return [];
     }
 
     for (final x in reservations) {
-      final table = await DbProvider.db.getTableById(x.placeId, x.tableId);
+      final table = await HiveProvider.getTableById(x.placeId, x.tableId);
 
       result.add(ReservationViewModel(
         id: x.id!,

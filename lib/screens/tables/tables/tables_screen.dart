@@ -99,10 +99,15 @@ class _TablesScreenState extends State<TablesScreen> {
                                     closestDateTimeToNow
                                         .millisecondsSinceEpoch);
                             if (a != null) {
-                              HiveProvider.getUserById(a.userId!).then(
-                                  (value) => nextReservation =
-                                      UserReservationModel(
-                                          user: value, reservation: a));
+                              if (a.userId == null) {
+                                nextReservation = UserReservationModel(
+                                    user: null, reservation: a);
+                              } else {
+                                HiveProvider.getUserById(a.userId!).then(
+                                    (value) => nextReservation =
+                                        UserReservationModel(
+                                            user: value, reservation: a));
+                              }
                             }
 
                             if (nextReservation != null) {

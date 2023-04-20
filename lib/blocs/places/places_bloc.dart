@@ -43,7 +43,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
             null,
             DateTime.now().millisecondsSinceEpoch,
             [
-              TableModel(id: 1, number: 1, guests: 6, placeId: 2),
+              TableModel(id: 3, number: 1, guests: 6, placeId: 2),
             ],
           ),
         ];

@@ -199,7 +199,7 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                             ],
                           ),
                           TextFormField(
-                            initialValue: '',
+                            initialValue: comment,
                             decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black),
@@ -209,7 +209,7 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
                                 ),
                                 labelText: 'Комментарий',
                                 labelStyle: TextStyle(color: Colors.black)),
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
                             onSaved: (newValue) {
                               comment = newValue!;
                             },

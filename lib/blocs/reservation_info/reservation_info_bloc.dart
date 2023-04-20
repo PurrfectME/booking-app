@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/reservation_vm.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/providers/hive_db.dart';
 import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/utils/status_helper.dart';
 import 'package:equatable/equatable.dart';
@@ -19,11 +21,11 @@ class ReservationInfoBloc
       if (event is ReservationInfoLoad) {
         emit(ReservationInfoLoading());
 
-        final reservation = await DbProvider.db
-            .getReservationsById(event.placeId, event.reservationId);
+        final reservation = await HiveProvider.getReservationsById(
+            event.placeId, event.reservationId);
 
-        final table = await DbProvider.db
-            .getTableById(event.placeId, reservation.tableId);
+        final table =
+            await HiveProvider.getTableById(event.placeId, reservation.tableId);
 
         emit(ReservationInfoLoaded(
             data: ReservationViewModel(
@@ -41,16 +43,16 @@ class ReservationInfoBloc
           excludeReshuffle: reservation.excludeReshuffle,
         )));
       } else if (event is ReservationOpen) {
-        final isUpdated = await DbProvider.db
-            .openReservation(event.placeId, event.reservationId, event.start);
+        final isUpdated = await HiveProvider.openReservation(
+            event.placeId, event.reservationId, event.start);
         if (isUpdated) {
           emit(ReservationInfoUpdated());
 
-          final updatedReservation = await DbProvider.db
-              .getReservationsById(event.placeId, event.reservationId);
+          final updatedReservation = await HiveProvider.getReservationsById(
+              event.placeId, event.reservationId);
 
-          final table = await DbProvider.db
-              .getTableById(event.placeId, updatedReservation.tableId);
+          final table = await HiveProvider.getTableById(
+              event.placeId, updatedReservation.tableId);
 
           emit(ReservationInfoLoaded(
               data: ReservationViewModel(
@@ -86,22 +88,22 @@ class ReservationInfoBloc
           emit(const ReservationInfoError(error: 'Ошибка открытия заявки'));
         }
       } else if (event is ReservationCancel) {
-        final isCancelled = await DbProvider.db
-            .cancelReservation(event.placeId, event.reservationId);
+        final isCancelled = await HiveProvider.cancelReservation(
+            event.placeId, event.reservationId);
 
         if (isCancelled) {
-          final updatedReservation = await DbProvider.db
-              .getReservationsById(event.placeId, event.reservationId);
+          final updatedReservation = await HiveProvider.getReservationsById(
+              event.placeId, event.reservationId);
 
-          final table = await DbProvider.db
-              .getTableById(event.placeId, updatedReservation.tableId);
+          final table = await HiveProvider.getTableById(
+              event.placeId, updatedReservation.tableId);
 
           emit(ReservationInfoLoaded(
               data: ReservationViewModel(
             id: updatedReservation.id!,
             placeId: updatedReservation.placeId,
             tableId: updatedReservation.tableId,
-            tableNumber: table!.number,
+            tableNumber: table.number,
             name: updatedReservation.name!,
             guests: updatedReservation.guests,
             phoneNumber: updatedReservation.phoneNumber!,
@@ -129,8 +131,8 @@ class ReservationInfoBloc
           emit(const ReservationInfoError(error: 'Ошибка отмены заявки'));
         }
       } else if (event is ReservationInfoEdit) {
-        //TODO: а если во время редактирования время поменять
-        //TODO: то и заявка статус должна сменить, хотя это крайний кейс
+        // //TODO: а если во время редактирования время поменять
+        // //TODO: то и заявка статус должна сменить, хотя это крайний кейс
         //потому что если гость пришёл раньше, то у завяки статус на открыта поменяется
         final map = {
           'phoneNumber': event.phoneNumber,
@@ -141,22 +143,23 @@ class ReservationInfoBloc
           'excludeReshuffle': event.excludeReshuffle,
           'comment': event.comment,
         };
-        final isUpdated = await DbProvider.db
-            .updateReservation(event.placeId, event.reservationId, map);
+
+        final isUpdated = await HiveProvider.updateReservation(
+            event.placeId, event.reservationId, map);
 
         if (isUpdated) {
-          final updatedReservation = await DbProvider.db
-              .getReservationsById(event.placeId, event.reservationId);
+          final updatedReservation = await HiveProvider.getReservationsById(
+              event.placeId, event.reservationId);
 
-          final table = await DbProvider.db
-              .getTableById(event.placeId, updatedReservation.tableId);
+          final table = await HiveProvider.getTableById(
+              event.placeId, updatedReservation.tableId);
 
           emit(ReservationInfoLoaded(
               data: ReservationViewModel(
             id: updatedReservation.id!,
             placeId: updatedReservation.placeId,
             tableId: updatedReservation.tableId,
-            tableNumber: table!.number,
+            tableNumber: table.number,
             name: updatedReservation.name!,
             guests: updatedReservation.guests,
             phoneNumber: updatedReservation.phoneNumber!,
@@ -183,18 +186,18 @@ class ReservationInfoBloc
           emit(const ReservationInfoError(error: 'Ошибка обновления заявки'));
         }
       } else if (event is ReservationWait) {
-        final isAwaited = await DbProvider.db.updateReservation(
+        final isAwaited = await HiveProvider.updateReservation(
           event.placeId,
           event.reservationId,
           {'status': StatusHelper.fromStatus(ReservationStatus.waiting)},
         );
 
         if (isAwaited) {
-          final updatedReservation = await DbProvider.db
-              .getReservationsById(event.placeId, event.reservationId);
+          final updatedReservation = await HiveProvider.getReservationsById(
+              event.placeId, event.reservationId);
 
-          final table = await DbProvider.db
-              .getTableById(event.placeId, updatedReservation.tableId);
+          final table = await HiveProvider.getTableById(
+              event.placeId, updatedReservation.tableId);
 
           emit(ReservationInfoLoaded(
               data: ReservationViewModel(

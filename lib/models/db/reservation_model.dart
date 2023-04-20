@@ -11,51 +11,51 @@ part 'reservation_model.g.dart';
 class ReservationModel extends HiveObject {
   @HiveField(0)
   @JsonKey(name: 'id')
-  final int? id;
+  int? id;
 
   @HiveField(1)
   @JsonKey(name: 'placeId')
-  final int placeId;
+  int placeId;
 
   @HiveField(2)
   @JsonKey(name: 'tableId')
-  final int tableId;
+  int tableId;
 
   @HiveField(3)
   @JsonKey(name: 'userId')
-  final int? userId;
+  int? userId;
 
   @HiveField(4)
   @JsonKey(name: 'phoneNumber')
-  final String? phoneNumber;
+  String? phoneNumber;
 
   @HiveField(5)
   @JsonKey(name: 'name')
-  final String? name;
+  String? name;
 
   @HiveField(6)
   @JsonKey(name: 'start')
-  final int start;
+  int start;
 
   @HiveField(7)
   @JsonKey(name: 'end')
-  final int end;
+  int end;
 
   @HiveField(8)
   @JsonKey(name: 'guests')
-  final int guests;
+  int guests;
 
   @HiveField(9)
   @JsonKey(name: 'excludeReshuffle')
-  final bool excludeReshuffle;
+  bool excludeReshuffle;
 
   @HiveField(10)
   @JsonKey(name: 'comment')
-  final String? comment;
+  String? comment;
 
   @HiveField(11)
   @JsonKey(name: 'status')
-  final int status;
+  int status;
 
   ReservationModel(
       {required this.id,

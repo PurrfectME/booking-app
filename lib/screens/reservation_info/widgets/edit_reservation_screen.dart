@@ -19,14 +19,15 @@ class EditReservationScreen extends StatefulWidget {
 }
 
 class _EditReservationScreenState extends State<EditReservationScreen> {
-  late String phoneNumber;
-  late String name;
-  late int guestsCount;
-  late DateTime start;
-  late DateTime end;
-  late String? comment;
-  late bool excludeReshuffle;
+  String phoneNumber = '';
+  String name = '';
+  int guestsCount = 1;
+  DateTime start = DateTime.now();
+  DateTime end = DateTime.now();
+  String? comment = '';
+  bool excludeReshuffle = false;
   bool dateIsSet = false;
+  bool isLoaded = false;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -43,13 +44,17 @@ class _EditReservationScreenState extends State<EditReservationScreen> {
             } else if (state is ReservationInfoLoaded) {
               final reservation = state.data;
 
-              phoneNumber = reservation.phoneNumber;
-              name = reservation.name;
-              guestsCount = reservation.guests;
-              start = reservation.start;
-              end = reservation.end;
-              comment = reservation.comment;
-              excludeReshuffle = reservation.excludeReshuffle;
+              if (!isLoaded) {
+                phoneNumber = reservation.phoneNumber;
+                name = reservation.name;
+                guestsCount = reservation.guests;
+                start = reservation.start;
+                end = reservation.end;
+                comment = reservation.comment;
+                excludeReshuffle = reservation.excludeReshuffle;
+
+                isLoaded = true;
+              }
 
               return Padding(
                 padding: const EdgeInsets.all(18),
@@ -137,6 +142,18 @@ class _EditReservationScreenState extends State<EditReservationScreen> {
                                         DropdownMenuItem(
                                           child: Text('3'),
                                           value: 3,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('4'),
+                                          value: 4,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('5'),
+                                          value: 5,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('6'),
+                                          value: 6,
                                         )
                                       ],
                                       onChanged: (value) => setState(() {
@@ -150,7 +167,7 @@ class _EditReservationScreenState extends State<EditReservationScreen> {
                             ],
                           ),
                           TextFormField(
-                            initialValue: '',
+                            initialValue: comment,
                             decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black),

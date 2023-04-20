@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
+import 'package:booking_app/providers/hive_db.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/utils/status_helper.dart';
 import 'package:equatable/equatable.dart';
@@ -15,10 +16,10 @@ class TableInfoBloc extends Bloc<TableInfoEvent, TableInfoState> {
         emit(TableInfoLoading());
 
         final table =
-            await DbProvider.db.getTableById(event.placeId, event.tableId);
+            await HiveProvider.getTableById(event.placeId, event.tableId);
 
-        final tableReservations = (await DbProvider.db
-                .getTableReservations(table!.placeId, table.id))
+        final tableReservations = (await HiveProvider.getTableReservations(
+                table!.placeId, table.id))
             .where((x) =>
                 StatusHelper.toStatus(x.status) != ReservationStatus.cancelled);
 
