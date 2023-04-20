@@ -131,7 +131,9 @@ class HiveProvider {
         .where(
           (x) =>
               x.placeId == placeId &&
-              (x.start >= start && x.start <= end) &&
+              ((x.start >= start && x.start <= end) ||
+                  //это условие для заявок, созданных по факту
+                  (x.start <= start && x.start <= end)) &&
               x.status == status,
         )
         .toList();

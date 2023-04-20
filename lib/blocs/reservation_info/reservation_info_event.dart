@@ -50,6 +50,19 @@ class ReservationCancel extends ReservationInfoEvent {
   List<Object> get props => [placeId, reservationId];
 }
 
+class ReservationClose extends ReservationInfoEvent {
+  final int placeId;
+  final int reservationId;
+
+  const ReservationClose({
+    required this.placeId,
+    required this.reservationId,
+  });
+
+  @override
+  List<Object> get props => [placeId, reservationId];
+}
+
 class ReservationWait extends ReservationInfoEvent {
   final int placeId;
   final int reservationId;

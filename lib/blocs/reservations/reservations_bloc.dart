@@ -122,7 +122,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
             final result = await HiveProvider.getArchivedReservations(
                 event.placeId,
                 DateTime.now().millisecondsSinceEpoch,
-                StatusHelper.fromStatus(ReservationStatus.cancelled));
+                StatusHelper.fromStatus(ReservationStatus.closed));
 
             if (result.isEmpty) {
               emit(ReservationsLoaded(data: const [], placeId: event.placeId));
@@ -139,7 +139,7 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
                 id: x.id!,
                 placeId: x.placeId,
                 tableId: x.tableId,
-                tableNumber: table!.number,
+                tableNumber: table.number,
                 name: x.name!,
                 guests: x.guests,
                 phoneNumber: x.phoneNumber!,
@@ -183,9 +183,9 @@ class ReservationsBloc extends Bloc<ReservationsEvent, ReservationsState> {
         placeId: x.placeId,
         tableId: x.tableId,
         tableNumber: table!.number,
-        name: x.name!,
+        name: x.name ?? 'Без имени',
+        phoneNumber: x.phoneNumber ?? 'Без телефона',
         guests: x.guests,
-        phoneNumber: x.phoneNumber!,
         start: DateTime.fromMillisecondsSinceEpoch(x.start),
         end: DateTime.fromMillisecondsSinceEpoch(x.end),
         status: StatusHelper.toStatus(x.status),

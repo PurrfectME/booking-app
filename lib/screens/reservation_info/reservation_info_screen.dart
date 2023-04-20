@@ -181,7 +181,8 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
                             child: Container(
                               height: 60,
                               child: OutlinedButton(
-                                  onPressed: onReservationClose,
+                                  onPressed: () => onReservationClose(
+                                      state.data.placeId, state.data.end),
                                   child: const Text('Закрыть')),
                             ),
                           ),
@@ -219,7 +220,7 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
         context: context,
         builder: (context) => AlertDialog(
           title: Text(
-            'Открыть заявку раньше на ${difference.hour == 0 ? '' : '${DateFormat('HH', 'RU').format(difference)} ч.'} ${difference.minute == 0 ? '' : '${DateFormat('mm', 'RU').format(difference)} м.'}',
+            'Открыть заявку раньше на ${difference.hour == 0 ? '' : '${DateFormat('HH', 'RU').format(difference)} ч.'} ${difference.minute == 0 ? '' : '${DateFormat('mm', 'RU').format(difference)} м.'} ?',
             style: TextStyle(color: Colors.black),
           ),
           actions: [
@@ -250,7 +251,39 @@ class _ReservationInfoScreenState extends State<ReservationInfoScreen> {
     }
   }
 
-  void onReservationClose() {}
+  void onReservationClose(int placeId, DateTime end) {
+    final differenceInMinutes = end.difference(DateTime.now()).inMinutes;
+
+    final hours = differenceInMinutes ~/ 60;
+    final minutes = differenceInMinutes - (hours * 60);
+
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Вы точно хотите закрыть заявку раньше на ${hours == 0 ? '' : '$hours ч.'} ${minutes == 0 ? '' : '$minutes м.'} ?',
+          style: const TextStyle(color: Colors.black),
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Да'),
+            onPressed: () {
+              widget.reservationInfoBloc.add(ReservationClose(
+                placeId: placeId,
+                reservationId: widget.reservationId,
+              ));
+
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Нет'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
 
   void onReservationCancel(int placeId) {
     showDialog<void>(
