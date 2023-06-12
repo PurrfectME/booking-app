@@ -21,10 +21,6 @@ class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   final pages = <MenuTabWrapper>[
     const MenuTabWrapper(
-      tab: MenuTab.places,
-      child: PlacesScreen(key: Key('PlacesScreen')),
-    ),
-    const MenuTabWrapper(
       tab: MenuTab.profile,
       child: ExtraInfoScreen(key: Key('ProfileScreen')),
     ),

@@ -17,7 +17,13 @@ class TableReservationsBloc
     on<TableReservationsEvent>((event, emit) async {
       if (event is TableReservationsLoad) {
         emit(TableReservationsLoading());
-        final result = await _initReservations(tables!, event.placeId);
+        final List<TableReservationViewModel> result;
+        if (tables == null) {
+          result = await _initReservations(
+              await HiveProvider.getTables(event.placeId), event.placeId);
+        } else {
+          result = await _initReservations(tables!, event.placeId);
+        }
 
         emit(TableReservationsLoaded(result));
       } else if (event is AdminTableReserve) {

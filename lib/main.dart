@@ -25,17 +25,8 @@ Future main() async {
   runApp(
     MultiBlocProvider(providers: [
       BlocProvider(create: (context) => LoginBloc()),
-      BlocProvider(create: (context) => PlacesBloc()),
       BlocProvider(create: (context) => MenuBloc()),
-      // BlocProvider(create: (context) => PlaceInfoBloc(null)),
       BlocProvider(create: (context) => ExtraInfoBloc()),
-      // BlocProvider(create: (context) => TableInfoBloc()),
-      // BlocProvider(create: (context) => ReserveTableBloc()),
-      // BlocProvider(create: (context) => ReservationsBloc()),
-      // BlocProvider(create: (context) => ReservationInfoBloc()),
-      // BlocProvider(create: (context) => UpdatePlaceBloc()),
-      // BlocProvider(create: (context) => UpdateTableBloc()),
-      // BlocProvider(create: (context) => ReservationsBloc([])),
     ], child: const MyApp()),
   );
 }
@@ -77,9 +68,7 @@ class MyApp extends StatelessWidget {
 
           Widget Function(BuildContext)? builder;
 
-          if (path == PlacesScreen.pageRoute) {
-            builder = (context) => const PlacesScreen();
-          } else if (path == LoginScreen.pageRoute) {
+          if (path == LoginScreen.pageRoute) {
             builder = (context) => const LoginScreen();
           } else if (path == ExtraInfoScreen.pageRoute) {
             builder = (context) => const ExtraInfoScreen();

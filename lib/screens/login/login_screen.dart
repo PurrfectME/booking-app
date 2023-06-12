@@ -52,7 +52,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             );
           } else {
-            context.read<PlacesBloc>().add(PlacesLoad());
+            context.read<TablesBloc>().add(const TablesLoad());
             Navigation.toMain();
           }
         }

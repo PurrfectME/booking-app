@@ -27,12 +27,20 @@ class _ExtraInfoScreenState extends State<ExtraInfoScreen> {
               SnackBar(content: Text('Ошибка: ${state.error}')),
             );
           } else if (state is ExtraInfoUpdated) {
-            context.read<PlacesBloc>().add(PlacesLoad());
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (context) => const PlacesScreen(),
-                ),
+                    builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                                create: (context) => ReservationsBloc()),
+                            BlocProvider(
+                              create: (context) => TableReservationsBloc(null)
+                                ..add(TableReservationsLoad(placeId: 1)),
+                            ),
+                          ],
+                          child: const TablesScreen(),
+                        )),
                 (route) => false);
           }
         },

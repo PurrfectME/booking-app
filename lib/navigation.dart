@@ -12,13 +12,6 @@ class Navigation {
     SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
   }
 
-  /// Navigate to [PlacesScreen]
-  static Future<void> toPlaces() {
-    beforeNavigate();
-    return navigatorKey.currentState!
-        .pushNamedAndRemoveUntil(PlacesScreen.pageRoute, (route) => false);
-  }
-
   /// Navigate to [ReservationsScreen]
   static Future<void> toReservations() {
     beforeNavigate();
