@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Constants {
   Constants._();
 
@@ -15,4 +17,6 @@ class Constants {
   static const String deleteTable = 'profile/places/%i/tables/%i';
 
   static const String getBookedTables = 'profile/places/%i/manage';
+
+  static const Color mainPurple = Color.fromARGB(255, 104, 0, 185);
 }

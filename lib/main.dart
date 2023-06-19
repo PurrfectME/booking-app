@@ -1,6 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/menu/menu_bloc.dart';
+import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/providers/hive_db.dart';
 import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/screens.dart';
@@ -37,15 +38,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData(
-            platform: TargetPlatform.iOS,
             // primaryColor: Colors.black,
             appBarTheme: const AppBarTheme(
               iconTheme: IconThemeData(
                 color: Colors.black, //change your color here
               ),
-              color: Colors.white,
+              centerTitle: true,
+              color: Constants.mainPurple,
               titleTextStyle: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontWeight: FontWeight.w700,
                 fontSize: 18,
                 // height: 22,
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
               elevation: 0,
             ),
             // backgroundColor: Colors.black,
-            scaffoldBackgroundColor: Colors.white,
+            scaffoldBackgroundColor: const Color.fromARGB(255, 16, 16, 16),
             textTheme: Theme.of(context).textTheme.apply(
                   bodyColor: Colors.black,
                   displayColor: Colors.black,
