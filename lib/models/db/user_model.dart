@@ -12,42 +12,29 @@ class UserModel extends HiveObject {
   final int? id;
 
   @HiveField(1)
-  @JsonKey(name: 'login')
-  final String login;
+  @JsonKey(name: 'email')
+  final String email;
 
   @HiveField(2)
-  @JsonKey(name: 'firstSignIn')
-  final bool firstSignIn;
-
-  @HiveField(3)
   @JsonKey(name: 'accessToken')
   final String accessToken;
 
-  @HiveField(4)
+  @HiveField(3)
   @JsonKey(name: 'refreshToken')
   final String refreshToken;
 
-  // TODO: not null
-  @HiveField(5)
-  @JsonKey(name: 'name')
-  final String? name;
-
   UserModel({
     this.id,
-    required this.login,
-    required this.firstSignIn,
+    required this.email,
     required this.accessToken,
     required this.refreshToken,
-    this.name,
   });
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         'id': id,
-        'login': login,
-        'firstSignIn': firstSignIn,
+        'email': email,
         'accessToken': accessToken,
         'refreshToken': refreshToken,
-        'name': name
       };
 
   //TODO: fix mapping
@@ -56,31 +43,25 @@ class UserModel extends HiveObject {
     if (map['user_id'] == null && map['userId'] == null) {
       return UserModel(
         id: map['id'] as int,
-        login: map['login'] as String,
-        firstSignIn: map['firstSignin'] as int == 1,
+        email: map['login'] as String,
         accessToken: map['accessToken'] as String,
         refreshToken: map['refreshToken'] as String,
-        name: map['name'] as String?,
       );
     }
 
     if (map['user_id'] == null) {
       return UserModel(
         id: map['userId'] as int,
-        login: map['login'] as String,
-        firstSignIn: map['firstSignin'] as int == 1,
+        email: map['email'] as String,
         accessToken: map['accessToken'] as String,
         refreshToken: map['refreshToken'] as String,
-        name: map['name'] as String,
       );
     } else {
       return UserModel(
         id: map['user_id'] as int,
-        login: map['login'] as String,
-        firstSignIn: map['firstSignin'] as int == 1,
+        email: map['email'] as String,
         accessToken: map['accessToken'] as String,
         refreshToken: map['refreshToken'] as String,
-        name: map['name'] as String,
       );
     }
   }
@@ -92,7 +73,7 @@ class UserModel extends HiveObject {
 
   UserModel copyWith({
     int? id,
-    String? login,
+    String? email,
     bool? firstSignIn,
     String? accessToken,
     String? refreshToken,
@@ -100,10 +81,8 @@ class UserModel extends HiveObject {
   }) =>
       UserModel(
         id: id ?? this.id,
-        login: login ?? this.login,
-        firstSignIn: firstSignIn ?? this.firstSignIn,
+        email: email ?? this.email,
         accessToken: accessToken ?? this.accessToken,
         refreshToken: refreshToken ?? this.refreshToken,
-        name: name ?? this.name,
       );
 }

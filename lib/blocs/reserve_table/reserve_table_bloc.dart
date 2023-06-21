@@ -21,7 +21,7 @@ class ReserveTableBloc extends Bloc<ReserveTableEvent, ReserveTableState> {
         emit(
             ReserveTableLoaded(placeId: event.placeId, tableId: event.tableId));
       } else if (event is AdminReserveTable) {
-        final user = await HiveProvider.getUserByPhoneNumber(event.phoneNumber);
+        final user = await HiveProvider.getUserByEmail(event.phoneNumber);
 
         final resId = await HiveProvider.createReservation(ReservationModel(
             id: null,

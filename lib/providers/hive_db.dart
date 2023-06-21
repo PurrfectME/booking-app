@@ -24,10 +24,16 @@ class HiveProvider {
       ..registerAdapter<UserModel>(UserModelAdapter());
   }
 
-  static Future<int> createUser(UserModel model) async {
+  static Future<UserModel> createUser(UserModel model) async {
     final usersBox = await Hive.openBox<UserModel>('users');
 
-    return await usersBox.add(model);
+    final id = await usersBox.add(model);
+
+    model = model.copyWith(id: id);
+
+    await model.save();
+
+    return model;
   }
 
   static Future createPlaces(List<PlaceModel> models) async {
@@ -87,10 +93,10 @@ class HiveProvider {
           .values
           .firstWhere((x) => x.id == id);
 
-  static Future<UserModel?> getUserByPhoneNumber(String number) async {
+  static Future<UserModel?> getUserByEmail(String email) async {
     final user = (await Hive.openBox<UserModel>('users'))
         .values
-        .firstOrNullWhere((user) => user.login == number);
+        .firstOrNullWhere((user) => user.email == email);
 
     return user;
   }

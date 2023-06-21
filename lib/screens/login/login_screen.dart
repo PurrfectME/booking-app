@@ -3,10 +3,8 @@ import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/navigation.dart';
 import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
 import 'package:booking_app/screens/screens.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 
 class LoginScreen extends StatefulWidget {
   static const pageRoute = '/';
@@ -19,7 +17,8 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late String phoneNumber;
+  late String email;
+  late String password;
 
   String? validatePhoneNumber(String? value) {
     const pattern = r'^\+375 \(\d{29}|{33}|{44}\) [0-9]{3}-[0-9]{2}-[0-9]{2}$';
@@ -32,28 +31,28 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => BlocListener<LoginBloc, LoginState>(
+  Widget build(BuildContext context) => BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is LoginError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Ошибка: ${state.error}')),
             );
           } else if (state is LoginSuccess) {
-            if (state.user.firstSignIn) {
-              Navigator.push<void>(
+            Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) =>
-                        ExtraInfoBloc()..add(ExtraInfoLoad(user: state.user)),
-                    child: const ExtraInfoScreen(),
-                  ),
-                ),
-              );
-            } else {
-              context.read<TablesBloc>().add(const TablesLoad());
-              Navigation.toMain();
-            }
+                MaterialPageRoute<void>(
+                    builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                                create: (context) => ReservationsBloc()),
+                            BlocProvider(
+                              create: (context) => TableReservationsBloc(null)
+                                ..add(TableReservationsLoad(placeId: 1)),
+                            ),
+                          ],
+                          child: const TablesScreen(),
+                        )),
+                (route) => false);
           }
         },
         child: Scaffold(
@@ -92,9 +91,9 @@ class LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             style: const TextStyle(color: Colors.white),
                             initialValue: '',
-                            keyboardType: TextInputType.phone,
+                            keyboardType: TextInputType.emailAddress,
                             onSaved: (newValue) {
-                              phoneNumber = newValue!;
+                              email = newValue!;
                             },
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
@@ -119,9 +118,9 @@ class LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             style: const TextStyle(color: Colors.white),
                             initialValue: '',
-                            keyboardType: TextInputType.phone,
+                            keyboardType: TextInputType.text,
                             onSaved: (newValue) {
-                              phoneNumber = newValue!;
+                              password = newValue!;
                             },
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
@@ -158,7 +157,7 @@ class LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 60),
                           ElevatedButton(
-                            onPressed: _onAuthTap,
+                            onPressed: _onLoginTap,
                             style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 disabledForegroundColor:
@@ -178,13 +177,15 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                       Container(
                         margin: const EdgeInsets.only(bottom: 40),
-                        child: const Text(
-                          'Нет аккаунта? Зарегистрируйтесь',
-                          style: TextStyle(
-                              decorationStyle: TextDecorationStyle.solid,
-                              decoration: TextDecoration.underline,
-                              decorationThickness: 2,
-                              color: const Color.fromARGB(255, 155, 155, 155)),
+                        child: TextButton(
+                          onPressed: _onRegisterTap,
+                          child: const Text('Нет аккаунта? Зарегистрируйтесь'),
+                          // style: ButtonStyle(
+                          //   textStyle: ,
+                          //     decorationStyle: TextDecorationStyle.solid,
+                          //     decoration: TextDecoration.underline,
+                          //     decorationThickness: 2,
+                          //     color: const Color.fromARGB(255, 155, 155, 155)),
                         ),
                       )
                     ],
@@ -196,11 +197,20 @@ class LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-  void _onAuthTap() {
+  void _onLoginTap() {
 // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      context.read<LoginBloc>().add(LoginStart(phoneNumber));
+      context.read<AuthBloc>().add(LoginStart(
+            email: email,
+            password: password,
+          ));
     }
+  }
+
+  void _onRegisterTap() {
+    context.read<AuthBloc>().add(RegistrationLoad());
+    Navigator.push<void>(context,
+        MaterialPageRoute(builder: (context) => const RegistrationScreen()));
   }
 }

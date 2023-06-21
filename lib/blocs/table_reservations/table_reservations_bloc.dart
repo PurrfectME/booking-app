@@ -28,7 +28,7 @@ class TableReservationsBloc
         emit(TableReservationsLoaded(result));
       } else if (event is AdminTableReserve) {
         emit(TableReservationsLoading());
-        final user = await HiveProvider.getUserByPhoneNumber(event.phoneNumber);
+        final user = await HiveProvider.getUserByEmail(event.phoneNumber);
 
         final resId = await HiveProvider.createReservation(ReservationModel(
             id: null,

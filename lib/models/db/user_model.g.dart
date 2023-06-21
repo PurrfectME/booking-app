@@ -18,30 +18,24 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
     };
     return UserModel(
       id: fields[0] as int?,
-      login: fields[1] as String,
-      firstSignIn: fields[2] as bool,
-      accessToken: fields[3] as String,
-      refreshToken: fields[4] as String,
-      name: fields[5] as String?,
+      email: fields[1] as String,
+      accessToken: fields[2] as String,
+      refreshToken: fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.login)
+      ..write(obj.email)
       ..writeByte(2)
-      ..write(obj.firstSignIn)
-      ..writeByte(3)
       ..write(obj.accessToken)
-      ..writeByte(4)
-      ..write(obj.refreshToken)
-      ..writeByte(5)
-      ..write(obj.name);
+      ..writeByte(3)
+      ..write(obj.refreshToken);
   }
 
   @override
@@ -61,18 +55,14 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
 
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       id: json['id'] as int?,
-      login: json['login'] as String,
-      firstSignIn: json['firstSignIn'] as bool,
+      email: json['email'] as String,
       accessToken: json['accessToken'] as String,
       refreshToken: json['refreshToken'] as String,
-      name: json['name'] as String?,
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'id': instance.id,
-      'login': instance.login,
-      'firstSignIn': instance.firstSignIn,
+      'email': instance.email,
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,
-      'name': instance.name,
     };

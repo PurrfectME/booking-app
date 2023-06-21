@@ -1,5 +1,6 @@
 export 'extra_info/extra_info_screen.dart';
 export 'login/login_screen.dart';
+export 'registration/registration_screen.dart';
 export 'reservation_info/reservation_info_screen.dart';
 export 'reservations/reservations_screen.dart';
 export 'reserve_table/reserve_table_screen.dart';
