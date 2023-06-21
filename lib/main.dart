@@ -1,9 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/blocs/menu/menu_bloc.dart';
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/providers/hive_db.dart';
-import 'package:booking_app/screens/main/main_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +24,6 @@ Future main() async {
   runApp(
     MultiBlocProvider(providers: [
       BlocProvider(create: (context) => AuthBloc()),
-      BlocProvider(create: (context) => MenuBloc()),
       BlocProvider(create: (context) => ExtraInfoBloc()),
     ], child: const MyApp()),
   );
@@ -73,8 +70,6 @@ class MyApp extends StatelessWidget {
             builder = (context) => const LoginScreen();
           } else if (path == ExtraInfoScreen.pageRoute) {
             builder = (context) => const ExtraInfoScreen();
-          } else if (path == MainScreen.pageRoute) {
-            builder = (context) => const MainScreen();
           } else if (path == UpdatePlaceScreen.pageRoute) {
             builder = (context) => const UpdatePlaceScreen();
           } else if (path == RegistrationScreen.pageRoute) {
