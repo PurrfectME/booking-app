@@ -25,13 +25,6 @@ class Navigation {
         .pushNamedAndRemoveUntil(LoginScreen.pageRoute, (route) => false);
   }
 
-  /// Navigate to [ExtraInfoScreen]
-  static Future<void> toProfile() {
-    beforeNavigate();
-    return navigatorKey.currentState!
-        .pushNamedAndRemoveUntil(ExtraInfoScreen.pageRoute, (route) => false);
-  }
-
   /// Navigate to [UpdatePlaceScreen]
   static Future<void> toUpdatePlace() {
     beforeNavigate();

@@ -24,7 +24,6 @@ Future main() async {
   runApp(
     MultiBlocProvider(providers: [
       BlocProvider(create: (context) => AuthBloc()),
-      BlocProvider(create: (context) => ExtraInfoBloc()),
     ], child: const MyApp()),
   );
 }
@@ -68,8 +67,6 @@ class MyApp extends StatelessWidget {
 
           if (path == LoginScreen.pageRoute) {
             builder = (context) => const LoginScreen();
-          } else if (path == ExtraInfoScreen.pageRoute) {
-            builder = (context) => const ExtraInfoScreen();
           } else if (path == UpdatePlaceScreen.pageRoute) {
             builder = (context) => const UpdatePlaceScreen();
           } else if (path == RegistrationScreen.pageRoute) {

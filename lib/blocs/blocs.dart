@@ -1,5 +1,4 @@
 export 'auth/auth_bloc.dart';
-export 'extra_info/extra_info_bloc.dart';
 export 'reservation_info/reservation_info_bloc.dart';
 export 'reservations/reservations_bloc.dart';
 export 'table_info/table_info_bloc.dart';

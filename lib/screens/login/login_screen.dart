@@ -1,7 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/constants/constants.dart';
-import 'package:booking_app/navigation.dart';
-import 'package:booking_app/screens/extra_info/extra_info_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
