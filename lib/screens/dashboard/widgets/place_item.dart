@@ -19,8 +19,11 @@ class PlaceItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        constraints: const BoxConstraints(
-            maxWidth: 596, maxHeight: 243, minHeight: 243, minWidth: 596),
+        width: 596,
+        height: 243,
+        // margin: const EdgeInsets.only(bottom: 20),
+        // constraints: const BoxConstraints(
+        //     maxWidth: 300, maxHeight: 243, minHeight: 243, minWidth: 250),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(

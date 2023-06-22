@@ -32,9 +32,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
               body: Container(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                margin: EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.only(top: 30),
                 child: Row(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
                       children: [
@@ -80,34 +81,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                     const SizedBox(width: 42),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Заведения',
-                          style: TextStyle(color: Colors.white, fontSize: 26),
-                        ),
-                        const SizedBox(height: 46),
-                        SizedBox(
-                          width: 596,
-                          child: SingleChildScrollView(
-                            child: ListView.builder(
+                    Expanded(
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Заведения',
+                            style: TextStyle(color: Colors.white, fontSize: 26),
+                          ),
+                          const SizedBox(height: 46),
+                          Expanded(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 20),
                               shrinkWrap: true,
-                              physics: const AlwaysScrollableScrollPhysics(),
                               itemCount: state.places.length,
                               itemBuilder: (context, i) {
                                 final place = state.places[i];
-                                return PlaceItem(
-                                  name: place.name,
-                                  address: place.address,
-                                  city: place.city,
-                                  allowBooking: place.allowBooking,
+                                return UnconstrainedBox(
+                                  alignment: Alignment.centerLeft,
+                                  child: PlaceItem(
+                                    name: place.name,
+                                    address: place.address,
+                                    city: place.city,
+                                    allowBooking: place.allowBooking,
+                                  ),
                                 );
                               },
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
