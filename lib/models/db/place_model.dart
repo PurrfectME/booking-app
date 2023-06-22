@@ -12,34 +12,38 @@ part 'place_model.g.dart';
 class PlaceModel extends HiveObject {
   @HiveField(0)
   @JsonKey(name: 'id')
-  final int id;
+  int id;
 
   @HiveField(1)
   @JsonKey(name: 'name')
-  final String name;
+  String name;
 
   @HiveField(2)
   @JsonKey(name: 'description')
-  final String description;
+  String description;
 
   @HiveField(3)
   @JsonKey(name: 'logoId')
-  final int logoId;
+  int logoId;
 
   @HiveField(4)
   @JsonKey(name: 'base64Logo')
-  final String? base64Logo;
+  String? base64Logo;
 
   @HiveField(5)
   @JsonKey(name: 'updateDate')
-  final int updateDate;
+  int updateDate;
 
   @HiveField(6)
   @JsonKey(name: 'tables')
-  final List<TableModel> tables;
+  List<TableModel> tables;
+
+  @HiveField(7)
+  @JsonKey(name: 'ownerId')
+  int ownerId;
 
   PlaceModel(this.id, this.name, this.description, this.logoId, this.base64Logo,
-      this.updateDate, this.tables);
+      this.updateDate, this.tables, this.ownerId);
 
   PlaceModel copyWith({
     int? id,
@@ -49,36 +53,15 @@ class PlaceModel extends HiveObject {
     String? base64Logo,
     int? updateDate,
     List<TableModel>? tables,
+    int? ownerId,
   }) =>
       PlaceModel(
-        id ?? this.id,
-        name ?? this.name,
-        description ?? this.description,
-        logoId ?? this.logoId,
-        base64Logo ?? this.base64Logo,
-        updateDate ?? this.updateDate,
-        tables ?? this.tables,
-      );
-
-  Map<String, dynamic> toMap() => <String, dynamic>{
-        'id': id,
-        'name': name,
-        'description': description,
-        'logoId': logoId,
-        'base64Logo': base64Logo,
-        'updateDate': updateDate,
-      };
-
-  factory PlaceModel.fromMap(Map<String, dynamic> map) => PlaceModel(
-      map['id'] as int,
-      map['name'] as String,
-      map['description'] as String,
-      map['logoId'] as int,
-      map['base64Logo'] as String?,
-      map['updateDate'] as int, []);
-
-  String toJson() => json.encode(toMap());
-
-  factory PlaceModel.fromJson(String source) =>
-      PlaceModel.fromMap(json.decode(source) as Map<String, dynamic>);
+          id ?? this.id,
+          name ?? this.name,
+          description ?? this.description,
+          logoId ?? this.logoId,
+          base64Logo ?? this.base64Logo,
+          updateDate ?? this.updateDate,
+          tables ?? this.tables,
+          ownerId ?? this.ownerId);
 }

@@ -26,14 +26,14 @@ class HiveProvider {
 
   static Future<UserModel> createUser(UserModel model) async {
     final usersBox = await Hive.openBox<UserModel>('users');
+    final user = model.copyWith();
 
-    final id = await usersBox.add(model);
+    final id = await usersBox.add(user);
+    user.id = id;
 
-    model = model.copyWith(id: id);
+    await user.save();
 
-    await model.save();
-
-    return model;
+    return user;
   }
 
   static Future createPlaces(List<PlaceModel> models) async {
@@ -57,6 +57,19 @@ class HiveProvider {
         .firstWhere((x) => x.id == id);
 
     return placesBox;
+  }
+
+  static Future<List<PlaceModel>> getPlacesByOwnerId(int ownerId) async {
+    final places = (await Hive.openBox<PlaceModel>('places'))
+        .values
+        .where((x) => x.ownerId == ownerId)
+        .toList();
+
+    if (places.isEmpty) {
+      return [];
+    }
+
+    return places;
   }
 
   static Future<List<ReservationModel>> getReservations(int placeId) async {

@@ -18,7 +18,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // final response =
         //     await AuthService().signIn(SignInRequest(login: event.login));
-
         final user = await HiveProvider.getUserByEmail(event.email);
 
         if (user == null) {

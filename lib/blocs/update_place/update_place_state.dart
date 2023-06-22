@@ -19,12 +19,9 @@ class UpdatePlaceError extends UpdatePlaceState {
 }
 
 class UpdatePlaceLoaded extends UpdatePlaceState {
-  final PlaceModel data;
+  final PlaceModel? data;
 
   const UpdatePlaceLoaded(this.data);
-
-  @override
-  List<Object> get props => [data];
 }
 
 class UpdatePlaceSuccess extends UpdatePlaceState {}

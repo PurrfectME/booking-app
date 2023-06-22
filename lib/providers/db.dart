@@ -35,17 +35,17 @@ class DbProvider {
     });
   }
 
-  Future updatePlace(PlaceModel place) async {
-    final db = await database;
-    final result = await db.update('places', place.toMap(),
-        where: 'id = ?',
-        whereArgs: [place.id],
-        conflictAlgorithm: ConflictAlgorithm.replace);
+  // Future updatePlace(PlaceModel place) async {
+  //   final db = await database;
+  //   final result = await db.update('places', place.toMap(),
+  //       where: 'id = ?',
+  //       whereArgs: [place.id],
+  //       conflictAlgorithm: ConflictAlgorithm.replace);
 
-    // var a = await getAllPlaceModels();
+  //   // var a = await getAllPlaceModels();
 
-    return result;
-  }
+  //   return result;
+  // }
 
   Future updateTable(TableModel table) async {
     final db = await database;
@@ -78,21 +78,21 @@ class DbProvider {
     return result;
   }
 
-  // Insert PlaceModels in database
-  Future<List<Object?>> createPlaceModels(List<PlaceModel> models) async {
-    final db = await database;
-    final batch = db.batch();
+  // // Insert PlaceModels in database
+  // Future<List<Object?>> createPlaceModels(List<PlaceModel> models) async {
+  //   final db = await database;
+  //   final batch = db.batch();
 
-    for (final place in models) {
-      batch.insert('places', place.toMap());
+  //   for (final place in models) {
+  //     batch.insert('places', place.toMap());
 
-      for (final table in place.tables) {
-        batch.insert('tables', table.toMap());
-      }
-    }
+  //     for (final table in place.tables) {
+  //       batch.insert('tables', table.toMap());
+  //     }
+  //   }
 
-    return await batch.commit(noResult: true);
-  }
+  //   return await batch.commit(noResult: true);
+  // }
 
   // Delete all PlaceModels
   Future<int> deleteAllPlaceModels() async {
@@ -109,61 +109,61 @@ class DbProvider {
     return res;
   }
 
-  Future<List<PlaceModel>> getAllPlaceModels() async {
-    final db = await database;
-    final res = await db.rawQuery('SELECT tables.id as tableId, tables.number, '
-        'tables.guests, tables.placeId, places.* FROM places LEFT JOIN tables on tables.placeId = places.id');
+  // Future<List<PlaceModel>> getAllPlaceModels() async {
+  //   final db = await database;
+  //   final res = await db.rawQuery('SELECT tables.id as tableId, tables.number, '
+  //       'tables.guests, tables.placeId, places.* FROM places LEFT JOIN tables on tables.placeId = places.id');
 
-    if (res.isEmpty) {
-      return [];
-    }
+  //   if (res.isEmpty) {
+  //     return [];
+  //   }
 
-    final places = <PlaceModel>[];
+  //   final places = <PlaceModel>[];
 
-    for (final map in res) {
-      final placeId = map['id'] as int;
+  //   for (final map in res) {
+  //     final placeId = map['id'] as int;
 
-      final index = places.indexWhere((x) => x.id == placeId);
-      if (index != -1) {
-        places[index].tables.add(TableModel(
-            id: map['tableId'] as int,
-            number: map['number'] as int,
-            guests: map['guests'] as int,
-            placeId: map['placeId'] as int));
-      } else {
-        final placeToAdd = PlaceModel.fromMap(map);
-        placeToAdd.tables.add(TableModel(
-            id: map['tableId'] as int,
-            number: map['number'] as int,
-            guests: map['guests'] as int,
-            placeId: map['placeId'] as int));
+  //     final index = places.indexWhere((x) => x.id == placeId);
+  //     if (index != -1) {
+  //       places[index].tables.add(TableModel(
+  //           id: map['tableId'] as int,
+  //           number: map['number'] as int,
+  //           guests: map['guests'] as int,
+  //           placeId: map['placeId'] as int));
+  //     } else {
+  //       final placeToAdd = PlaceModel.fromMap(map);
+  //       placeToAdd.tables.add(TableModel(
+  //           id: map['tableId'] as int,
+  //           number: map['number'] as int,
+  //           guests: map['guests'] as int,
+  //           placeId: map['placeId'] as int));
 
-        places.add(placeToAdd);
-      }
-    }
+  //       places.add(placeToAdd);
+  //     }
+  //   }
 
-    return places;
-  }
+  //   return places;
+  // }
 
-  Future<PlaceModel> getPlaceById(int id) async {
-    final db = await database;
-    final result =
-        await db.rawQuery('SELECT tables.id as tableId, tables.number, '
-            'tables.guests, tables.placeId, places.* FROM places '
-            'LEFT JOIN tables on tables.placeId = $id WHERE places.id = $id');
+  // Future<PlaceModel> getPlaceById(int id) async {
+  //   final db = await database;
+  //   final result =
+  //       await db.rawQuery('SELECT tables.id as tableId, tables.number, '
+  //           'tables.guests, tables.placeId, places.* FROM places '
+  //           'LEFT JOIN tables on tables.placeId = $id WHERE places.id = $id');
 
-    final place = PlaceModel.fromMap(result[0]);
+  //   final place = PlaceModel.fromMap(result[0]);
 
-    for (final map in result) {
-      place.tables.add(TableModel(
-          id: map['tableId'] as int,
-          number: map['number'] as int,
-          guests: map['guests'] as int,
-          placeId: map['placeId'] as int));
-    }
+  //   for (final map in result) {
+  //     place.tables.add(TableModel(
+  //         id: map['tableId'] as int,
+  //         number: map['number'] as int,
+  //         guests: map['guests'] as int,
+  //         placeId: map['placeId'] as int));
+  //   }
 
-    return place;
-  }
+  //   return place;
+  // }
 
   Future<int> getLastUpdateDate(String tableName) async {
     final db = await database;

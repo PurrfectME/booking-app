@@ -12,13 +12,13 @@ class UpdatePlaceBloc extends Bloc<UpdatePlaceEvent, UpdatePlaceState> {
       if (event is UpdatePlaceLoad) {
         emit(UpdatePlaceLoading());
 
-        final place = await DbProvider.db.getPlaceById(event.id);
+        // final place = await DbProvider.db.getPlaceById(event.id);
 
-        emit(UpdatePlaceLoaded(place));
+        emit(UpdatePlaceLoaded(null));
       } else if (event is UpdatePlace) {
-        final data = event.data
-            .copyWith(updateDate: DateTime.now().millisecondsSinceEpoch);
-        await DbProvider.db.updatePlace(data);
+        // final data = event.data
+        //     .copyWith(updateDate: DateTime.now().millisecondsSinceEpoch);
+        // await DbProvider.db.updatePlace(data);
 
         emit(UpdatePlaceSuccess());
       }

@@ -24,13 +24,14 @@ class PlaceModelAdapter extends TypeAdapter<PlaceModel> {
       fields[4] as String?,
       fields[5] as int,
       (fields[6] as List).cast<TableModel>(),
+      fields[7] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, PlaceModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class PlaceModelAdapter extends TypeAdapter<PlaceModel> {
       ..writeByte(5)
       ..write(obj.updateDate)
       ..writeByte(6)
-      ..write(obj.tables);
+      ..write(obj.tables)
+      ..writeByte(7)
+      ..write(obj.ownerId);
   }
 
   @override
@@ -72,6 +75,7 @@ PlaceModel _$PlaceModelFromJson(Map<String, dynamic> json) => PlaceModel(
       (json['tables'] as List<dynamic>)
           .map((e) => TableModel.fromJson(e as String))
           .toList(),
+      json['ownerId'] as int,
     );
 
 Map<String, dynamic> _$PlaceModelToJson(PlaceModel instance) =>
@@ -83,4 +87,5 @@ Map<String, dynamic> _$PlaceModelToJson(PlaceModel instance) =>
       'base64Logo': instance.base64Logo,
       'updateDate': instance.updateDate,
       'tables': instance.tables,
+      'ownerId': instance.ownerId,
     };

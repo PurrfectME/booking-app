@@ -9,19 +9,19 @@ part 'user_model.g.dart';
 class UserModel extends HiveObject {
   @HiveField(0)
   @JsonKey(name: 'id')
-  final int? id;
+  int? id;
 
   @HiveField(1)
   @JsonKey(name: 'email')
-  final String email;
+  String email;
 
   @HiveField(2)
   @JsonKey(name: 'accessToken')
-  final String accessToken;
+  String accessToken;
 
   @HiveField(3)
   @JsonKey(name: 'refreshToken')
-  final String refreshToken;
+  String refreshToken;
 
   UserModel({
     this.id,

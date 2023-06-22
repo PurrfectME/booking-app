@@ -65,7 +65,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
               } else if (state is UpdatePlaceError) {
                 return Text(state.error);
               } else if (state is UpdatePlaceLoaded) {
-                localObj = state.data;
+                localObj = state.data!;
                 return Form(
                   key: _formKey,
                   child: Padding(
@@ -78,7 +78,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                             child: Column(
                               children: [
                                 TextFormField(
-                                    initialValue: state.data.name,
+                                    initialValue: state.data!.name,
                                     decoration: const InputDecoration(
                                         enabledBorder: UnderlineInputBorder(
                                           borderSide:
@@ -102,7 +102,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                                     // validator: validatePhoneNumber),
                                     ),
                                 TextFormField(
-                                  initialValue: state.data.description,
+                                  initialValue: state.data!.description,
                                   onSaved: (newValue) {
                                     localObj = localObj.copyWith(
                                         description: newValue!);
@@ -123,7 +123,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                                           TextStyle(color: Colors.black)),
                                   keyboardType: TextInputType.text,
                                 ),
-                                _previewImages(state.data.base64Logo),
+                                _previewImages(state.data!.base64Logo),
                                 ElevatedButton(
                                   style: ButtonStyle(
                                       backgroundColor:
@@ -131,7 +131,7 @@ class _UpdatePlaceScreenState extends State<UpdatePlaceScreen> {
                                               Colors.black)),
                                   child: const Text('Столы'),
                                   onPressed: () =>
-                                      _onTablesUpdateTap(state.data),
+                                      _onTablesUpdateTap(state.data!),
                                 ),
                               ],
                             ),

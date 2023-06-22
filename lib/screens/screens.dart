@@ -1,3 +1,4 @@
+export 'dashboard/dashboard_screen.dart';
 export 'login/login_screen.dart';
 export 'registration/registration_screen.dart';
 export 'reservation_info/reservation_info_screen.dart';

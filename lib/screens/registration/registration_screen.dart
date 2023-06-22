@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/constants/constants.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,7 +22,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) => BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is RegistrationSuccess) {
+            //push to dashboard
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute<void>(
+                    builder: (context) => MultiBlocProvider(
+                          providers: [
+                            // BlocProvider(
+                            //     create: (context) => ReservationsBloc()),
+                            BlocProvider(
+                              create: (context) => DashboardBloc()
+                                ..add(DashboardLoad(userId: state.user.id!)),
+                            ),
+                          ],
+                          child: const DashboardScreen(),
+                        )),
+                (route) => false);
+          }
         },
         builder: (context, state) {
           if (state is RegistrationLoaded) {

@@ -2,6 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/providers/hive_db.dart';
+import 'package:booking_app/screens/dashboard/dashboard_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,6 +72,8 @@ class MyApp extends StatelessWidget {
             builder = (context) => const UpdatePlaceScreen();
           } else if (path == RegistrationScreen.pageRoute) {
             builder = (context) => const RegistrationScreen();
+          } else if (path == DashboardScreen.pageRoute) {
+            builder = (context) => const DashboardScreen();
           } else {
             builder ??= (context) => const LoginScreen();
           }
