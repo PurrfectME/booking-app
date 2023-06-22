@@ -42,8 +42,30 @@ class PlaceModel extends HiveObject {
   @JsonKey(name: 'ownerId')
   int ownerId;
 
-  PlaceModel(this.id, this.name, this.description, this.logoId, this.base64Logo,
-      this.updateDate, this.tables, this.ownerId);
+  @HiveField(8)
+  @JsonKey(name: 'city')
+  String city;
+
+  @HiveField(9)
+  @JsonKey(name: 'address')
+  String address;
+
+  @HiveField(10)
+  @JsonKey(name: 'allowBooking')
+  bool allowBooking;
+
+  PlaceModel(
+      this.id,
+      this.name,
+      this.description,
+      this.logoId,
+      this.base64Logo,
+      this.updateDate,
+      this.tables,
+      this.ownerId,
+      this.city,
+      this.address,
+      this.allowBooking);
 
   PlaceModel copyWith({
     int? id,
@@ -54,14 +76,21 @@ class PlaceModel extends HiveObject {
     int? updateDate,
     List<TableModel>? tables,
     int? ownerId,
+    String? city,
+    String? address,
+    bool? allowBooking,
   }) =>
       PlaceModel(
-          id ?? this.id,
-          name ?? this.name,
-          description ?? this.description,
-          logoId ?? this.logoId,
-          base64Logo ?? this.base64Logo,
-          updateDate ?? this.updateDate,
-          tables ?? this.tables,
-          ownerId ?? this.ownerId);
+        id ?? this.id,
+        name ?? this.name,
+        description ?? this.description,
+        logoId ?? this.logoId,
+        base64Logo ?? this.base64Logo,
+        updateDate ?? this.updateDate,
+        tables ?? this.tables,
+        ownerId ?? this.ownerId,
+        city ?? this.city,
+        address ?? this.address,
+        allowBooking ?? this.allowBooking,
+      );
 }

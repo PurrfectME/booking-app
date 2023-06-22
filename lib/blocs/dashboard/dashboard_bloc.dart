@@ -15,6 +15,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         final user = await HiveProvider.getUserById(event.userId);
         final places = await HiveProvider.getPlacesByOwnerId(event.userId);
 
+        places.add(PlaceModel(1, 'NEFT', 'description', 2, 'base64Logo', 1, [],
+            1, 'Минск', 'Аранская 8', true));
+
+        places.add(PlaceModel(1, 'NEFT', 'description', 2, 'base64Logo', 1, [],
+            1, 'Минск', 'Аранская 8', true));
+
+        places.add(PlaceModel(1, 'NEFT', 'description', 2, 'base64Logo', 1, [],
+            1, 'Минск', 'Аранская 8', true));
+
         emit(DashboardLoaded(user: user, places: places));
       }
     });

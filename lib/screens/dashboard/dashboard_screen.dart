@@ -1,4 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -31,8 +32,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
               body: Container(
-                margin: const EdgeInsets.only(top: 70),
-                padding: const EdgeInsets.symmetric(horizontal: 65),
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                margin: EdgeInsets.only(top: 30),
                 child: Row(
                   children: [
                     Column(
@@ -70,9 +71,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 69),
-                            width: 4,
+                            width: 3,
                             decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 167, 58, 58),
+                                color: Color.fromARGB(255, 23, 23, 23),
                                 borderRadius: BorderRadius.circular(15)),
                           ),
                         ),
@@ -80,11 +81,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(width: 42),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           'Заведения',
                           style: TextStyle(color: Colors.white, fontSize: 26),
                         ),
+                        const SizedBox(height: 46),
+                        SizedBox(
+                          width: 596,
+                          child: SingleChildScrollView(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: state.places.length,
+                              itemBuilder: (context, i) {
+                                final place = state.places[i];
+                                return PlaceItem(
+                                  name: place.name,
+                                  address: place.address,
+                                  city: place.city,
+                                  allowBooking: place.allowBooking,
+                                );
+                              },
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ],

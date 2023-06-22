@@ -25,13 +25,16 @@ class PlaceModelAdapter extends TypeAdapter<PlaceModel> {
       fields[5] as int,
       (fields[6] as List).cast<TableModel>(),
       fields[7] as int,
+      fields[8] as String,
+      fields[9] as String,
+      fields[10] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, PlaceModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +50,13 @@ class PlaceModelAdapter extends TypeAdapter<PlaceModel> {
       ..writeByte(6)
       ..write(obj.tables)
       ..writeByte(7)
-      ..write(obj.ownerId);
+      ..write(obj.ownerId)
+      ..writeByte(8)
+      ..write(obj.city)
+      ..writeByte(9)
+      ..write(obj.address)
+      ..writeByte(10)
+      ..write(obj.allowBooking);
   }
 
   @override
@@ -76,6 +85,9 @@ PlaceModel _$PlaceModelFromJson(Map<String, dynamic> json) => PlaceModel(
           .map((e) => TableModel.fromJson(e as String))
           .toList(),
       json['ownerId'] as int,
+      json['city'] as String,
+      json['address'] as String,
+      json['allowBooking'] as bool,
     );
 
 Map<String, dynamic> _$PlaceModelToJson(PlaceModel instance) =>
@@ -88,4 +100,7 @@ Map<String, dynamic> _$PlaceModelToJson(PlaceModel instance) =>
       'updateDate': instance.updateDate,
       'tables': instance.tables,
       'ownerId': instance.ownerId,
+      'city': instance.city,
+      'address': instance.address,
+      'allowBooking': instance.allowBooking,
     };
