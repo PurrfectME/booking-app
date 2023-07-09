@@ -46,6 +46,18 @@ class HiveProvider {
     }
   }
 
+  static Future<PlaceModel> createPlace(PlaceModel model) async {
+    final placesBox = await Hive.openBox<PlaceModel>('places');
+    final place = model.copyWith();
+
+    final id = await placesBox.add(place);
+    place.id = id;
+
+    await place.save();
+
+    return place;
+  }
+
   static Future<List<PlaceModel>> getPlaces() async {
     final a = (await Hive.openBox<PlaceModel>('places')).values.toList();
     return a;

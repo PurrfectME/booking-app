@@ -1,9 +1,12 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'widgets/create_place_form.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const pageRoute = '/dashboard';
@@ -27,8 +30,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 title: const Text('UReserve'),
                 centerTitle: false,
                 actions: [
-                  ElevatedButton(
-                      onPressed: () {}, child: Text('Создать заведение'))
+                  Padding(
+                    padding: const EdgeInsets.only(right: 65),
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.black,
+                            shape: const StadiumBorder()),
+                        onPressed: () => _createPlace(state.user.id!),
+                        child: const Text('Создать заведение')),
+                  )
                 ],
               ),
               body: Container(
@@ -123,4 +134,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
           }
         },
       );
+
+  Future _createPlace(int ownerId) async {
+    final data = await showDialog<CreatePlaceModel>(
+        context: context,
+        builder: (context) => const AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              titlePadding: EdgeInsets.symmetric(horizontal: 30),
+              backgroundColor: Color.fromARGB(255, 23, 23, 23),
+              title: Align(
+                child: Text(
+                  'Создать заведение',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              content:
+                  SizedBox(height: 350, width: 500, child: CreatePlaceForm()),
+            ));
+
+    if (data == null) {
+      return;
+    }
+
+    context.read<DashboardBloc>().add(CreatePlace(
+        ownerId: ownerId,
+        name: data.name,
+        city: data.city,
+        address: data.address));
+  }
 }

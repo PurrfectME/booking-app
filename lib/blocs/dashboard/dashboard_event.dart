@@ -17,3 +17,20 @@ class DashboardLoad extends DashboardEvent {
   @override
   List<Object> get props => [userId];
 }
+
+class CreatePlace extends DashboardEvent {
+  final int ownerId;
+  final String name;
+  final String city;
+  final String address;
+
+  const CreatePlace({
+    required this.ownerId,
+    required this.name,
+    required this.city,
+    required this.address,
+  });
+
+  @override
+  List<Object> get props => [ownerId, name, city, address];
+}
