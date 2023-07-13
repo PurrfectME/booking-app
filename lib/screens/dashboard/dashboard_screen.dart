@@ -1,9 +1,8 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
+import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'widgets/create_place_form.dart';
@@ -102,26 +101,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             style: TextStyle(color: Colors.white, fontSize: 26),
                           ),
                           const SizedBox(height: 46),
-                          Expanded(
-                            child: ListView.separated(
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 20),
-                              shrinkWrap: true,
-                              itemCount: state.places.length,
-                              itemBuilder: (context, i) {
-                                final place = state.places[i];
-                                return UnconstrainedBox(
-                                  alignment: Alignment.centerLeft,
-                                  child: PlaceItem(
-                                    name: place.name,
-                                    address: place.address,
-                                    city: place.city,
-                                    allowBooking: place.allowBooking,
-                                  ),
-                                );
-                              },
-                            ),
-                          )
+                          if (state.places.isEmpty)
+                            const Text(
+                              'Нет заведений',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 155, 155, 155),
+                                  fontSize: 22),
+                            )
+                          else
+                            Expanded(
+                              child: ListView.separated(
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: 20),
+                                shrinkWrap: true,
+                                itemCount: state.places.length,
+                                itemBuilder: (context, i) {
+                                  final place = state.places[i];
+                                  return UnconstrainedBox(
+                                    alignment: Alignment.centerLeft,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push<void>(
+                                            context,
+                                            MaterialPageRoute<void>(
+                                                builder: (context) =>
+                                                    MultiBlocProvider(
+                                                      providers: [
+                                                        // BlocProvider(
+                                                        //     create: (context) => ReservationsBloc()),
+                                                        BlocProvider(
+                                                          create: (context) =>
+                                                              TableReservationsBloc(
+                                                                  place.tables)
+                                                                ..add(TableReservationsLoad(
+                                                                    placeId: place
+                                                                        .id)),
+                                                        ),
+                                                      ],
+                                                      child:
+                                                          const TablesScreen(),
+                                                    )));
+                                      },
+                                      child: PlaceItem(
+                                        id: place.id,
+                                        name: place.name,
+                                        address: place.address,
+                                        city: place.city,
+                                        allowBooking: place.allowBooking,
+                                        onwerId: place.ownerId,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
                         ],
                       ),
                     ),

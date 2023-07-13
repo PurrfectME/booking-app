@@ -264,4 +264,12 @@ class HiveProvider {
           .toList();
     }
   }
+
+  static Future changeBookingType(int placeId) async {
+    final placesBox = await Hive.openBox<PlaceModel>('places');
+
+    final place = placesBox.values.firstWhere((x) => x.id == placeId);
+    place.allowBooking = !place.allowBooking;
+    await place.save();
+  }
 }

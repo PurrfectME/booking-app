@@ -34,3 +34,12 @@ class CreatePlace extends DashboardEvent {
   @override
   List<Object> get props => [ownerId, name, city, address];
 }
+
+class ChangeBookingType extends DashboardEvent {
+  final int placeId;
+  final int ownerId;
+  const ChangeBookingType({required this.placeId, required this.ownerId});
+
+  @override
+  List<Object> get props => [placeId, ownerId];
+}

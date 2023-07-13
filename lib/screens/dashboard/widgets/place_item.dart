@@ -1,29 +1,44 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:booking_app/blocs/dashboard/dashboard_bloc.dart';
 import 'package:booking_app/constants/constants.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PlaceItem extends StatelessWidget {
+class PlaceItem extends StatefulWidget {
+  final int id;
   final String name;
   final String address;
   final String city;
   final bool allowBooking;
-
+  final int onwerId;
   const PlaceItem({
     Key? key,
+    required this.id,
     required this.name,
     required this.address,
     required this.city,
     required this.allowBooking,
+    required this.onwerId,
   }) : super(key: key);
+
+  @override
+  State<PlaceItem> createState() => _PlaceItemState();
+}
+
+class _PlaceItemState extends State<PlaceItem> {
+  bool canBook = false;
+
+  @override
+  void initState() {
+    canBook = widget.allowBooking;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => Container(
         width: 596,
         height: 243,
-        // margin: const EdgeInsets.only(bottom: 20),
-        // constraints: const BoxConstraints(
-        //     maxWidth: 300, maxHeight: 243, minHeight: 243, minWidth: 250),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
@@ -56,7 +71,7 @@ class PlaceItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          name,
+                          widget.name,
                           style: const TextStyle(
                               color: Colors.white,
                               fontSize: 30,
@@ -71,7 +86,7 @@ class PlaceItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'г. ${city.capitalize()}, ул. ${address.capitalize()}',
+                      'г. ${widget.city.capitalize()}, ул. ${widget.address.capitalize()}',
                       style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     const SizedBox(height: 73),
@@ -85,8 +100,16 @@ class PlaceItem extends StatelessWidget {
                           inactiveTrackColor: Colors.grey,
                           activeColor: Colors.white,
                           activeTrackColor: Constants.mainPurple,
-                          onChanged: (bool value) {},
-                          value: allowBooking,
+                          onChanged: (bool value) {
+                            setState(() {
+                              canBook = !canBook;
+                            });
+                            context.read<DashboardBloc>().add(ChangeBookingType(
+                                  placeId: widget.id,
+                                  ownerId: widget.onwerId,
+                                ));
+                          },
+                          value: canBook,
                         ),
                       ],
                     )
