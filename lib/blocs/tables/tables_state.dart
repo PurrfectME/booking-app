@@ -26,3 +26,7 @@ class TablesLoaded extends TablesState {
   @override
   List<Object> get props => [data];
 }
+
+class TableCreated extends TablesState {}
+
+class CreateTableLoaded extends TablesState {}

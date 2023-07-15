@@ -45,8 +45,18 @@ class _TablesScreenState extends State<TablesScreen> {
                 }
               },
             ),
-            IconButton(
-                onPressed: null, icon: Icon(Icons.edit, color: Colors.black)),
+            TextButton(
+                onPressed: () {
+                  final tBloc = context.read<TablesBloc>()
+                    ..add(CreateTableLoad());
+                  Navigator.push<void>(
+                      context,
+                      MaterialPageRoute<void>(
+                          builder: (context) =>
+                              CreateTableScreen(tBloc: tBloc)));
+                },
+                child: Text('Создать стол',
+                    style: TextStyle(color: Colors.white))),
             IconButton(
                 onPressed: _onDateTimeTap,
                 icon: Icon(Icons.calendar_month, color: Colors.black))

@@ -1,3 +1,4 @@
+export 'create_table/create_table_screen.dart';
 export 'dashboard/dashboard_screen.dart';
 export 'login/login_screen.dart';
 export 'registration/registration_screen.dart';

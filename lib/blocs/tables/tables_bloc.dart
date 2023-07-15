@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/local/table_vm.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
-import 'package:booking_app/services/services.dart';
+import 'package:booking_app/providers/hive_db.dart';
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -17,8 +18,6 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
   TablesBloc({
     required this.placeId,
   }) : super(TablesLoading()) {
-    // tables = List<TableViewModel>.from(initialTables);
-
     on<TablesEvent>((event, emit) async {
       if (event is TablesLoad) {
         emit(TablesLoading());
@@ -49,6 +48,16 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
         }
 
         emit(TablesLoaded(tables));
+      } else if (event is CreateTableLoad) {
+        emit(CreateTableLoaded());
+      } else if (event is CreateTable) {
+        final table = TableModel(
+            id: 0,
+            number: event.number,
+            guests: event.guests,
+            placeId: placeId);
+
+        await HiveProvider.createTable(table);
       }
     });
   }

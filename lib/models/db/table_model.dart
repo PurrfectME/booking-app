@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -11,19 +10,19 @@ part 'table_model.g.dart';
 class TableModel extends HiveObject {
   @HiveField(0)
   @JsonKey(name: 'id')
-  final int id;
+  int id;
 
   @HiveField(1)
   @JsonKey(name: 'number')
-  final int number;
+  int number;
 
   @HiveField(2)
   @JsonKey(name: 'guests')
-  final int guests;
+  int guests;
 
   @HiveField(3)
   @JsonKey(name: 'placeId')
-  final int placeId;
+  int placeId;
 
   TableModel({
     required this.id,

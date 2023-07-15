@@ -272,4 +272,14 @@ class HiveProvider {
     place.allowBooking = !place.allowBooking;
     await place.save();
   }
+
+  static Future createTable(TableModel model) async {
+    final tablesBox = await Hive.openBox<TableModel>('tables');
+    final table = model.copyWith();
+
+    final id = await tablesBox.add(table);
+    table.id = id;
+
+    await table.save();
+  }
 }

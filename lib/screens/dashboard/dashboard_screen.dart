@@ -126,21 +126,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             MaterialPageRoute<void>(
                                                 builder: (context) =>
                                                     MultiBlocProvider(
-                                                      providers: [
-                                                        // BlocProvider(
-                                                        //     create: (context) => ReservationsBloc()),
-                                                        BlocProvider(
-                                                          create: (context) =>
-                                                              TableReservationsBloc(
-                                                                  place.tables)
-                                                                ..add(TableReservationsLoad(
-                                                                    placeId: place
-                                                                        .id)),
-                                                        ),
-                                                      ],
-                                                      child:
-                                                          const TablesScreen(),
-                                                    )));
+                                                        providers: [
+                                                          BlocProvider(
+                                                              create: (context) =>
+                                                                  TablesBloc(
+                                                                      placeId: place
+                                                                          .id)),
+                                                          BlocProvider(
+                                                              create: (context) =>
+                                                                  TableReservationsBloc(
+                                                                      place
+                                                                          .tables)
+                                                                    ..add(TableReservationsLoad(
+                                                                        placeId:
+                                                                            place.id))),
+                                                        ],
+                                                        child:
+                                                            const TablesScreen())));
                                       },
                                       child: PlaceItem(
                                         id: place.id,
