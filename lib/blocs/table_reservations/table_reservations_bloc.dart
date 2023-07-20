@@ -22,7 +22,7 @@ class TableReservationsBloc
           result = await _initReservations(
               await HiveProvider.getTables(event.placeId), event.placeId);
         } else {
-          result = await _initReservations(tables!, event.placeId);
+          result = await _initReservations(tables, event.placeId);
         }
 
         emit(TableReservationsLoaded(result, event.placeId));
@@ -56,7 +56,7 @@ class TableReservationsBloc
 
         emit(TableRemoveReservationSuccess(tableNumber: event.tableNumber));
         emit(TableReservationsLoaded(
-            await _initReservations(tables!, event.placeId), event.placeId));
+            await _initReservations(tables, event.placeId), event.placeId));
       } else if (event is AdminEditReservation) {
         emit(TableReservationsLoading());
 
@@ -79,7 +79,7 @@ class TableReservationsBloc
 
         emit(TableEditReservationSuccess());
         emit(TableReservationsLoaded(
-            await _initReservations(tables!, event.placeId), event.placeId));
+            await _initReservations(tables, event.placeId), event.placeId));
       }
     });
   }

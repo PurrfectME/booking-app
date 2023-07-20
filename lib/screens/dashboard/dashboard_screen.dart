@@ -134,6 +134,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                           .id)),
                                                           BlocProvider(
                                                               create: (context) =>
+                                                                  ReservationsBloc()),
+                                                          BlocProvider(
+                                                              create: (context) =>
                                                                   TableReservationsBloc(
                                                                       place
                                                                           .tables)

@@ -14,14 +14,24 @@ class ReservationLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => !hasReservationsToday
       ? Container(
-          decoration: BoxDecoration(color: Color.fromARGB(255, 200, 200, 200)),
-          child: const Text(
-            'Свободно',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          width: 120,
+          height: 26,
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 23, 23, 23),
+              borderRadius: BorderRadius.circular(30)),
+          child: const Center(
+            child: Text(
+              'Свободно',
+              style: TextStyle(fontSize: 14, color: Colors.white),
+            ),
           ),
         )
       : Container(
-          decoration: BoxDecoration(color: Color.fromARGB(255, 200, 200, 200)),
+          width: 120,
+          height: 26,
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 23, 23, 23),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -31,7 +41,7 @@ class ReservationLabel extends StatelessWidget {
               else
                 Text(
                   'Занят с ${DateFormat('d HH:mm', 'RU').format(start!)} до ${DateFormat('HH:mm', 'RU').format(end!)}',
-                  style: TextStyle(fontSize: 13),
+                  style: const TextStyle(fontSize: 13),
                 ),
             ],
           ),

@@ -85,7 +85,7 @@ class _TablesScreenState extends State<TablesScreen> {
                       // shrinkWrap: false,
                       childAspectRatio: 0.931,
                       padding: const EdgeInsets.all(10),
-                      crossAxisCount: 2,
+                      crossAxisCount: 5,
                       primary: false,
                       children: state.data.map((reservationVm) {
                         DateTime? start;
@@ -157,17 +157,23 @@ class _TablesScreenState extends State<TablesScreen> {
                         return GestureDetector(
                           onTap: () => _onTablePress(reservationVm.table),
                           child: Container(
+                            width: 210,
+                            height: 226,
+                            constraints: const BoxConstraints(
+                                maxHeight: 226, maxWidth: 210),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              borderRadius: BorderRadius.circular(10),
+                              color: const Color.fromARGB(255, 45, 45, 45),
+                              borderRadius: BorderRadius.circular(16),
                             ),
                             margin: const EdgeInsets.all(4),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -208,36 +214,67 @@ class _TablesScreenState extends State<TablesScreen> {
                                   ),
                                 ),
                                 Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 8,
+                                  ),
+                                  height: 64,
                                   decoration: const BoxDecoration(
-                                    color: Colors.grey,
+                                    color: Color.fromARGB(255, 23, 23, 23),
                                     borderRadius: BorderRadius.only(
                                         bottomLeft: Radius.circular(10),
                                         bottomRight: Radius.circular(10)),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text('Зал'),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                                'Стол ${reservationVm.table.number}'),
-                                            Row(
-                                              children: [
-                                                Text(reservationVm.table.guests
-                                                    .toString()),
-                                                const Icon(Icons.people),
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Основной зал',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                          )),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Text('Стол',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                  )),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                '№${reservationVm.table.number}',
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.people,
+                                                color: Colors.white,
+                                              ),
+                                              Text(
+                                                reservationVm.table.guests
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.white),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
                                   ),
                                 ),
                               ],
