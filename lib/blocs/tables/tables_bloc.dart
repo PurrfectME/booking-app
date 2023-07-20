@@ -49,7 +49,7 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
 
         emit(TablesLoaded(tables));
       } else if (event is CreateTableLoad) {
-        emit(CreateTableLoaded());
+        emit(CreateTableLoaded(placeId: event.placeId));
       } else if (event is CreateTable) {
         final table = TableModel(
             id: 0,
@@ -58,6 +58,8 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
             placeId: placeId);
 
         await HiveProvider.createTable(table);
+
+        emit(TableCreated(placeId: placeId));
       }
     });
   }

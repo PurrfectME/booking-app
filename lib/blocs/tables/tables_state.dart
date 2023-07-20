@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'tables_bloc.dart';
 
 abstract class TablesState extends Equatable {
@@ -27,6 +28,22 @@ class TablesLoaded extends TablesState {
   List<Object> get props => [data];
 }
 
-class TableCreated extends TablesState {}
+class TableCreated extends TablesState {
+  final int placeId;
+  const TableCreated({
+    required this.placeId,
+  });
 
-class CreateTableLoaded extends TablesState {}
+  @override
+  List<Object> get props => [placeId];
+}
+
+class CreateTableLoaded extends TablesState {
+  final int placeId;
+  const CreateTableLoaded({
+    required this.placeId,
+  });
+
+  @override
+  List<Object> get props => [placeId];
+}

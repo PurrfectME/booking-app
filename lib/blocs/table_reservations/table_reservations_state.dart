@@ -20,12 +20,13 @@ class TableReservationsError extends TableReservationsState {
 }
 
 class TableReservationsLoaded extends TableReservationsState {
+  final int placeId;
   final List<TableReservationViewModel> data;
 
-  const TableReservationsLoaded(this.data);
+  const TableReservationsLoaded(this.data, this.placeId);
 
   @override
-  List<Object> get props => [data];
+  List<Object> get props => [data, placeId];
 }
 
 class TableRemoveReservationSuccess extends TableReservationsState {

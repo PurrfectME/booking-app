@@ -2,16 +2,16 @@
 import 'dart:io';
 
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateTableScreen extends StatefulWidget {
   final TablesBloc tBloc;
-  const CreateTableScreen({
-    Key? key,
-    required this.tBloc,
-  }) : super(key: key);
+  final TableReservationsBloc trBloc;
+  const CreateTableScreen({Key? key, required this.tBloc, required this.trBloc})
+      : super(key: key);
 
   @override
   State<CreateTableScreen> createState() => _CreateTableScreenState();
@@ -22,23 +22,27 @@ class _CreateTableScreenState extends State<CreateTableScreen> {
   late FileImage image;
   late int number;
   late int guests;
+  bool canBookOnline = false;
 
   @override
   Widget build(BuildContext context) => BlocConsumer<TablesBloc, TablesState>(
         bloc: widget.tBloc,
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is TableCreated) {
+            widget.trBloc.add(TableReservationsLoad(placeId: state.placeId));
+            Navigator.pop(context);
+          }
         },
         builder: (context, state) {
           if (state is CreateTableLoaded) {
             return Scaffold(
-                appBar: AppBar(title: Text('Создание стола')),
+                appBar: AppBar(title: const Text('Создание стола')),
                 body: Container(
                   margin: const EdgeInsets.only(top: 62),
                   child: Form(
                     key: _formKey,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Column(
                           children: [
@@ -89,36 +93,123 @@ class _CreateTableScreenState extends State<CreateTableScreen> {
                           ],
                         ),
                         Container(
-                          width: 200,
+                          width: 400,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                  hintText: 'Enter number',
-                                ),
-                                keyboardType: TextInputType.number,
-                                onSaved: (String? value) {
-                                  number = int.parse(value!);
-                                },
+                              Row(
+                                children: [
+                                  Switch(
+                                    inactiveTrackColor: Colors.grey,
+                                    activeColor: Colors.white,
+                                    activeTrackColor: Constants.mainPurple,
+                                    value: canBookOnline,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        canBookOnline = !canBookOnline;
+                                      });
+                                    },
+                                  ),
+                                  const Text('Бронируется гостями онлайн',
+                                      style: TextStyle(color: Colors.white))
+                                ],
                               ),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                  hintText: 'Enter guests',
-                                ),
-                                keyboardType: TextInputType.number,
-                                onSaved: (String? value) {
-                                  guests = int.parse(value!);
-                                },
+                              const SizedBox(height: 60),
+                              Row(
+                                children: [
+                                  const Text('Номер',
+                                      style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 66, 66, 66))),
+                                  const SizedBox(width: 20),
+                                  SizedBox(
+                                    width: 52,
+                                    height: 52,
+                                    child: TextFormField(
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            borderSide: const BorderSide(
+                                                color: Constants.mainPurple,
+                                                width: 2)),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: const BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 66, 66, 66),
+                                              width: 2),
+                                        ),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      onSaved: (String? value) {
+                                        number = int.parse(value!);
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const SizedBox(height: 40),
+                              Row(
+                                children: [
+                                  const Text('Количество мест',
+                                      style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 66, 66, 66))),
+                                  const SizedBox(width: 20),
+                                  SizedBox(
+                                    width: 52,
+                                    height: 52,
+                                    child: TextFormField(
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            borderSide: const BorderSide(
+                                                color: Constants.mainPurple,
+                                                width: 2)),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: const BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 66, 66, 66),
+                                              width: 2),
+                                        ),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      onSaved: (String? value) {
+                                        guests = int.parse(value!);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 40),
                               ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    _formKey.currentState!.save();
-                                    // Here, you can handle your form submission.
-                                  }
-                                },
-                                child: Text('Создать'),
-                              )
+                                onPressed: _createTable,
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    disabledForegroundColor:
+                                        const Color.fromARGB(
+                                            255, 155, 155, 155),
+                                    backgroundColor: Constants.mainPurple,
+                                    disabledBackgroundColor:
+                                        const Color.fromARGB(255, 45, 45, 45),
+                                    shape: const StadiumBorder()),
+                                child: const SizedBox(
+                                    height: 50,
+                                    width: 150,
+                                    child: Center(
+                                        child: Text('Создать',
+                                            style: TextStyle(fontSize: 20)))),
+                              ),
                             ],
                           ),
                         ),
@@ -131,4 +222,12 @@ class _CreateTableScreenState extends State<CreateTableScreen> {
           }
         },
       );
+
+  void _createTable() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      widget.tBloc.add(CreateTable(number: number, guests: guests));
+      // Here, you can handle your form submission.
+    }
+  }
 }

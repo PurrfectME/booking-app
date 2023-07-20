@@ -12,20 +12,20 @@ part 'table_reservations_state.dart';
 
 class TableReservationsBloc
     extends Bloc<TableReservationsEvent, TableReservationsState> {
-  final List<TableModel>? tables;
+  final List<TableModel> tables;
   TableReservationsBloc(this.tables) : super(TableReservationsLoading()) {
     on<TableReservationsEvent>((event, emit) async {
       if (event is TableReservationsLoad) {
         emit(TableReservationsLoading());
         final List<TableReservationViewModel> result;
-        if (tables == null) {
+        if (tables.isEmpty) {
           result = await _initReservations(
               await HiveProvider.getTables(event.placeId), event.placeId);
         } else {
           result = await _initReservations(tables!, event.placeId);
         }
 
-        emit(TableReservationsLoaded(result));
+        emit(TableReservationsLoaded(result, event.placeId));
       } else if (event is AdminTableReserve) {
         emit(TableReservationsLoading());
         final user = await HiveProvider.getUserByEmail(event.phoneNumber);
@@ -47,7 +47,7 @@ class TableReservationsBloc
         final currentTables = await HiveProvider.getTables(event.placeId);
 
         final result = await _initReservations(currentTables, event.placeId);
-        emit(TableReservationsLoaded(result));
+        emit(TableReservationsLoaded(result, event.placeId));
       } else if (event is TableRemoveReservation) {
         emit(TableReservationsLoading());
 
@@ -56,7 +56,7 @@ class TableReservationsBloc
 
         emit(TableRemoveReservationSuccess(tableNumber: event.tableNumber));
         emit(TableReservationsLoaded(
-            await _initReservations(tables!, event.placeId)));
+            await _initReservations(tables!, event.placeId), event.placeId));
       } else if (event is AdminEditReservation) {
         emit(TableReservationsLoading());
 
@@ -79,7 +79,7 @@ class TableReservationsBloc
 
         emit(TableEditReservationSuccess());
         emit(TableReservationsLoaded(
-            await _initReservations(tables!, event.placeId)));
+            await _initReservations(tables!, event.placeId), event.placeId));
       }
     });
   }

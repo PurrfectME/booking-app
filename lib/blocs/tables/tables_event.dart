@@ -12,7 +12,15 @@ class TablesLoad extends TablesEvent {
   const TablesLoad();
 }
 
-class CreateTableLoad extends TablesEvent {}
+class CreateTableLoad extends TablesEvent {
+  final int placeId;
+  const CreateTableLoad({
+    required this.placeId,
+  });
+
+  @override
+  List<Object?> get props => [placeId];
+}
 
 class CreateTable extends TablesEvent {
   final int number;

@@ -34,29 +34,38 @@ class _TablesScreenState extends State<TablesScreen> {
             BlocBuilder<TableReservationsBloc, TableReservationsState>(
               builder: (context, state) {
                 if (state is TableReservationsLoaded) {
-                  return state.data.isNotEmpty
-                      ? IconButton(
-                          onPressed: () => _onReservationsTap(
-                              state.data.first.table.placeId),
-                          icon: Icon(Icons.request_page, color: Colors.black))
-                      : const SizedBox.shrink();
+                  return Row(
+                    children: [
+                      if (state.data.isNotEmpty)
+                        IconButton(
+                            onPressed: () => _onReservationsTap(
+                                state.data.first.table.placeId),
+                            icon: Icon(Icons.request_page, color: Colors.black))
+                      else
+                        const SizedBox.shrink(),
+                      TextButton(
+                          onPressed: () {
+                            final tBloc = context.read<TablesBloc>()
+                              ..add(CreateTableLoad(placeId: state.placeId));
+                            final trBloc =
+                                context.read<TableReservationsBloc>();
+                            Navigator.push<void>(
+                                context,
+                                MaterialPageRoute<void>(
+                                    builder: (context) => CreateTableScreen(
+                                          tBloc: tBloc,
+                                          trBloc: trBloc,
+                                        )));
+                          },
+                          child: const Text('Создать стол',
+                              style: TextStyle(color: Colors.white))),
+                    ],
+                  );
                 } else {
                   return const SizedBox.shrink();
                 }
               },
             ),
-            TextButton(
-                onPressed: () {
-                  final tBloc = context.read<TablesBloc>()
-                    ..add(CreateTableLoad());
-                  Navigator.push<void>(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (context) =>
-                              CreateTableScreen(tBloc: tBloc)));
-                },
-                child: Text('Создать стол',
-                    style: TextStyle(color: Colors.white))),
             IconButton(
                 onPressed: _onDateTimeTap,
                 icon: Icon(Icons.calendar_month, color: Colors.black))
