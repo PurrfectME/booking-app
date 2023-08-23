@@ -2,6 +2,7 @@ import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:booking_app/screens/screens.dart';
+import 'package:booking_app/screens/tables_scheme/tables_scheme_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,6 +39,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             shape: const StadiumBorder()),
                         onPressed: () => _createPlace(state.user.id!),
                         child: const Text('Создать заведение')),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 65),
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.black,
+                            shape: const StadiumBorder()),
+                        onPressed: () {
+                          Navigator.push<void>(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TablesSchemeScreen()));
+                        },
+                        child: const Text('Схема')),
                   )
                 ],
               ),

@@ -99,161 +99,121 @@ class _TableInfoScreenState extends State<TableInfoScreen> {
                     StatusHelper.toStatus(nextReservation.status) ==
                         ReservationStatus.waiting;
 
-                return Column(
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
-                      height: 300,
-                      decoration: const BoxDecoration(
-                          color: Color.fromARGB(99, 27, 27, 27)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(13),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ReservationLabel(
-                                    hasReservationsToday: hasReservationsToday,
-                                    start: hasReservationsToday ? start : null,
-                                    end: hasReservationsToday ? end : null),
-                                Container(
-                                  width: 13,
-                                  height: 13,
-                                  decoration: BoxDecoration(
-                                      color: tableStatus == TableStatus.yellow
-                                          ? Colors.yellowAccent
-                                          : tableStatus == TableStatus.red
-                                              ? Colors.red
-                                              : Colors.green,
-                                      shape: BoxShape.circle),
-                                )
-                              ],
-                            ),
-                            Center(
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                margin: const EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                    color: tableStatus == TableStatus.yellow
-                                        ? Colors.yellowAccent
-                                        : tableStatus == TableStatus.red
-                                            ? Colors.red
-                                            : Colors.green,
-                                    shape: BoxShape.circle),
+                      width: 540,
+                      height: 400,
+                      constraints:
+                          const BoxConstraints(maxHeight: 400, maxWidth: 540),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 300,
+                            decoration: const BoxDecoration(
+                                color: Color.fromARGB(99, 27, 27, 27)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(13),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ReservationLabel(
+                                          hasReservationsToday:
+                                              hasReservationsToday,
+                                          start: hasReservationsToday
+                                              ? start
+                                              : null,
+                                          end: hasReservationsToday
+                                              ? end
+                                              : null),
+                                      Container(
+                                        width: 13,
+                                        height: 13,
+                                        decoration: BoxDecoration(
+                                            color: tableStatus ==
+                                                    TableStatus.yellow
+                                                ? Colors.yellowAccent
+                                                : tableStatus == TableStatus.red
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                            shape: BoxShape.circle),
+                                      )
+                                    ],
+                                  ),
+                                  Center(
+                                    child: Container(
+                                      width: 70,
+                                      height: 70,
+                                      margin: const EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                          color: tableStatus ==
+                                                  TableStatus.yellow
+                                              ? Colors.yellowAccent
+                                              : tableStatus == TableStatus.red
+                                                  ? Colors.red
+                                                  : Colors.green,
+                                          shape: BoxShape.circle),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(widget.tableGuests.toString()),
+                                      const Icon(
+                                        Icons.people,
+                                        size: 40,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(widget.tableGuests.toString()),
-                                const Icon(
-                                  Icons.people,
-                                  size: 40,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: state.data.reservations.length,
-                          itemBuilder: (context, i) {
-                            final start = DateTime.fromMillisecondsSinceEpoch(
-                                state.data.reservations[i].start);
-                            final end = DateTime.fromMillisecondsSinceEpoch(
-                                state.data.reservations[i].end);
+                          ),
 
-                            var reservationNumber = ++i;
-                            return Text(
-                              'Бронь №$reservationNumber: с ${DateFormat('HH:mm').format(start)} до ${DateFormat('HH:mm').format(end)}',
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            );
-                          }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 60,
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.black)),
-                                  onPressed: () {
-                                    final rtBloc =
-                                        context.read<ReserveTableBloc>()
-                                          ..add(ReserveTableLoad(
-                                            tableId: state.data.table.id,
-                                            placeId: state.data.table.placeId,
-                                          ));
-                                    final tiBloc =
-                                        context.read<TableInfoBloc>();
-                                    Navigator.push<void>(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ReserveTableScreen(
-                                                  tableNumber:
-                                                      state.data.table.number,
-                                                  tableReservationsBloc: widget
-                                                      .tableReservationsBloc,
-                                                  reserveTableBloc: rtBloc,
-                                                  tableInfoBloc: tiBloc,
-                                                )));
-                                  },
-                                  child: const Text(
-                                    'Забронировать',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20),
-                                  )),
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.all(13),
+                          //   child: ListView.builder(
+                          //       shrinkWrap: true,
+                          //       itemCount: state.data.reservations.length,
+                          //       itemBuilder: (context, i) {
+                          //         final start =
+                          //             DateTime.fromMillisecondsSinceEpoch(
+                          //                 state.data.reservations[i].start);
+                          //         final end =
+                          //             DateTime.fromMillisecondsSinceEpoch(
+                          //                 state.data.reservations[i].end);
+
+                          //         var reservationNumber = ++i;
+                          //         return Text(
+                          //           'Бронь №$reservationNumber: с ${DateFormat('HH:mm').format(start)} до ${DateFormat('HH:mm').format(end)}',
+                          //           style: const TextStyle(
+                          //               fontSize: 20,
+                          //               fontWeight: FontWeight.bold),
+                          //         );
+                          //       }),
+                          // ),
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 13, left: 13, right: 13),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 60,
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.black)),
-                                  onPressed: isWaitingStatus
-                                      ? () => _onCancelReservationPress(
-                                          nextReservation!.placeId,
-                                          nextReservation.id!,
-                                          nextReservation.tableId)
-                                      : () => _onTimeReservationPress(
-                                            state.data.table.placeId,
-                                            state.data.table.id,
-                                          ),
-                                  child: Text(
-                                    isWaitingStatus
-                                        ? 'Отменить(гости не пришли)'
-                                        : 'По факту',
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 20),
-                                  )),
-                            ),
+                    Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 69),
+                            width: 3,
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 23, 23, 23),
+                                borderRadius: BorderRadius.circular(15)),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 );
