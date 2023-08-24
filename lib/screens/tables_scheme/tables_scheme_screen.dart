@@ -1,3 +1,4 @@
+import 'package:booking_app/utils/ext.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/moveable_item.dart';
@@ -10,11 +11,17 @@ class TablesSchemeScreen extends StatefulWidget {
 }
 
 class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
-  List<Color> boxColors = [
-    Colors.red,
-    Colors.blue,
-    Colors.green,
-    Colors.yellow,
+  var containersBox = [
+    Container(
+      width: 50,
+      height: 50,
+      color: Colors.red,
+    ),
+    Container(
+      width: 50,
+      height: 50,
+      color: Colors.yellowAccent,
+    ),
   ];
 
   List<Positioned> droppedRectangles = [];
@@ -35,21 +42,48 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
 
   Widget _buildDropZone() => Container(
         color: Colors.grey,
-        child: DragTarget<int>(
+        child: DragTarget<Container>(
           builder: (context, candidateData, rejectedData) => Stack(
             children: droppedRectangles,
           ),
           onWillAccept: (data) => true,
           onAcceptWithDetails: (details) {
             setState(() {
+              if (droppedRectangles.isNotEmpty) {
+                var toRemove = droppedRectangles.removeWhere((x) {
+                  var draggableChild = x.child as Draggable<Container>;
+                  if (draggableChild.data?.key == details.data.key) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                });
+              }
+
+              var uniqueData = Container(
+                key: UniqueKey(),
+                width: 50,
+                height: 50,
+                color: details.data.color,
+              );
+
               droppedRectangles.add(
                 Positioned(
                   left: details.offset.dx,
                   top: details.offset.dy - 50,
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    color: boxColors[details.data],
+                  child: Draggable<Container>(
+                    key: UniqueKey(),
+                    data: uniqueData,
+                    feedback: Container(
+                      width: 50,
+                      height: 50,
+                      color: details.data.color?.withOpacity(0.7),
+                    ),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      color: details.data.color,
+                    ),
                   ),
                 ),
               );
@@ -60,30 +94,18 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
 
   Widget _buildDraggableBoxes() => Container(
         height: 100,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: boxColors
-              .asMap()
-              .map((index, color) => MapEntry(index, _buildDraggableBox(index)))
-              .values
-              .toList(),
-        ),
+        child: Row(children: containersBox.map(_buildDraggableBox).toList()),
       );
 
-  Widget _buildDraggableBox(int colorIndex) {
-    final color = boxColors[colorIndex];
-    return Draggable<int>(
-      data: colorIndex,
-      feedback: Container(
-        width: 50,
-        height: 50,
-        color: color.withOpacity(0.7),
-      ),
-      child: Container(
-        width: 50,
-        height: 50,
-        color: color,
-      ),
-    );
+  Widget _buildDraggableBox(Container item) {
+    return Draggable<Container>(
+        key: UniqueKey(),
+        data: item,
+        feedback: Container(
+          width: 50,
+          height: 50,
+          color: item.color?.withOpacity(0.7),
+        ),
+        child: item);
   }
 }
