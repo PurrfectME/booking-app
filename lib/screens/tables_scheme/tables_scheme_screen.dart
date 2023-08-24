@@ -20,42 +20,36 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
   List<Positioned> droppedRectangles = [];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Drag and Drop Rectangles')),
-      body: Center(
-        child: Column(
-          children: [
-            _buildDraggableBoxes(),
-            SizedBox(height: 20),
-            Expanded(child: _buildDropZone()),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: Text('Drag and Drop Rectangles')),
+        body: Center(
+          child: Column(
+            children: [
+              Expanded(child: _buildDropZone()),
+              const SizedBox(height: 20),
+              _buildDraggableBoxes(),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   Widget _buildDropZone() => Container(
         color: Colors.grey,
         child: DragTarget<int>(
-          builder: (context, candidateData, rejectedData) {
-            return Stack(
-              children: droppedRectangles,
-            );
-          },
-          onWillAccept: (data) {
-            return true;
-          },
-          onAcceptWithDetails: (data) {
+          builder: (context, candidateData, rejectedData) => Stack(
+            children: droppedRectangles,
+          ),
+          onWillAccept: (data) => true,
+          onAcceptWithDetails: (details) {
             setState(() {
               droppedRectangles.add(
                 Positioned(
-                  left: data.offset.dx,
-                  top: data.offset.dy,
+                  left: details.offset.dx,
+                  top: details.offset.dy - 50,
                   child: Container(
                     width: 50,
                     height: 50,
-                    color: boxColors[2],
+                    color: boxColors[details.data],
                   ),
                 ),
               );
@@ -64,19 +58,17 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
         ),
       );
 
-  Widget _buildDraggableBoxes() {
-    return Container(
-      height: 100,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: boxColors
-            .asMap()
-            .map((index, color) => MapEntry(index, _buildDraggableBox(index)))
-            .values
-            .toList(),
-      ),
-    );
-  }
+  Widget _buildDraggableBoxes() => Container(
+        height: 100,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: boxColors
+              .asMap()
+              .map((index, color) => MapEntry(index, _buildDraggableBox(index)))
+              .values
+              .toList(),
+        ),
+      );
 
   Widget _buildDraggableBox(int colorIndex) {
     final color = boxColors[colorIndex];
