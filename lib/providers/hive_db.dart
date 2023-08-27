@@ -12,8 +12,11 @@ class HiveProvider {
 
   Future<BoxCollection> get collection async => _collection ??= await initDb();
 
-  Future<BoxCollection> initDb() async => await BoxCollection.open('UReserveDB',
-      {'places, tables, reservations, users, tableImages, userReservations'});
+  Future<BoxCollection> initDb() async =>
+      await BoxCollection.open('UReserveDB', {
+        'places, tables, reservations, users, tableImages, userReservations',
+        'tablesPositions'
+      });
 
   static Future initHive() async {
     await Hive.initFlutter();
@@ -21,7 +24,8 @@ class HiveProvider {
       ..registerAdapter<PlaceModel>(PlaceModelAdapter())
       ..registerAdapter<TableModel>(TableModelAdapter())
       ..registerAdapter<ReservationModel>(ReservationModelAdapter())
-      ..registerAdapter<UserModel>(UserModelAdapter());
+      ..registerAdapter<UserModel>(UserModelAdapter())
+      ..registerAdapter<TablePosition>(TablePositionAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -281,5 +285,11 @@ class HiveProvider {
     table.id = id;
 
     await table.save();
+  }
+
+  static Future<List<TablePosition>> getTablePositions(int placeId) async {
+    final positions = await Hive.openBox<TablePosition>('tablesPositions');
+
+    return positions.values.where((x) => x.placeId == placeId).toList();
   }
 }

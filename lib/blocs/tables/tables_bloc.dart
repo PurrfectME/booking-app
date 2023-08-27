@@ -7,6 +7,8 @@ import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../screens/tables_scheme/widgets/table_position_wrapper.dart';
+
 part 'tables_event.dart';
 part 'tables_state.dart';
 
@@ -60,7 +62,13 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
         await HiveProvider.createTable(table);
 
         emit(TableCreated(placeId: placeId));
-      }
+      } else if (event is TablesPositionsLoad) {
+        emit(TablesPositionsLoading());
+
+        final tablePositions = await HiveProvider.getTablePositions(placeId);
+
+        emit(TablesPositionsLoaded(positions: tablePositions));
+      } else if (event is SaveTablesPositions) {}
     });
   }
 }

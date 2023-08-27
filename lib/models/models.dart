@@ -1,6 +1,7 @@
 export 'db/place_model.dart';
 export 'db/reservation_model.dart';
 export 'db/table_model.dart';
+export 'db/table_position.dart';
 export 'db/user_model.dart';
 export 'local/create_place.dart';
 export 'local/menu_tab.dart';

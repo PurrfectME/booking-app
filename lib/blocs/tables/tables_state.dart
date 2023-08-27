@@ -47,3 +47,17 @@ class CreateTableLoaded extends TablesState {
   @override
   List<Object> get props => [placeId];
 }
+
+class TablesPositionsLoading extends TablesState {}
+
+class TablesPositionsLoaded extends TablesState {
+  final List<TablePosition> positions;
+  const TablesPositionsLoaded({
+    required this.positions,
+  });
+
+  @override
+  List<Object> get props => [positions];
+}
+
+class TablesPositionsUpdated extends TablesState {}

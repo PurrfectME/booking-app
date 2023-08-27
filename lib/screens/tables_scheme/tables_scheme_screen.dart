@@ -1,10 +1,17 @@
-import 'package:booking_app/utils/ext.dart';
+import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widgets/moveable_item.dart';
+import 'widgets/background_paint.dart';
+import 'widgets/table_position_wrapper.dart';
 
 class TablesSchemeScreen extends StatefulWidget {
-  const TablesSchemeScreen({super.key});
+  final TablesBloc tBloc;
+  const TablesSchemeScreen({
+    Key? key,
+    required this.tBloc,
+  }) : super(key: key);
 
   @override
   State<TablesSchemeScreen> createState() => _TablesSchemeScreenState();
@@ -24,88 +31,154 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
     ),
   ];
 
-  List<Positioned> droppedRectangles = [];
+  List<TablePositionWrapper> droppedRectangles = [];
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text('Drag and Drop Rectangles')),
-        body: Center(
-          child: Column(
-            children: [
-              Expanded(child: _buildDropZone()),
-              const SizedBox(height: 20),
-              _buildDraggableBoxes(),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildDropZone() => Container(
-        color: Colors.grey,
-        child: DragTarget<Container>(
-          builder: (context, candidateData, rejectedData) => Stack(
-            children: droppedRectangles,
-          ),
-          onWillAccept: (data) => true,
-          onAcceptWithDetails: (details) {
-            setState(() {
-              if (droppedRectangles.isNotEmpty) {
-                var toRemove = droppedRectangles.removeWhere((x) {
-                  var draggableChild = x.child as Draggable<Container>;
-                  if (draggableChild.data?.key == details.data.key) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                });
-              }
-
-              var uniqueData = Container(
-                key: UniqueKey(),
-                width: 50,
-                height: 50,
-                color: details.data.color,
-              );
-
-              droppedRectangles.add(
-                Positioned(
-                  left: details.offset.dx,
-                  top: details.offset.dy - 50,
-                  child: Draggable<Container>(
-                    key: UniqueKey(),
-                    data: uniqueData,
-                    feedback: Container(
-                      width: 50,
-                      height: 50,
-                      color: details.data.color?.withOpacity(0.7),
+  Widget build(BuildContext context) => BlocConsumer<TablesBloc, TablesState>(
+        bloc: widget.tBloc,
+        listener: (context, state) {
+          // TODO: implement listener
+        },
+        builder: (context, state) {
+          if (state is TablesPositionsLoaded) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Схема столов'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        widget.tBloc.add(
+                            SaveTablesPositions(positions: droppedRectangles));
+                      },
+                      child: const Text('Сохранить схему',
+                          style: TextStyle(color: Colors.white))),
+                ],
+              ),
+              body: Center(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CustomPaint(
+                        painter: BackgroundPaint(),
+                        child: _buildDropZone(state.positions),
+                      ),
                     ),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      color: details.data.color,
-                    ),
-                  ),
+                    const SizedBox(height: 20),
+                    _buildDraggableBoxes(),
+                  ],
                 ),
-              );
-            });
-          },
-        ),
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
       );
 
-  Widget _buildDraggableBoxes() => Container(
-        height: 100,
-        child: Row(children: containersBox.map(_buildDraggableBox).toList()),
-      );
+  Widget _buildDropZone(List<TablePosition> intialPositions) {
+    final positions = intialPositions
+        .map((x) => Positioned(
+              top: x.y,
+              left: x.x,
+              //set data from table positions to data
+              child: Draggable<TablePositionWrapper>(
+                data: TablePositionWrapper(key: UniqueKey(), position: x),
+                feedback: Container(
+                  width: 50,
+                  height: 50,
+                  color: Color(x.color).withOpacity(0.7),
+                ),
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  color: Color(x.color),
+                ),
+              ),
+            ))
+        .toList();
 
-  Widget _buildDraggableBox(Container item) {
-    return Draggable<Container>(
-        key: UniqueKey(),
-        data: item,
-        feedback: Container(
-          width: 50,
-          height: 50,
-          color: item.color?.withOpacity(0.7),
+    droppedRectangles
+        .map((x) => positions.add(Positioned(
+              top: x.position.y,
+              left: x.position.x,
+              //set data from table positions to data
+              child: Draggable<TablePositionWrapper>(
+                data: TablePositionWrapper(key: x.key, position: x.position),
+                feedback: Container(
+                  width: 50,
+                  height: 50,
+                  color: Color(x.position.color).withOpacity(0.7),
+                ),
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  color: Color(x.position.color),
+                ),
+              ),
+            )))
+        .toList();
+    return Container(
+      child: DragTarget<TablePositionWrapper>(
+        builder: (context, candidateData, rejectedData) => Stack(
+          children: positions,
         ),
-        child: item);
+        //TODO: add onLeave event
+        onWillAccept: (data) => true,
+        onAcceptWithDetails: (details) {
+          setState(() {
+            if (droppedRectangles.isNotEmpty) {
+              droppedRectangles
+                ..removeWhere((x) => x.key == details.data.key)
+                ..add(TablePositionWrapper(
+                    key: details.data.key,
+                    position: TablePosition(
+                        id: 0,
+                        tableId: 1,
+                        placeId: 1,
+                        x: details.offset.dx,
+                        y: details.offset.dy - 55,
+                        color: details.data.position.color)));
+
+              return;
+            }
+
+            droppedRectangles.add(TablePositionWrapper(
+                key: UniqueKey(),
+                position: TablePosition(
+                    id: 0,
+                    tableId: 1,
+                    placeId: 1,
+                    x: details.offset.dx,
+                    y: details.offset.dy - 55,
+                    color: details.data.position.color)));
+          });
+        },
+      ),
+    );
   }
+
+  Widget _buildDraggableBoxes() => SizedBox(
+        height: 100,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: containersBox.map(_buildDraggableBox).toList()),
+      );
+
+  Widget _buildDraggableBox(Container item) => Draggable<TablePositionWrapper>(
+      key: UniqueKey(),
+      data: TablePositionWrapper(
+          key: UniqueKey(),
+          position: TablePosition(
+              id: 0,
+              tableId: 0,
+              placeId: 0,
+              x: 0,
+              y: 0,
+              color: item.color!.value)),
+      feedback: Container(
+        width: 50,
+        height: 50,
+        color: item.color?.withOpacity(0.7),
+      ),
+      child: Container(width: 50, height: 50, color: item.color));
 }

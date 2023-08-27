@@ -33,3 +33,23 @@ class CreateTable extends TablesEvent {
   @override
   List<Object?> get props => [number, guests];
 }
+
+class TablesPositionsLoad extends TablesEvent {
+  final int placeId;
+  const TablesPositionsLoad({
+    required this.placeId,
+  });
+
+  @override
+  List<Object?> get props => [placeId];
+}
+
+class SaveTablesPositions extends TablesEvent {
+  final List<TablePositionWrapper> positions;
+  const SaveTablesPositions({
+    required this.positions,
+  });
+
+  @override
+  List<Object?> get props => [positions];
+}

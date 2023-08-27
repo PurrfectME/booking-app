@@ -59,6 +59,23 @@ class _TablesScreenState extends State<TablesScreen> {
                           },
                           child: const Text('Создать стол',
                               style: TextStyle(color: Colors.white))),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.black,
+                              shape: const StadiumBorder()),
+                          onPressed: () {
+                            final tBloc = context.read<TablesBloc>()
+                              ..add(CreateTableLoad(placeId: state.placeId));
+                            tBloc.add(
+                                TablesPositionsLoad(placeId: state.placeId));
+                            Navigator.push<void>(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        TablesSchemeScreen(tBloc: tBloc)));
+                          },
+                          child: const Text('Схема')),
                     ],
                   );
                 } else {

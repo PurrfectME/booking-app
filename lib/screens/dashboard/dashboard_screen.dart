@@ -40,22 +40,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         onPressed: () => _createPlace(state.user.id!),
                         child: const Text('Создать заведение')),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 65),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.black,
-                            shape: const StadiumBorder()),
-                        onPressed: () {
-                          Navigator.push<void>(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const TablesSchemeScreen()));
-                        },
-                        child: const Text('Схема')),
-                  )
                 ],
               ),
               body: Container(
