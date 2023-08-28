@@ -76,6 +76,8 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
         // emit(TablesPositionsUpdated());
         final tablePositions = await HiveProvider.getTablePositions(placeId);
 
+        emit(TablesPositionsUpdated());
+
         emit(TablesPositionsLoaded(
             positions: TablePositionWrapper.wrap(tablePositions)));
       }

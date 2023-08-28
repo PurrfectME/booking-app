@@ -80,7 +80,7 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
               ),
             );
           } else {
-            return const SizedBox.shrink();
+            return const Text('asdadasda');
           }
         },
       );
