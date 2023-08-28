@@ -292,4 +292,24 @@ class HiveProvider {
 
     return positions.values.where((x) => x.placeId == placeId).toList();
   }
+
+  static Future removeTablesSchemeByPlaceId(int placeId) async {
+    final box = await Hive.openBox<TablePosition>('tablesPositions');
+
+    final schemeToDelete =
+        box.values.where((x) => x.placeId == placeId).map((e) => e.id).toList();
+
+    await box.deleteAll(schemeToDelete);
+  }
+
+  static Future addTablesScheme(List<TablePosition> positions) async {
+    final box = await Hive.openBox<TablePosition>('tablesPositions');
+
+    positions.map((x) async {
+      final id = await box.add(x);
+      x.id = id;
+
+      await x.save();
+    }).toList();
+  }
 }

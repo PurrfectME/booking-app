@@ -45,7 +45,7 @@ class TablesPositionsLoad extends TablesEvent {
 }
 
 class SaveTablesPositions extends TablesEvent {
-  final List<TablePositionWrapper> positions;
+  final List<TablePosition> positions;
   const SaveTablesPositions({
     required this.positions,
   });

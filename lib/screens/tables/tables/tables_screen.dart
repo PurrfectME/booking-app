@@ -72,8 +72,10 @@ class _TablesScreenState extends State<TablesScreen> {
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        TablesSchemeScreen(tBloc: tBloc)));
+                                    builder: (context) => TablesSchemeScreen(
+                                          tBloc: tBloc,
+                                          placeId: state.placeId,
+                                        )));
                           },
                           child: const Text('Схема')),
                     ],
