@@ -3,6 +3,7 @@ import 'package:booking_app/models/local/table_vm.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/providers/hive_db.dart';
+import 'package:booking_app/screens/tables_scheme/widgets/table_position_wrapper.dart';
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -65,13 +66,18 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
 
         final tablePositions = await HiveProvider.getTablePositions(placeId);
 
-        emit(TablesPositionsLoaded(positions: tablePositions));
+        emit(TablesPositionsLoaded(
+            positions: TablePositionWrapper.wrap(tablePositions)));
       } else if (event is SaveTablesPositions) {
         await HiveProvider.removeTablesSchemeByPlaceId(placeId);
 
         await HiveProvider.addTablesScheme(event.positions);
 
-        emit(TablesPositionsUpdated());
+        // emit(TablesPositionsUpdated());
+        final tablePositions = await HiveProvider.getTablePositions(placeId);
+
+        emit(TablesPositionsLoaded(
+            positions: TablePositionWrapper.wrap(tablePositions)));
       }
     });
   }

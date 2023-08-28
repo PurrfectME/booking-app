@@ -53,8 +53,11 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
                 actions: [
                   TextButton(
                       onPressed: () {
+                        final local = [...droppedRectangles];
+                        droppedRectangles.clear();
+
                         widget.tBloc.add(SaveTablesPositions(positions: [
-                          ...droppedRectangles.map((x) => x.position),
+                          ...local.map((x) => x.position),
                         ]));
                       },
                       child: const Text('Сохранить схему',
@@ -82,12 +85,12 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
         },
       );
 
-  Widget _buildDropZone(List<TablePosition> intialPositions) {
+  Widget _buildDropZone(List<TablePositionWrapper> intialPositions) {
     intialPositions
-        .skipWhile((value) =>
-            droppedRectangles.any((el) => el.position.id == value.id))
+        .skipWhile(
+            (value) => droppedRectangles.any((el) => el.key == value.key))
         .map((x) => droppedRectangles
-            .add(TablePositionWrapper(key: UniqueKey(), position: x)))
+            .add(TablePositionWrapper(key: x.key, position: x.position)))
         .toList();
 
     final positions = droppedRectangles
@@ -110,26 +113,6 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
             ))
         .toList();
 
-    // droppedRectangles
-    //     .map((x) => positions.add(Positioned(
-    //           top: x.position.y,
-    //           left: x.position.x,
-    //           //set data from table positions to data
-    //           child: Draggable<TablePositionWrapper>(
-    //             data: TablePositionWrapper(key: x.key, position: x.position),
-    //             feedback: Container(
-    //               width: 50,
-    //               height: 50,
-    //               color: Color(x.position.color).withOpacity(0.7),
-    //             ),
-    //             child: Container(
-    //               width: 50,
-    //               height: 50,
-    //               color: Color(x.position.color),
-    //             ),
-    //           ),
-    //         )))
-    //     .toList();
     return Container(
       child: DragTarget<TablePositionWrapper>(
         builder: (context, candidateData, rejectedData) => Stack(
@@ -140,17 +123,17 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
         onAcceptWithDetails: (details) {
           setState(() {
             if (droppedRectangles.isNotEmpty) {
-              droppedRectangles..removeWhere((x) => x.key == details.data.key);
-
-              droppedRectangles.add(TablePositionWrapper(
-                  key: details.data.key,
-                  position: TablePosition(
-                      id: 0,
-                      tableId: 1,
-                      placeId: widget.placeId,
-                      x: details.offset.dx,
-                      y: details.offset.dy - 55,
-                      color: details.data.position.color)));
+              droppedRectangles
+                ..removeWhere((x) => x.key == details.data.key)
+                ..add(TablePositionWrapper(
+                    key: details.data.key,
+                    position: TablePosition(
+                        id: 0,
+                        tableId: 1,
+                        placeId: widget.placeId,
+                        x: details.offset.dx,
+                        y: details.offset.dy - 55,
+                        color: details.data.position.color)));
 
               return;
             }
@@ -184,7 +167,7 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
           position: TablePosition(
               id: 0,
               tableId: 0,
-              placeId: 0,
+              placeId: widget.placeId,
               x: 0,
               y: 0,
               color: item.color!.value)),

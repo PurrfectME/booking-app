@@ -51,7 +51,7 @@ class CreateTableLoaded extends TablesState {
 class TablesPositionsLoading extends TablesState {}
 
 class TablesPositionsLoaded extends TablesState {
-  final List<TablePosition> positions;
+  final List<TablePositionWrapper> positions;
   const TablesPositionsLoaded({
     required this.positions,
   });

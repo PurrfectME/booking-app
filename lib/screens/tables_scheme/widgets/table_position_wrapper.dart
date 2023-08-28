@@ -8,4 +8,8 @@ class TablePositionWrapper {
     required this.position,
     required this.key,
   });
+
+  static List<TablePositionWrapper> wrap(List<TablePosition> items) => items
+      .map((e) => TablePositionWrapper(key: UniqueKey(), position: e))
+      .toList();
 }
