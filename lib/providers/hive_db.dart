@@ -1,7 +1,10 @@
+import 'package:booking_app/models/db/category_model.dart';
+import 'package:booking_app/models/db/food_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:dartx/dartx.dart';
 import 'package:hive_flutter/adapters.dart';
 
+import '../models/db/sub_category_model.dart';
 import '../screens/reservations/reservations_screen.dart';
 import '../utils/status_helper.dart';
 
@@ -15,7 +18,7 @@ class HiveProvider {
   Future<BoxCollection> initDb() async =>
       await BoxCollection.open('UReserveDB', {
         'places, tables, reservations, users, tableImages, userReservations',
-        'tablesPositions'
+        'tablesPositions, food, categories, subCategories'
       });
 
   static Future initHive() async {
@@ -25,7 +28,10 @@ class HiveProvider {
       ..registerAdapter<TableModel>(TableModelAdapter())
       ..registerAdapter<ReservationModel>(ReservationModelAdapter())
       ..registerAdapter<UserModel>(UserModelAdapter())
-      ..registerAdapter<TablePosition>(TablePositionAdapter());
+      ..registerAdapter<TablePosition>(TablePositionAdapter())
+      ..registerAdapter<FoodModel>(FoodModelAdapter())
+      ..registerAdapter<CategoryModel>(CategoryModelAdapter())
+      ..registerAdapter<SubCategoryModel>(SubCategoryModelAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -311,5 +317,23 @@ class HiveProvider {
 
       await x.save();
     }).toList();
+  }
+
+  static Future<List<CategoryModel>> getCategories(int placeId) async {
+    final box = await Hive.openBox<CategoryModel>('categories');
+
+    return box.values.where((x) => x.placeId == placeId).toList();
+  }
+
+  static Future createCategory(CategoryModel model) async {
+    final box = await Hive.openBox<CategoryModel>('categories');
+    model.subCategories = HiveList(box);
+
+    final category = model.copyWith();
+
+    final id = await box.add(category);
+    category.id = id;
+
+    await category.save();
   }
 }

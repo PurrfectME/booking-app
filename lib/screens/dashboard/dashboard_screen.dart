@@ -144,6 +144,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                     ..add(TableReservationsLoad(
                                                                         placeId:
                                                                             place.id))),
+                                                          BlocProvider(
+                                                              create: (context) =>
+                                                                  MenuBloc()),
                                                         ],
                                                         child:
                                                             const TablesScreen())));
