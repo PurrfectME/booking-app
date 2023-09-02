@@ -4,22 +4,11 @@ import 'package:booking_app/models/models.dart';
 import 'package:dartx/dartx.dart';
 import 'package:hive_flutter/adapters.dart';
 
-import '../models/db/sub_category_model.dart';
 import '../screens/reservations/reservations_screen.dart';
 import '../utils/status_helper.dart';
 
 class HiveProvider {
-  static BoxCollection? _collection;
-
   HiveProvider();
-
-  Future<BoxCollection> get collection async => _collection ??= await initDb();
-
-  Future<BoxCollection> initDb() async =>
-      await BoxCollection.open('UReserveDB', {
-        'places, tables, reservations, users, tableImages, userReservations',
-        'tablesPositions, food, categories, subCategories'
-      });
 
   static Future initHive() async {
     await Hive.initFlutter();
@@ -30,8 +19,7 @@ class HiveProvider {
       ..registerAdapter<UserModel>(UserModelAdapter())
       ..registerAdapter<TablePosition>(TablePositionAdapter())
       ..registerAdapter<FoodModel>(FoodModelAdapter())
-      ..registerAdapter<CategoryModel>(CategoryModelAdapter())
-      ..registerAdapter<SubCategoryModel>(SubCategoryModelAdapter());
+      ..registerAdapter<CategoryModel>(CategoryModelAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {

@@ -1,26 +1,20 @@
 import 'dart:convert';
 import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.g.dart';
 
 @HiveType(typeId: 3)
-@JsonSerializable()
 class UserModel extends HiveObject {
   @HiveField(0)
-  @JsonKey(name: 'id')
   int? id;
 
   @HiveField(1)
-  @JsonKey(name: 'email')
   String email;
 
   @HiveField(2)
-  @JsonKey(name: 'accessToken')
   String accessToken;
 
   @HiveField(3)
-  @JsonKey(name: 'refreshToken')
   String refreshToken;
 
   UserModel({

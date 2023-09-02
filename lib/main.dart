@@ -2,7 +2,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/providers/hive_db.dart';
-import 'package:booking_app/screens/dashboard/dashboard_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

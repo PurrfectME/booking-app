@@ -21,13 +21,14 @@ class FoodModelAdapter extends TypeAdapter<FoodModel> {
       name: fields[1] as String,
       price: fields[2] as double,
       ingredients: (fields[3] as HiveList).castHiveList(),
+      tags: (fields[4] as HiveList).castHiveList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, FoodModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class FoodModelAdapter extends TypeAdapter<FoodModel> {
       ..writeByte(2)
       ..write(obj.price)
       ..writeByte(3)
-      ..write(obj.ingredients);
+      ..write(obj.ingredients)
+      ..writeByte(4)
+      ..write(obj.tags);
   }
 
   @override

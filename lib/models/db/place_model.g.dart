@@ -69,38 +69,3 @@ class PlaceModelAdapter extends TypeAdapter<PlaceModel> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-PlaceModel _$PlaceModelFromJson(Map<String, dynamic> json) => PlaceModel(
-      json['id'] as int,
-      json['name'] as String,
-      json['description'] as String,
-      json['logoId'] as int,
-      json['base64Logo'] as String?,
-      json['updateDate'] as int,
-      (json['tables'] as List<dynamic>)
-          .map((e) => TableModel.fromJson(e as String))
-          .toList(),
-      json['ownerId'] as int,
-      json['city'] as String,
-      json['address'] as String,
-      json['allowBooking'] as bool,
-    );
-
-Map<String, dynamic> _$PlaceModelToJson(PlaceModel instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-      'logoId': instance.logoId,
-      'base64Logo': instance.base64Logo,
-      'updateDate': instance.updateDate,
-      'tables': instance.tables,
-      'ownerId': instance.ownerId,
-      'city': instance.city,
-      'address': instance.address,
-      'allowBooking': instance.allowBooking,
-    };

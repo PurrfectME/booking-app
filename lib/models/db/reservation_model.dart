@@ -2,59 +2,45 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'reservation_model.g.dart';
 
 @HiveType(typeId: 2)
-@JsonSerializable()
 class ReservationModel extends HiveObject {
   @HiveField(0)
-  @JsonKey(name: 'id')
   int? id;
 
   @HiveField(1)
-  @JsonKey(name: 'placeId')
   int placeId;
 
   @HiveField(2)
-  @JsonKey(name: 'tableId')
   int tableId;
 
   @HiveField(3)
-  @JsonKey(name: 'userId')
   int? userId;
 
   @HiveField(4)
-  @JsonKey(name: 'phoneNumber')
   String? phoneNumber;
 
   @HiveField(5)
-  @JsonKey(name: 'name')
   String? name;
 
   @HiveField(6)
-  @JsonKey(name: 'start')
   int start;
 
   @HiveField(7)
-  @JsonKey(name: 'end')
   int end;
 
   @HiveField(8)
-  @JsonKey(name: 'guests')
   int guests;
 
   @HiveField(9)
-  @JsonKey(name: 'excludeReshuffle')
   bool excludeReshuffle;
 
   @HiveField(10)
-  @JsonKey(name: 'comment')
   String? comment;
 
   @HiveField(11)
-  @JsonKey(name: 'status')
   int status;
 
   ReservationModel(

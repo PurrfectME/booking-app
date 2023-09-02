@@ -72,39 +72,3 @@ class ReservationModelAdapter extends TypeAdapter<ReservationModel> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-ReservationModel _$ReservationModelFromJson(Map<String, dynamic> json) =>
-    ReservationModel(
-      id: json['id'] as int?,
-      placeId: json['placeId'] as int,
-      tableId: json['tableId'] as int,
-      userId: json['userId'] as int?,
-      phoneNumber: json['phoneNumber'] as String?,
-      name: json['name'] as String?,
-      start: json['start'] as int,
-      end: json['end'] as int,
-      guests: json['guests'] as int,
-      excludeReshuffle: json['excludeReshuffle'] as bool,
-      comment: json['comment'] as String?,
-      status: json['status'] as int,
-    );
-
-Map<String, dynamic> _$ReservationModelToJson(ReservationModel instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'placeId': instance.placeId,
-      'tableId': instance.tableId,
-      'userId': instance.userId,
-      'phoneNumber': instance.phoneNumber,
-      'name': instance.name,
-      'start': instance.start,
-      'end': instance.end,
-      'guests': instance.guests,
-      'excludeReshuffle': instance.excludeReshuffle,
-      'comment': instance.comment,
-      'status': instance.status,
-    };

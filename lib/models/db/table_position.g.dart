@@ -54,27 +54,3 @@ class TablePositionAdapter extends TypeAdapter<TablePosition> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-TablePosition _$TablePositionFromJson(Map<String, dynamic> json) =>
-    TablePosition(
-      id: json['id'] as int,
-      tableId: json['tableId'] as int,
-      placeId: json['placeId'] as int,
-      x: (json['x'] as num).toDouble(),
-      y: (json['y'] as num).toDouble(),
-      color: json['color'] as int,
-    );
-
-Map<String, dynamic> _$TablePositionToJson(TablePosition instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'tableId': instance.tableId,
-      'placeId': instance.placeId,
-      'x': instance.x,
-      'y': instance.y,
-      'color': instance.color,
-    };

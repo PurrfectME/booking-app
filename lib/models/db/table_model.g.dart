@@ -48,22 +48,3 @@ class TableModelAdapter extends TypeAdapter<TableModel> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-TableModel _$TableModelFromJson(Map<String, dynamic> json) => TableModel(
-      id: json['id'] as int,
-      number: json['number'] as int,
-      guests: json['guests'] as int,
-      placeId: json['placeId'] as int,
-    );
-
-Map<String, dynamic> _$TableModelToJson(TableModel instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'number': instance.number,
-      'guests': instance.guests,
-      'placeId': instance.placeId,
-    };

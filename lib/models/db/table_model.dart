@@ -1,27 +1,20 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'table_model.g.dart';
 
 @HiveType(typeId: 4)
-@JsonSerializable()
 class TableModel extends HiveObject {
   @HiveField(0)
-  @JsonKey(name: 'id')
   int id;
 
   @HiveField(1)
-  @JsonKey(name: 'number')
   int number;
 
   @HiveField(2)
-  @JsonKey(name: 'guests')
   int guests;
 
   @HiveField(3)
-  @JsonKey(name: 'placeId')
   int placeId;
 
   TableModel({
