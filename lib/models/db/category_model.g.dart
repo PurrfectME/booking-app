@@ -19,22 +19,19 @@ class CategoryModelAdapter extends TypeAdapter<CategoryModel> {
     return CategoryModel(
       id: fields[0] as int,
       name: fields[1] as String,
-      subCategories: (fields[2] as HiveList).castHiveList(),
-      placeId: fields[3] as int,
+      placeId: fields[2] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, CategoryModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.subCategories)
-      ..writeByte(3)
       ..write(obj.placeId);
   }
 

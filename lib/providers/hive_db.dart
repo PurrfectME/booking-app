@@ -327,7 +327,6 @@ class HiveProvider {
 
   static Future createCategory(CategoryModel model) async {
     final box = await Hive.openBox<CategoryModel>('categories');
-    model.subCategories = HiveList(box);
 
     final category = model.copyWith();
 

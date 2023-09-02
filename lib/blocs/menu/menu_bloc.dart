@@ -16,11 +16,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
 
         emit(MenuLoaded(placeId: event.placeId, categories: categories));
       } else if (event is CreateCategory) {
-        await HiveProvider.createCategory(CategoryModel(
-            id: 0,
-            name: event.name,
-            subCategories: null,
-            placeId: event.placeId));
+        await HiveProvider.createCategory(
+            CategoryModel(id: 0, name: event.name, placeId: event.placeId));
 
         final categories = await HiveProvider.getCategories(event.placeId);
 

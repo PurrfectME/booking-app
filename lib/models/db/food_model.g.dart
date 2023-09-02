@@ -20,19 +20,22 @@ class FoodModelAdapter extends TypeAdapter<FoodModel> {
       id: fields[0] as int,
       name: fields[1] as String,
       price: fields[2] as double,
+      ingredients: (fields[3] as HiveList).castHiveList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, FoodModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.price);
+      ..write(obj.price)
+      ..writeByte(3)
+      ..write(obj.ingredients);
   }
 
   @override
@@ -45,19 +48,3 @@ class FoodModelAdapter extends TypeAdapter<FoodModel> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-FoodModel _$FoodModelFromJson(Map<String, dynamic> json) => FoodModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      price: (json['price'] as num).toDouble(),
-    );
-
-Map<String, dynamic> _$FoodModelToJson(FoodModel instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'price': instance.price,
-    };

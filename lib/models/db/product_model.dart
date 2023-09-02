@@ -1,10 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'category_model.g.dart';
+part 'product_model.g.dart';
 
-@HiveType(typeId: 7)
-class CategoryModel extends HiveObject {
+@HiveType(typeId: 8)
+class ProductModel extends HiveObject {
   @HiveField(0)
   int id;
 
@@ -12,22 +13,28 @@ class CategoryModel extends HiveObject {
   String name;
 
   @HiveField(2)
+  int amount;
+
+  @HiveField(3)
   int placeId;
 
-  CategoryModel({
+  ProductModel({
     required this.id,
     required this.name,
+    required this.amount,
     required this.placeId,
   });
 
-  CategoryModel copyWith({
+  ProductModel copyWith({
     int? id,
     String? name,
+    int? amount,
     int? placeId,
   }) =>
-      CategoryModel(
+      ProductModel(
         id: id ?? this.id,
         name: name ?? this.name,
+        amount: amount ?? this.amount,
         placeId: placeId ?? this.placeId,
       );
 }
