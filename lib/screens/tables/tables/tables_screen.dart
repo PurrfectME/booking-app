@@ -1,4 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/blocs/food/food_bloc.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/hive_db.dart';
@@ -87,11 +88,13 @@ class _TablesScreenState extends State<TablesScreen> {
                           onPressed: () {
                             final mBloc = context.read<MenuBloc>()
                               ..add(MenuLoad(placeId: state.placeId));
+
+                            final fBloc = context.read<FoodBloc>();
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        MenuScreen(mBloc: mBloc)));
+                                    builder: (context) => MenuScreen(
+                                        mBloc: mBloc, fBloc: fBloc)));
                           },
                           child: const Text('Меню')),
                     ],

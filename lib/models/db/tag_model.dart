@@ -1,23 +1,24 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
 
+part 'tag_model.g.dart';
+
 @HiveType(typeId: 9)
-class Tag extends HiveObject {
+class TagModel extends HiveObject {
   @HiveField(0)
   int id;
 
   @HiveField(1)
   String name;
-  Tag({
+  TagModel({
     required this.id,
     required this.name,
   });
 
-  Tag copyWith({
+  TagModel copyWith({
     int? id,
     String? name,
   }) =>
-      Tag(
+      TagModel(
         id: id ?? this.id,
         name: name ?? this.name,
       );

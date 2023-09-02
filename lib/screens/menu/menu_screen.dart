@@ -4,13 +4,16 @@ import 'package:booking_app/screens/menu/widgets/category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/food/food_bloc.dart';
 import 'widgets/create_category_form.dart';
 
 class MenuScreen extends StatefulWidget {
   final MenuBloc mBloc;
+  final FoodBloc fBloc;
   const MenuScreen({
     Key? key,
     required this.mBloc,
+    required this.fBloc,
   }) : super(key: key);
 
   @override
@@ -45,7 +48,12 @@ class _MenuScreenState extends State<MenuScreen> {
                     ? GridView.count(
                         crossAxisCount: 3,
                         children: state.categories
-                            .map((x) => CategoryItem(name: x.name))
+                            .map((x) => CategoryItem(
+                                  name: x.name,
+                                  categoryId: x.id,
+                                  bloc: widget.fBloc,
+                                  placeId: state.placeId,
+                                ))
                             .toList(),
                       )
                     : const Center(
@@ -60,7 +68,7 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
             );
           } else {
-            return const SizedBox.shrink();
+            return SizedBox(child: Text('ASDASDASD'));
           }
         },
       );

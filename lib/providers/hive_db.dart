@@ -1,5 +1,7 @@
 import 'package:booking_app/models/db/category_model.dart';
 import 'package:booking_app/models/db/food_model.dart';
+import 'package:booking_app/models/db/tag_model.dart';
+import 'package:booking_app/models/local/create_food.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:dartx/dartx.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -19,7 +21,8 @@ class HiveProvider {
       ..registerAdapter<UserModel>(UserModelAdapter())
       ..registerAdapter<TablePosition>(TablePositionAdapter())
       ..registerAdapter<FoodModel>(FoodModelAdapter())
-      ..registerAdapter<CategoryModel>(CategoryModelAdapter());
+      ..registerAdapter<CategoryModel>(CategoryModelAdapter())
+      ..registerAdapter<TagModel>(TagModelAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -322,5 +325,44 @@ class HiveProvider {
     category.id = id;
 
     await category.save();
+  }
+
+  static Future<List<FoodModel>> getFood(int placeId) async =>
+      (await Hive.openBox<FoodModel>('food'))
+          .values
+          .where((x) => x.placeId == placeId)
+          .toList();
+
+  static Future createFood(CreateFoodModel model, int placeId) async {
+    final box = await Hive.openBox<FoodModel>('food');
+
+    final food = FoodModel(
+        id: -1,
+        name: model.name,
+        price: model.price,
+        ingredients: null,
+        tags: null,
+        placeId: placeId);
+
+    final id = await box.add(food);
+
+    food
+      ..tags = HiveList(box)
+      ..ingredients = HiveList(box);
+
+    final tags = await Hive.openBox<TagModel>('tags');
+
+    model.tags.map((e) async {
+      final tag = TagModel(id: 0, name: e);
+      final tagId = await tags.add(tag);
+      tag.id = tagId;
+      await tag.save();
+
+      food.tags!.add(tag);
+    });
+
+    food.id = id;
+
+    await food.save();
   }
 }

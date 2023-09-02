@@ -29,3 +29,25 @@ class CreateCategory extends MenuEvent {
   @override
   List<Object> get props => [placeId, name];
 }
+
+class FoodLoad extends MenuEvent {
+  final int placeId;
+  const FoodLoad({
+    required this.placeId,
+  });
+
+  @override
+  List<Object> get props => [placeId];
+}
+
+class CreateFood extends MenuEvent {
+  final int placeId;
+  final CreateFoodModel model;
+  const CreateFood({
+    required this.placeId,
+    required this.model,
+  });
+
+  @override
+  List<Object> get props => [placeId, model];
+}

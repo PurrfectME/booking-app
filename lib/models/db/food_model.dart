@@ -1,5 +1,5 @@
 import 'package:booking_app/models/db/product_model.dart';
-import 'package:booking_app/models/db/tag.dart';
+import 'package:booking_app/models/db/tag_model.dart';
 import 'package:hive/hive.dart';
 
 part 'food_model.g.dart';
@@ -16,10 +16,13 @@ class FoodModel extends HiveObject {
   double price;
 
   @HiveField(3)
-  HiveList<ProductModel> ingredients;
+  HiveList<ProductModel>? ingredients;
 
   @HiveField(4)
-  HiveList<Tag> tags;
+  HiveList<TagModel>? tags;
+
+  @HiveField(5)
+  int placeId;
 
   FoodModel({
     required this.id,
@@ -27,6 +30,7 @@ class FoodModel extends HiveObject {
     required this.price,
     required this.ingredients,
     required this.tags,
+    required this.placeId,
   });
 
   FoodModel copyWith({
@@ -34,13 +38,16 @@ class FoodModel extends HiveObject {
     String? name,
     double? price,
     HiveList<ProductModel>? ingredients,
-    HiveList<Tag>? tags,
-  }) =>
-      FoodModel(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        price: price ?? this.price,
-        ingredients: ingredients ?? this.ingredients,
-        tags: tags ?? this.tags,
-      );
+    HiveList<TagModel>? tags,
+    int? placeId,
+  }) {
+    return FoodModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      price: price ?? this.price,
+      ingredients: ingredients ?? this.ingredients,
+      tags: tags ?? this.tags,
+      placeId: placeId ?? this.placeId,
+    );
+  }
 }
