@@ -1,50 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'dish.dart';
+part of 'ingredient.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class DishAdapter extends TypeAdapter<Dish> {
+class IngredientAdapter extends TypeAdapter<Ingredient> {
   @override
-  final int typeId = 6;
+  final int typeId = 9;
 
   @override
-  Dish read(BinaryReader reader) {
+  Ingredient read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Dish(
+    return Ingredient(
       id: fields[0] as int,
       name: fields[1] as String,
-      price: fields[2] as double,
-      ingredients: (fields[3] as HiveList?)?.castHiveList(),
-      tags: (fields[4] as HiveList?)?.castHiveList(),
-      description: fields[5] as String,
-      mediaId: fields[6] as String,
+      amount: fields[2] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Dish obj) {
+  void write(BinaryWriter writer, Ingredient obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.price)
-      ..writeByte(3)
-      ..write(obj.ingredients)
-      ..writeByte(4)
-      ..write(obj.tags)
-      ..writeByte(5)
-      ..write(obj.description)
-      ..writeByte(6)
-      ..write(obj.mediaId);
+      ..write(obj.amount);
   }
 
   @override
@@ -53,7 +41,7 @@ class DishAdapter extends TypeAdapter<Dish> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DishAdapter &&
+      other is IngredientAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

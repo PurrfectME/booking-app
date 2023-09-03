@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/models/local/create_food.dart';
-import 'package:booking_app/screens/menu/widgets/create_food_form.dart';
+import 'package:booking_app/models/local/create_dish.dart';
+import 'package:booking_app/models/local/ingredient_model.dart';
+import 'package:booking_app/screens/menu/widgets/create_dish_form.dart';
 import 'package:booking_app/screens/menu/widgets/dish_item.dart';
 import 'package:booking_app/widgets/tag_item.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _DishScreenState extends State<DishScreen> {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.black,
                         shape: const StadiumBorder()),
-                    onPressed: () async => _createDish(),
+                    onPressed: () async => _createDish(state.ingredients),
                     child: const Text('Создать позицию')),
               ]),
               body: Padding(
@@ -49,14 +50,14 @@ class _DishScreenState extends State<DishScreen> {
                     Row(
                       children: [
                         // state.food.map((x) => x.tags)
-                        TagItem(text: "Мясо"),
-                        TagItem(text: "Паста"),
-                        TagItem(text: "Обеденное"),
-                        TagItem(text: "Основное"),
-                        TagItem(text: "Суп"),
-                        TagItem(text: "Мясо"),
-                        TagItem(text: "Мясо"),
-                        TagItem(text: "Мясо"),
+                        const TagItem(text: "Мясо"),
+                        const TagItem(text: "Паста"),
+                        const TagItem(text: "Обеденное"),
+                        const TagItem(text: "Основное"),
+                        const TagItem(text: "Суп"),
+                        const TagItem(text: "Мясо"),
+                        const TagItem(text: "Мясо"),
+                        const TagItem(text: "Мясо"),
                       ],
                     ),
                     const SizedBox(height: 30),
@@ -96,15 +97,15 @@ class _DishScreenState extends State<DishScreen> {
         },
       );
 
-  Future _createDish() async {
-    final data = await showDialog<CreateFoodModel>(
+  Future _createDish(List<IngredientModel> ingredients) async {
+    final data = await showDialog<CreateDishModel>(
         context: context,
-        builder: (context) => const AlertDialog(
-              shape: RoundedRectangleBorder(
+        builder: (context) => AlertDialog(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))),
-              titlePadding: EdgeInsets.symmetric(horizontal: 30),
-              backgroundColor: Color.fromARGB(255, 23, 23, 23),
-              title: Align(
+              titlePadding: const EdgeInsets.symmetric(horizontal: 30),
+              backgroundColor: const Color.fromARGB(255, 23, 23, 23),
+              title: const Align(
                 child: Text(
                   'Создать позицию',
                   style: TextStyle(
@@ -114,8 +115,8 @@ class _DishScreenState extends State<DishScreen> {
                   ),
                 ),
               ),
-              content:
-                  SizedBox(height: 350, width: 500, child: CreateFoodForm()),
+              content: SizedBox(
+                  width: 500, child: CreateDishForm(ingredients: ingredients)),
             ));
 
     if (data == null) {

@@ -84,15 +84,13 @@ class _TablesScreenState extends State<TablesScreen> {
                               backgroundColor: Colors.black,
                               shape: const StadiumBorder()),
                           onPressed: () {
-                            final mBloc = context.read<MenuBloc>()
-                              ..add(MenuLoad(placeId: state.placeId));
-
-                            final fBloc = context.read<DishBloc>();
+                            final dBloc = context.read<DishBloc>()
+                              ..add(DishLoad());
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MenuScreen(
-                                        mBloc: mBloc, fBloc: fBloc)));
+                                    builder: (context) =>
+                                        DishScreen(dBloc: dBloc)));
                           },
                           child: const Text('Меню')),
                     ],

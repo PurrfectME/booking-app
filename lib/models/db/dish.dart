@@ -20,12 +20,19 @@ class Dish extends HiveObject {
   @HiveField(4)
   HiveList<Tag>? tags;
 
+  @HiveField(5)
+  String description;
+
+  @HiveField(6)
+  String mediaId;
   Dish({
     required this.id,
     required this.name,
     required this.price,
-    required this.ingredients,
-    required this.tags,
+    this.ingredients,
+    this.tags,
+    required this.description,
+    required this.mediaId,
   });
 
   Dish copyWith({
@@ -34,12 +41,17 @@ class Dish extends HiveObject {
     double? price,
     HiveList<Product>? ingredients,
     HiveList<Tag>? tags,
-  }) =>
-      Dish(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        price: price ?? this.price,
-        ingredients: ingredients ?? this.ingredients,
-        tags: tags ?? this.tags,
-      );
+    String? description,
+    String? mediaId,
+  }) {
+    return Dish(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      price: price ?? this.price,
+      ingredients: ingredients ?? this.ingredients,
+      tags: tags ?? this.tags,
+      description: description ?? this.description,
+      mediaId: mediaId ?? this.mediaId,
+    );
+  }
 }

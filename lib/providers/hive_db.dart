@@ -1,5 +1,5 @@
-import 'package:booking_app/models/db/dish.dart';
-import 'package:booking_app/models/local/create_food.dart';
+import 'package:booking_app/models/db/ingredient.dart';
+import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:dartx/dartx.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -324,22 +324,36 @@ class HiveProvider {
   //   await category.save();
   // }
 
+  static Future<List<Ingredient>> getIngredients() async =>
+      (await Hive.openBox<Ingredient>('ingredients')).values.toList();
+
+  static Future createIngredient(Ingredient data) async {
+    final box = await Hive.openBox<Ingredient>('ingredients');
+
+    final id = await box.add(data);
+    data.id = id;
+
+    return await data.save();
+  }
+
   static Future<List<Dish>> getDishes() async =>
-      (await Hive.openBox<Dish>('food')).values.toList();
+      (await Hive.openBox<Dish>('dish')).values.toList();
 
-  static Future createDish(CreateFoodModel model) async {
-    final box = await Hive.openBox<Dish>('food');
+  static Future createDish(CreateDishModel model) async {
+    final box = await Hive.openBox<Dish>('dish');
 
-    final food = Dish(
+    final dish = Dish(
         id: -1,
         name: model.name,
         price: model.price,
         ingredients: null,
-        tags: null);
+        tags: null,
+        description: model.description,
+        mediaId: model.mediaId);
 
-    final id = await box.add(food);
+    final id = await box.add(dish);
 
-    food
+    dish
       ..tags = HiveList(box)
       ..ingredients = HiveList(box);
 
@@ -351,11 +365,11 @@ class HiveProvider {
       tag.id = tagId;
       await tag.save();
 
-      food.tags!.add(tag);
+      dish.tags!.add(tag);
     });
 
-    food.id = id;
+    dish.id = id;
 
-    await food.save();
+    return await dish.save();
   }
 }

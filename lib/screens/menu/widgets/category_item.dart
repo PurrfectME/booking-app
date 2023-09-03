@@ -23,7 +23,7 @@ class CategoryItem extends StatelessWidget {
           switch (categoryId) {
             //food
             case 0:
-              bloc!.add(DishLoad(placeId: placeId));
+              // bloc!.add(DishLoad(placeId: placeId));
               Navigator.push<void>(
                   context,
                   MaterialPageRoute(

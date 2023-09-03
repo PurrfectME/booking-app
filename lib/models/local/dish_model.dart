@@ -13,11 +13,17 @@ class DishModel {
 
   List<Tag>? tags;
 
+  String description;
+
+  String mediaId;
+
   DishModel({
     required this.id,
     required this.name,
     required this.price,
     required this.ingredients,
     required this.tags,
+    required this.description,
+    required this.mediaId,
   });
 }

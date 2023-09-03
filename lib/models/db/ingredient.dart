@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+part 'ingredient.g.dart';
 
 @HiveType(typeId: 9)
 class Ingredient extends HiveObject {

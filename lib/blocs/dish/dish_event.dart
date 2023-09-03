@@ -9,17 +9,14 @@ class DishEvent extends Equatable {
 }
 
 class DishLoad extends DishEvent {
-  final int placeId;
-  const DishLoad({
-    required this.placeId,
-  });
+  const DishLoad();
 
   @override
-  List<Object> get props => [placeId];
+  List<Object> get props => [];
 }
 
 class CreateDish extends DishEvent {
-  final CreateFoodModel model;
+  final CreateDishModel model;
   const CreateDish({
     required this.model,
   });
