@@ -1,30 +1,28 @@
-// import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/blocs/food/food_bloc.dart';
+import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/create_food.dart';
 import 'package:booking_app/screens/menu/widgets/create_food_form.dart';
+import 'package:booking_app/screens/menu/widgets/dish_item.dart';
 import 'package:booking_app/widgets/tag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/category_item.dart';
-
-class FoodScreen extends StatefulWidget {
-  final FoodBloc fBloc;
-  const FoodScreen({super.key, required this.fBloc});
+class DishScreen extends StatefulWidget {
+  final DishBloc dBloc;
+  const DishScreen({super.key, required this.dBloc});
 
   @override
-  State<FoodScreen> createState() => _FoodScreenState();
+  State<DishScreen> createState() => _DishScreenState();
 }
 
-class _FoodScreenState extends State<FoodScreen> {
+class _DishScreenState extends State<DishScreen> {
   @override
-  Widget build(BuildContext context) => BlocConsumer<FoodBloc, FoodState>(
-        bloc: widget.fBloc,
+  Widget build(BuildContext context) => BlocConsumer<DishBloc, DishState>(
+        bloc: widget.dBloc,
         listener: (context, state) {
           // TODO: implement listener
         },
         builder: (context, state) {
-          if (state is FoodLoaded) {
+          if (state is DishLoaded) {
             return Scaffold(
               appBar: AppBar(title: const Text('Еда'), actions: [
                 ElevatedButton(
@@ -32,13 +30,14 @@ class _FoodScreenState extends State<FoodScreen> {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.black,
                         shape: const StadiumBorder()),
-                    onPressed: () => _createFood(state.placeId),
+                    onPressed: () async => _createDish(),
                     child: const Text('Создать позицию')),
               ]),
               body: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Text(
                       'Теги',
@@ -49,6 +48,7 @@ class _FoodScreenState extends State<FoodScreen> {
                     ),
                     Row(
                       children: [
+                        // state.food.map((x) => x.tags)
                         TagItem(text: "Мясо"),
                         TagItem(text: "Паста"),
                         TagItem(text: "Обеденное"),
@@ -60,20 +60,22 @@ class _FoodScreenState extends State<FoodScreen> {
                       ],
                     ),
                     const SizedBox(height: 30),
-                    if (state.food.isNotEmpty)
-                      GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        children: state.food
-                            //TODO: remove categoryItem
-                            .map((x) => CategoryItem(
-                                  name: x.name,
-                                  categoryId: x.id,
-                                  bloc: null,
-                                  placeId: 0,
-                                ))
-                            .toList(),
+                    if (state.dishes.isNotEmpty)
+                      Expanded(
+                        child: GridView.count(
+                          primary: true,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 20,
+                          shrinkWrap: true,
+                          crossAxisCount: 3,
+                          children: state.dishes
+                              .map(
+                                  (x) => DishItem(name: x.name, price: x.price))
+                              .toList(),
+                        ),
                       )
+                    // FoodItem(
+                    //     name: state.food[0].name, price: state.food[0].price)
                     else
                       const Center(
                         child: Text(
@@ -94,7 +96,7 @@ class _FoodScreenState extends State<FoodScreen> {
         },
       );
 
-  Future _createFood(int placeId) async {
+  Future _createDish() async {
     final data = await showDialog<CreateFoodModel>(
         context: context,
         builder: (context) => const AlertDialog(
@@ -123,6 +125,6 @@ class _FoodScreenState extends State<FoodScreen> {
     //TODO: где и кто будет заполнять список продуктов при создании блюда
     //TODO: мб блюдо создать просто так, а уже потом можно заредачить
     //TODO: добавив ему ингредиентов(хотя по факту эта операция простая)
-    // widget.mBloc.add(CreateFood(model: data, placeId: placeId));
+    widget.dBloc.add(CreateDish(model: data));
   }
 }

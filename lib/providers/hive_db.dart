@@ -1,6 +1,4 @@
-import 'package:booking_app/models/db/category_model.dart';
-import 'package:booking_app/models/db/food_model.dart';
-import 'package:booking_app/models/db/tag_model.dart';
+import 'package:booking_app/models/db/dish.dart';
 import 'package:booking_app/models/local/create_food.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:dartx/dartx.dart';
@@ -20,9 +18,8 @@ class HiveProvider {
       ..registerAdapter<ReservationModel>(ReservationModelAdapter())
       ..registerAdapter<UserModel>(UserModelAdapter())
       ..registerAdapter<TablePosition>(TablePositionAdapter())
-      ..registerAdapter<FoodModel>(FoodModelAdapter())
-      ..registerAdapter<CategoryModel>(CategoryModelAdapter())
-      ..registerAdapter<TagModel>(TagModelAdapter());
+      ..registerAdapter<Dish>(DishAdapter())
+      ..registerAdapter<Tag>(TagAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -310,39 +307,35 @@ class HiveProvider {
     }).toList();
   }
 
-  static Future<List<CategoryModel>> getCategories(int placeId) async {
-    final box = await Hive.openBox<CategoryModel>('categories');
+  // static Future<List<CategoryModel>> getCategories(int placeId) async {
+  //   final box = await Hive.openBox<CategoryModel>('categories');
 
-    return box.values.where((x) => x.placeId == placeId).toList();
-  }
+  //   return box.values.where((x) => x.placeId == placeId).toList();
+  // }
 
-  static Future createCategory(CategoryModel model) async {
-    final box = await Hive.openBox<CategoryModel>('categories');
+  // static Future createCategory(CategoryModel model) async {
+  //   final box = await Hive.openBox<CategoryModel>('categories');
 
-    final category = model.copyWith();
+  //   final category = model.copyWith();
 
-    final id = await box.add(category);
-    category.id = id;
+  //   final id = await box.add(category);
+  //   category.id = id;
 
-    await category.save();
-  }
+  //   await category.save();
+  // }
 
-  static Future<List<FoodModel>> getFood(int placeId) async =>
-      (await Hive.openBox<FoodModel>('food'))
-          .values
-          .where((x) => x.placeId == placeId)
-          .toList();
+  static Future<List<Dish>> getDishes() async =>
+      (await Hive.openBox<Dish>('food')).values.toList();
 
-  static Future createFood(CreateFoodModel model, int placeId) async {
-    final box = await Hive.openBox<FoodModel>('food');
+  static Future createDish(CreateFoodModel model) async {
+    final box = await Hive.openBox<Dish>('food');
 
-    final food = FoodModel(
+    final food = Dish(
         id: -1,
         name: model.name,
         price: model.price,
         ingredients: null,
-        tags: null,
-        placeId: placeId);
+        tags: null);
 
     final id = await box.add(food);
 
@@ -350,10 +343,10 @@ class HiveProvider {
       ..tags = HiveList(box)
       ..ingredients = HiveList(box);
 
-    final tags = await Hive.openBox<TagModel>('tags');
+    final tags = await Hive.openBox<Tag>('tags');
 
     model.tags.map((e) async {
-      final tag = TagModel(id: 0, name: e);
+      final tag = Tag(id: 0, name: e);
       final tagId = await tags.add(tag);
       tag.id = tagId;
       await tag.save();

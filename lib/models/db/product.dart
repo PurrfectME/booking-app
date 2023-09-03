@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'product_model.g.dart';
+part 'product.g.dart';
 
 @HiveType(typeId: 8)
-class ProductModel extends HiveObject {
+class Product extends HiveObject {
   @HiveField(0)
   int id;
 
@@ -16,20 +16,20 @@ class ProductModel extends HiveObject {
   @HiveField(3)
   int placeId;
 
-  ProductModel({
+  Product({
     required this.id,
     required this.name,
     required this.amount,
     required this.placeId,
   });
 
-  ProductModel copyWith({
+  Product copyWith({
     int? id,
     String? name,
     int? amount,
     int? placeId,
   }) =>
-      ProductModel(
+      Product(
         id: id ?? this.id,
         name: name ?? this.name,
         amount: amount ?? this.amount,

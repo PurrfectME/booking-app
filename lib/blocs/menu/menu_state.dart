@@ -12,24 +12,22 @@ class MenuLoading extends MenuState {}
 
 class MenuLoaded extends MenuState {
   final int placeId;
-  final List<CategoryModel> categories;
   const MenuLoaded({
     required this.placeId,
-    required this.categories,
   });
 
   @override
-  List<Object> get props => [placeId, categories];
+  List<Object> get props => [placeId];
 }
 
-class FoodLoaded extends MenuState {
-  final int placeId;
-  final List<FoodModel> food;
-  const FoodLoaded({
-    required this.placeId,
-    required this.food,
-  });
+// class FoodLoaded extends MenuState {
+//   final int placeId;
+//   final List<Dish> food;
+//   const FoodLoaded({
+//     required this.placeId,
+//     required this.food,
+//   });
 
-  @override
-  List<Object> get props => [food, placeId];
-}
+//   @override
+//   List<Object> get props => [food, placeId];
+// }

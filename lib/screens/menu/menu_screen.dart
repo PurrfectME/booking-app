@@ -1,15 +1,13 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/create_category.dart';
-import 'package:booking_app/screens/menu/widgets/category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/food/food_bloc.dart';
 import 'widgets/create_category_form.dart';
 
 class MenuScreen extends StatefulWidget {
   final MenuBloc mBloc;
-  final FoodBloc fBloc;
+  final DishBloc fBloc;
   const MenuScreen({
     Key? key,
     required this.mBloc,
@@ -44,27 +42,15 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
               body: Padding(
                 padding: const EdgeInsets.all(15),
-                child: state.categories.isNotEmpty
-                    ? GridView.count(
-                        crossAxisCount: 3,
-                        children: state.categories
-                            .map((x) => CategoryItem(
-                                  name: x.name,
-                                  categoryId: x.id,
-                                  bloc: widget.fBloc,
-                                  placeId: state.placeId,
-                                ))
-                            .toList(),
-                      )
-                    : const Center(
-                        child: Text(
-                          'Нет категорий',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 36,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                child: const Center(
+                  child: Text(
+                    'Нет категорий',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
             );
           } else {
@@ -99,6 +85,6 @@ class _MenuScreenState extends State<MenuScreen> {
       return;
     }
 
-    widget.mBloc.add(CreateCategory(name: data.name, placeId: placeId));
+    // widget.mBloc.add(CreateCategory(name: data.name, placeId: placeId));
   }
 }

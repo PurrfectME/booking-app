@@ -1,24 +1,24 @@
 import 'package:hive/hive.dart';
 
-part 'tag_model.g.dart';
+part 'tag.g.dart';
 
 @HiveType(typeId: 9)
-class TagModel extends HiveObject {
+class Tag extends HiveObject {
   @HiveField(0)
   int id;
 
   @HiveField(1)
   String name;
-  TagModel({
+  Tag({
     required this.id,
     required this.name,
   });
 
-  TagModel copyWith({
+  Tag copyWith({
     int? id,
     String? name,
   }) =>
-      TagModel(
+      Tag(
         id: id ?? this.id,
         name: name ?? this.name,
       );

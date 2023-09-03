@@ -1,9 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/blocs/food/food_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:booking_app/screens/screens.dart';
-import 'package:booking_app/screens/tables_scheme/tables_scheme_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -150,7 +148,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                   MenuBloc()),
                                                           BlocProvider(
                                                               create: (context) =>
-                                                                  FoodBloc()),
+                                                                  DishBloc()),
                                                         ],
                                                         child:
                                                             const TablesScreen())));

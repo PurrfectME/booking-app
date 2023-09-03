@@ -1,5 +1,6 @@
 export 'auth/auth_bloc.dart';
 export 'dashboard/dashboard_bloc.dart';
+export 'dish/dish_bloc.dart';
 export 'menu/menu_bloc.dart';
 export 'reservation_info/reservation_info_bloc.dart';
 export 'reservations/reservations_bloc.dart';

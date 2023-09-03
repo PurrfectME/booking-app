@@ -1,8 +1,8 @@
+import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/screens/menu/dish/dish_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../blocs/food/food_bloc.dart';
 
 class CategoryItem extends StatelessWidget {
   final String name;
@@ -23,12 +23,12 @@ class CategoryItem extends StatelessWidget {
           switch (categoryId) {
             //food
             case 0:
-              bloc!.add(FoodLoad(placeId: placeId));
+              bloc!.add(DishLoad(placeId: placeId));
               Navigator.push<void>(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          FoodScreen(fBloc: bloc as FoodBloc)));
+                          DishScreen(dBloc: bloc as DishBloc)));
               break;
             default:
           }
