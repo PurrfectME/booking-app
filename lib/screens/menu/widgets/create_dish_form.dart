@@ -24,6 +24,16 @@ class _CreateDishFormState extends State<CreateDishForm> {
   late String description;
   List<IngredientModel> selectedIngredients = [];
 
+  Map<String, TextEditingController> amountControllers = {};
+
+  @override
+  void dispose() {
+    amountControllers.forEach((key, value) {
+      amountControllers[key]!.dispose();
+    });
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => Form(
         key: _formKey,
@@ -124,8 +134,7 @@ class _CreateDishFormState extends State<CreateDishForm> {
                   initialValue: '',
                   keyboardType: TextInputType.text,
                   onSaved: (newValue) {
-                    final separated = newValue!.split(' ');
-                    tags = separated;
+                    description = newValue!;
                   },
                   decoration: InputDecoration(
                     labelText: 'Описание',
@@ -147,19 +156,59 @@ class _CreateDishFormState extends State<CreateDishForm> {
                   // validator: validatePhoneNumber),
                 ),
                 const SizedBox(height: 20),
-                Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(
-                        width: 2, color: const Color.fromARGB(255, 45, 45, 45)),
-                    color: const Color.fromARGB(255, 23, 23, 23),
-                  ),
-                  child: Row(
-                    children: selectedIngredients
-                        .map((x) => TagItem(text: x.name))
-                        .toList(),
-                  ),
+                DataTable(
+                  columns: const [
+                    DataColumn(
+                      label: Text(
+                        'Название',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Количество',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                  rows: selectedIngredients
+                      .map((x) => DataRow(cells: [
+                            DataCell(Text(x.name,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 15))),
+                            DataCell(TextField(
+                                style: const TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                      borderSide: const BorderSide(
+                                          color: Constants.mainPurple,
+                                          width: 2)),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: const BorderSide(
+                                        color: Color.fromARGB(255, 66, 66, 66),
+                                        width: 2),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedIngredients
+                                        .firstWhere((e) => x.name == e.name)
+                                        .amount = value;
+                                  });
+                                },
+                                controller: amountControllers[x.name])),
+                          ]))
+                      .toList(),
                 ),
                 ElevatedButton(
                   onPressed: () async => await _addIngredient(
@@ -245,6 +294,10 @@ class _CreateDishFormState extends State<CreateDishForm> {
 
     setState(() {
       selectedIngredients = data;
+
+      data.map((e) {
+        amountControllers[e.name] = TextEditingController(text: e.amount);
+      }).toList();
     });
   }
 }

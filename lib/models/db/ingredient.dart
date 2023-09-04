@@ -4,15 +4,11 @@ part 'ingredient.g.dart';
 @HiveType(typeId: 9)
 class Ingredient extends HiveObject {
   @HiveField(0)
-  int id;
-
-  @HiveField(1)
   String name;
 
-  @HiveField(2)
+  @HiveField(1)
   String amount;
   Ingredient({
-    required this.id,
     required this.name,
     required this.amount,
   });

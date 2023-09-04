@@ -20,7 +20,8 @@ class HiveProvider {
       ..registerAdapter<TablePosition>(TablePositionAdapter())
       ..registerAdapter<Dish>(DishAdapter())
       ..registerAdapter<Tag>(TagAdapter())
-      ..registerAdapter<Product>(ProductAdapter());
+      ..registerAdapter<Product>(ProductAdapter())
+      ..registerAdapter<Ingredient>(IngredientAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -340,14 +341,13 @@ class HiveProvider {
   static Future createIngredient(Ingredient data) async {
     final box = await Hive.openBox<Ingredient>('ingredients');
 
-    final id = await box.add(data);
-    data.id = id;
-
-    return await data.save();
+    await box.add(data);
   }
 
-  static Future<List<Dish>> getDishes() async =>
-      (await Hive.openBox<Dish>('dish')).values.toList();
+  static Future<List<Dish>> getDishes() async {
+    final a = (await Hive.openBox<Dish>('dish')).values.toList();
+    return a;
+  }
 
   static Future createDish(CreateDishModel model) async {
     final box = await Hive.openBox<Dish>('dish');
@@ -356,30 +356,40 @@ class HiveProvider {
         id: -1,
         name: model.name,
         price: model.price,
-        ingredients: null,
-        tags: null,
+        ingredients: [],
+        tags: [],
         description: model.description,
         mediaId: model.mediaId);
 
     final id = await box.add(dish);
 
-    dish
-      ..tags = HiveList(box)
-      ..ingredients = HiveList(box);
+    // dish
+    //   ..tags = HiveList(box)
+    //   ..ingredients = HiveList(box);
 
     final tags = await Hive.openBox<Tag>('tags');
 
-    model.tags.map((e) async {
+    for (final e in model.tags) {
       final tag = Tag(id: 0, name: e);
       final tagId = await tags.add(tag);
       tag.id = tagId;
       await tag.save();
 
       dish.tags!.add(tag);
-    });
+    }
+
+    for (final e in model.ingredients) {
+      final ingredient = Ingredient(name: e.name, amount: e.amount);
+      await createIngredient(ingredient);
+
+      dish.ingredients!.add(Product(
+          name: ingredient.name,
+          amount: double.parse(ingredient.amount),
+          type: "type"));
+    }
 
     dish.id = id;
 
-    return await dish.save();
+    await dish.save();
   }
 }

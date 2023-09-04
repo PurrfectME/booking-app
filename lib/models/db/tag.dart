@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'tag.g.dart';
 
-@HiveType(typeId: 9)
+@HiveType(typeId: 10)
 class Tag extends HiveObject {
   @HiveField(0)
   int id;
