@@ -1,14 +1,15 @@
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/local/ingredient_model.dart';
+import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/screens/menu/widgets/select_ingredients_form.dart';
 import 'package:flutter/material.dart';
 
 import '../../../widgets/tag_item.dart';
 
 class CreateDishForm extends StatefulWidget {
-  final List<IngredientModel> ingredients;
-  const CreateDishForm({super.key, required this.ingredients});
+  final List<ProductModel> products;
+  const CreateDishForm({super.key, required this.products});
 
   @override
   State<CreateDishForm> createState() => _CreateDishFormState();
@@ -21,7 +22,7 @@ class _CreateDishFormState extends State<CreateDishForm> {
   late double price;
   late List<String> tags;
   late String description;
-  late List<IngredientModel> selectedIngredients;
+  List<IngredientModel> selectedIngredients = [];
 
   @override
   Widget build(BuildContext context) => Form(
@@ -161,17 +162,10 @@ class _CreateDishFormState extends State<CreateDishForm> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    final list = [
-                      IngredientModel(id: 0, name: "meat", amount: "2"),
-                      IngredientModel(id: 1, name: "carrot", amount: "2"),
-                      IngredientModel(id: 2, name: "look", amount: "2"),
-                      IngredientModel(id: 3, name: "fish", amount: "2")
-                    ];
-                    //TODO: selectedIngredients.isNotEmpty ? selectedIngredients : widget.ingredients
-                    _addIngredient(
-                        widget.ingredients.isEmpty ? list : widget.ingredients);
-                  },
+                  onPressed: () async => await _addIngredient(
+                    widget.products,
+                    selectedIngredients,
+                  ),
                   style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       disabledForegroundColor:
@@ -220,7 +214,8 @@ class _CreateDishFormState extends State<CreateDishForm> {
         ),
       );
 
-  Future _addIngredient(List<IngredientModel> list) async {
+  Future _addIngredient(
+      List<ProductModel> list, List<IngredientModel> selected) async {
     final data = await showDialog<List<IngredientModel>>(
         context: context,
         builder: (context) => AlertDialog(
@@ -239,7 +234,9 @@ class _CreateDishFormState extends State<CreateDishForm> {
                 ),
               ),
               content: SizedBox(
-                  width: 500, child: SelectIngredientsForm(ingredients: list)),
+                  width: 500,
+                  child: SelectIngredientsForm(
+                      products: list, selected: selected)),
             ));
 
     if (data == null) {

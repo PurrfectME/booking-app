@@ -2,6 +2,7 @@ import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/hive_db.dart';
+import 'package:booking_app/screens/products/products_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:booking_app/screens/tables/tables/widgets/table_status.dart';
@@ -93,6 +94,21 @@ class _TablesScreenState extends State<TablesScreen> {
                                         DishScreen(dBloc: dBloc)));
                           },
                           child: const Text('Меню')),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.black,
+                              shape: const StadiumBorder()),
+                          onPressed: () {
+                            final pBloc = context.read<ProductBloc>()
+                              ..add(ProductsLoad());
+                            Navigator.push<void>(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProductsScreen(pBloc: pBloc)));
+                          },
+                          child: const Text('Продукты')),
                     ],
                   );
                 } else {

@@ -19,7 +19,8 @@ class HiveProvider {
       ..registerAdapter<UserModel>(UserModelAdapter())
       ..registerAdapter<TablePosition>(TablePositionAdapter())
       ..registerAdapter<Dish>(DishAdapter())
-      ..registerAdapter<Tag>(TagAdapter());
+      ..registerAdapter<Tag>(TagAdapter())
+      ..registerAdapter<Product>(ProductAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -326,6 +327,15 @@ class HiveProvider {
 
   static Future<List<Ingredient>> getIngredients() async =>
       (await Hive.openBox<Ingredient>('ingredients')).values.toList();
+
+  static Future<List<Product>> getProducts() async =>
+      (await Hive.openBox<Product>('products')).values.toList();
+
+  static Future createProduct(Product data) async {
+    final box = await Hive.openBox<Product>('products');
+
+    final id = await box.add(data);
+  }
 
   static Future createIngredient(Ingredient data) async {
     final box = await Hive.openBox<Ingredient>('ingredients');

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/local/dish_model.dart';
 import 'package:booking_app/models/local/ingredient_model.dart';
+import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/hive_db.dart';
 import 'package:equatable/equatable.dart';
@@ -17,25 +18,25 @@ class DishBloc extends Bloc<DishEvent, DishState> {
       if (event is DishLoad) {
         final dishesList = await _getDishes();
 
-        final ingredients = await HiveProvider.getIngredients();
-        final ingredientsList = ingredients
+        final products = await HiveProvider.getProducts();
+        final productsList = products
             .map((x) =>
-                IngredientModel(id: x.id, name: x.name, amount: x.amount))
+                ProductModel(name: x.name, amount: x.amount, type: x.type))
             .toList();
 
-        emit(DishLoaded(dishes: dishesList, ingredients: ingredientsList));
+        emit(DishLoaded(dishes: dishesList, products: productsList));
       } else if (event is CreateDish) {
         await HiveProvider.createDish(event.model);
 
         final dishesList = await _getDishes();
 
-        final ingredients = await HiveProvider.getIngredients();
-        final ingredientsList = ingredients
+        final products = await HiveProvider.getProducts();
+        final productsList = products
             .map((x) =>
-                IngredientModel(id: x.id, name: x.name, amount: x.amount))
+                ProductModel(name: x.name, amount: x.amount, type: x.type))
             .toList();
 
-        emit(DishLoaded(dishes: dishesList, ingredients: ingredientsList));
+        emit(DishLoaded(dishes: dishesList, products: productsList));
       } else {
         emit(DishLoading());
       }

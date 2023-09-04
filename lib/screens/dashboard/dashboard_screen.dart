@@ -149,6 +149,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                           BlocProvider(
                                                               create: (context) =>
                                                                   DishBloc()),
+                                                          BlocProvider(
+                                                              create: (context) =>
+                                                                  ProductBloc()),
                                                         ],
                                                         child:
                                                             const TablesScreen())));

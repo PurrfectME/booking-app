@@ -12,12 +12,12 @@ class DishLoading extends DishState {}
 
 class DishLoaded extends DishState {
   final List<DishModel> dishes;
-  final List<IngredientModel> ingredients;
+  final List<ProductModel> products;
   const DishLoaded({
     required this.dishes,
-    required this.ingredients,
+    required this.products,
   });
 
   @override
-  List<Object> get props => [dishes, ingredients];
+  List<Object> get props => [dishes, products];
 }

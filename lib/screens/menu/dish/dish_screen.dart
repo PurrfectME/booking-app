@@ -1,6 +1,7 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/local/ingredient_model.dart';
+import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/screens/menu/widgets/create_dish_form.dart';
 import 'package:booking_app/screens/menu/widgets/dish_item.dart';
 import 'package:booking_app/widgets/tag_item.dart';
@@ -31,7 +32,7 @@ class _DishScreenState extends State<DishScreen> {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.black,
                         shape: const StadiumBorder()),
-                    onPressed: () async => _createDish(state.ingredients),
+                    onPressed: () async => _createDish(state.products),
                     child: const Text('Создать позицию')),
               ]),
               body: Padding(
@@ -97,7 +98,7 @@ class _DishScreenState extends State<DishScreen> {
         },
       );
 
-  Future _createDish(List<IngredientModel> ingredients) async {
+  Future _createDish(List<ProductModel> products) async {
     final data = await showDialog<CreateDishModel>(
         context: context,
         builder: (context) => AlertDialog(
@@ -116,7 +117,7 @@ class _DishScreenState extends State<DishScreen> {
                 ),
               ),
               content: SizedBox(
-                  width: 500, child: CreateDishForm(ingredients: ingredients)),
+                  width: 500, child: CreateDishForm(products: products)),
             ));
 
     if (data == null) {
