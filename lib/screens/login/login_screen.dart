@@ -41,12 +41,22 @@ class LoginScreenState extends State<LoginScreen> {
                 MaterialPageRoute<void>(
                     builder: (context) => MultiBlocProvider(
                           providers: [
-                            // BlocProvider(
-                            //     create: (context) => ReservationsBloc()),
                             BlocProvider(
                               create: (context) => DashboardBloc()
                                 ..add(DashboardLoad(userId: state.user.id!)),
                             ),
+                            BlocProvider(
+                                create: (context) => TablesBloc(placeId: 1)),
+                            BlocProvider(
+                                create: (context) => ReservationsBloc()),
+                            BlocProvider(
+                                create: (context) => TableReservationsBloc([])
+                                  ..add(
+                                      const TableReservationsLoad(placeId: 1))),
+                            BlocProvider(create: (context) => MenuBloc()),
+                            BlocProvider(create: (context) => DishBloc()),
+                            BlocProvider(create: (context) => ProductBloc()),
+                            BlocProvider(create: (context) => KitchenBloc()),
                           ],
                           child: const DashboardScreen(),
                         )),

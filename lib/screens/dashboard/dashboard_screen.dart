@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
+import 'package:booking_app/screens/kitchen/kitchen_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,18 +32,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               appBar: AppBar(
                 title: const Text('UReserve'),
                 centerTitle: false,
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 65),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.black,
-                            shape: const StadiumBorder()),
-                        onPressed: () => _createPlace(state.user.id!),
-                        child: const Text('Создать заведение')),
-                  ),
-                ],
               ),
               body: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -85,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             margin: const EdgeInsets.only(bottom: 69),
                             width: 3,
                             decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 23, 23, 23),
+                                color: const Color.fromARGB(255, 23, 23, 23),
                                 borderRadius: BorderRadius.circular(15)),
                           ),
                         ),
@@ -93,89 +84,139 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(width: 42),
                     Expanded(
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: GridView.count(
+                        scrollDirection: Axis.vertical,
+                        crossAxisCount: 4,
                         children: [
-                          const Text(
-                            'Заведения',
-                            style: TextStyle(color: Colors.white, fontSize: 26),
-                          ),
-                          const SizedBox(height: 46),
-                          if (state.places.isEmpty)
-                            const Text(
-                              'Нет заведений',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 155, 155, 155),
-                                  fontSize: 22),
-                            )
-                          else
-                            Expanded(
-                              child: ListView.separated(
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(height: 20),
-                                shrinkWrap: true,
-                                itemCount: state.places.length,
-                                itemBuilder: (context, i) {
-                                  final place = state.places[i];
-                                  return UnconstrainedBox(
-                                    alignment: Alignment.centerLeft,
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push<void>(
-                                            context,
-                                            MaterialPageRoute<void>(
-                                                builder: (context) =>
-                                                    MultiBlocProvider(
-                                                        providers: [
-                                                          BlocProvider(
-                                                              create: (context) =>
-                                                                  TablesBloc(
-                                                                      placeId: place
-                                                                          .id)),
-                                                          BlocProvider(
-                                                              create: (context) =>
-                                                                  ReservationsBloc()),
-                                                          BlocProvider(
-                                                              create: (context) =>
-                                                                  TableReservationsBloc(
-                                                                      place
-                                                                          .tables)
-                                                                    ..add(TableReservationsLoad(
-                                                                        placeId:
-                                                                            place.id))),
-                                                          BlocProvider(
-                                                              create: (context) =>
-                                                                  MenuBloc()),
-                                                          BlocProvider(
-                                                              create: (context) =>
-                                                                  DishBloc()),
-                                                          BlocProvider(
-                                                              create: (context) =>
-                                                                  ProductBloc()),
-                                                          BlocProvider(
-                                                              create: (context) =>
-                                                                  KitchenBloc()),
-                                                        ],
-                                                        child:
-                                                            const TablesScreen())));
-                                      },
-                                      child: PlaceItem(
-                                        id: place.id,
-                                        name: place.name,
-                                        address: place.address,
-                                        city: place.city,
-                                        allowBooking: place.allowBooking,
-                                        onwerId: place.ownerId,
-                                      ),
-                                    ),
-                                  );
-                                },
+                          InkWell(
+                            onTap: () {
+                              final kBloc = context.read<KitchenBloc>()
+                                ..add(KitchenLoad());
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          KitchenScreen(kBloc: kBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Кухня]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
                               ),
-                            )
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              final kBloc = context.read<KitchenBloc>()
+                                ..add(KitchenLoad());
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          KitchenScreen(kBloc: kBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Кухня]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              final kBloc = context.read<KitchenBloc>()
+                                ..add(KitchenLoad());
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          KitchenScreen(kBloc: kBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Кухня]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              final kBloc = context.read<KitchenBloc>()
+                                ..add(KitchenLoad());
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          KitchenScreen(kBloc: kBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Кухня]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              final kBloc = context.read<KitchenBloc>()
+                                ..add(KitchenLoad());
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          KitchenScreen(kBloc: kBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Кухня]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              final kBloc = context.read<KitchenBloc>()
+                                ..add(KitchenLoad());
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          KitchenScreen(kBloc: kBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Кухня]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -185,37 +226,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
           }
         },
       );
-
-  Future _createPlace(int ownerId) async {
-    final data = await showDialog<CreatePlaceModel>(
-        context: context,
-        builder: (context) => const AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              titlePadding: EdgeInsets.symmetric(horizontal: 30),
-              backgroundColor: Color.fromARGB(255, 23, 23, 23),
-              title: Align(
-                child: Text(
-                  'Создать заведение',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              content:
-                  SizedBox(height: 350, width: 500, child: CreatePlaceForm()),
-            ));
-
-    if (data == null) {
-      return;
-    }
-
-    context.read<DashboardBloc>().add(CreatePlace(
-        ownerId: ownerId,
-        name: data.name,
-        city: data.city,
-        address: data.address));
-  }
 }
+                                      
+
+  // Future _createPlace(int ownerId) async {
+  //   final data = await showDialog<CreatePlaceModel>(
+  //       context: context,
+  //       builder: (context) => const AlertDialog(
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
+  //             titlePadding: EdgeInsets.symmetric(horizontal: 30),
+  //             backgroundColor: Color.fromARGB(255, 23, 23, 23),
+  //             title: Align(
+  //               child: Text(
+  //                 'Создать заведение',
+  //                 style: TextStyle(
+  //                   color: Colors.white,
+  //                   fontSize: 30,
+  //                   fontWeight: FontWeight.w500,
+  //                 ),
+  //               ),
+  //             ),
+  //             content:
+  //                 SizedBox(height: 350, width: 500, child: CreatePlaceForm()),
+  //           ));
+
+  //   if (data == null) {
+  //     return;
+  //   }
+
+  //   context.read<DashboardBloc>().add(CreatePlace(
+  //       ownerId: ownerId,
+  //       name: data.name,
+  //       city: data.city,
+  //       address: data.address));
+  // }
