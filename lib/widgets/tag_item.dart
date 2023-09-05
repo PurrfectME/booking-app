@@ -9,7 +9,7 @@ class TagItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      margin: const EdgeInsets.only(top: 13, bottom: 13, right: 10),
+      margin: const EdgeInsets.only(top: 5, bottom: 9, right: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(23),

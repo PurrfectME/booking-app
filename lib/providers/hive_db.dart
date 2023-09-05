@@ -363,10 +363,6 @@ class HiveProvider {
 
     final id = await box.add(dish);
 
-    // dish
-    //   ..tags = HiveList(box)
-    //   ..ingredients = HiveList(box);
-
     final tags = await Hive.openBox<Tag>('tags');
 
     for (final e in model.tags) {
@@ -391,5 +387,13 @@ class HiveProvider {
     dish.id = id;
 
     await dish.save();
+  }
+
+  static Future<List<Dish>> filterByTags(List<String> tags) async {
+    final result = (await Hive.openBox<Dish>('dish'))
+        .values
+        .where((x) => tags.containsAny(x.tags!.map((e) => e.name).toList()))
+        .toList();
+    return result;
   }
 }

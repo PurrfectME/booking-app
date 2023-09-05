@@ -15,7 +15,7 @@ class _CreateProductFormState extends State<CreateProductForm> {
   late String name;
   late double amount;
   late String type;
-
+//TODO: валидация на добавление продукта который уже существует
   @override
   Widget build(BuildContext context) => Form(
         key: _formKey,

@@ -1,4 +1,4 @@
-import 'package:booking_app/models/db/ingredient.dart';
+import 'package:booking_app/models/local/ingredient_model.dart';
 
 import '../db/tag.dart';
 
@@ -9,9 +9,9 @@ class DishModel {
 
   double price;
 
-  List<Ingredient>? ingredients;
+  List<IngredientModel> ingredients;
 
-  List<Tag>? tags;
+  List<Tag> tags;
 
   String description;
 

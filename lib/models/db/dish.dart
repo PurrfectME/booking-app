@@ -15,10 +15,10 @@ class Dish extends HiveObject {
   double price;
 
   @HiveField(3)
-  List<Product>? ingredients;
+  List<Product> ingredients;
 
   @HiveField(4)
-  List<Tag>? tags;
+  List<Tag> tags;
 
   @HiveField(5)
   String description;
@@ -29,8 +29,8 @@ class Dish extends HiveObject {
     required this.id,
     required this.name,
     required this.price,
-    this.ingredients,
-    this.tags,
+    required this.ingredients,
+    required this.tags,
     required this.description,
     required this.mediaId,
   });

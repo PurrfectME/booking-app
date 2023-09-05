@@ -1,10 +1,23 @@
-
+import 'package:booking_app/models/local/ingredient_model.dart';
+import 'package:booking_app/models/models.dart';
+import 'package:booking_app/widgets/tag_item.dart';
 import 'package:flutter/material.dart';
 
 class DishItem extends StatelessWidget {
   final String name;
   final double price;
-  const DishItem({super.key, required this.name, required this.price});
+  final String description;
+  final List<Tag> tags;
+  final List<IngredientModel> ingredients;
+
+  const DishItem({
+    Key? key,
+    required this.name,
+    required this.price,
+    required this.description,
+    required this.tags,
+    required this.ingredients,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Container(
@@ -50,6 +63,23 @@ class DishItem extends StatelessWidget {
                     'Цена: $price',
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
+                  Text(
+                    'Описание: $description',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Row(
+                    children: tags.map((e) => TagItem(text: e.name)).toList(),
+                  ),
+                  Text('Ингредиенты:'),
+                  ListView.builder(
+                    itemCount: ingredients.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Text(
+                          '${ingredients[index].name}, ${ingredients[index].amount}',
+                          style: TextStyle(color: Colors.white));
+                    },
+                  )
                 ],
               ),
             ),

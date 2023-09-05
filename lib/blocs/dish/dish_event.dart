@@ -24,3 +24,15 @@ class CreateDish extends DishEvent {
   @override
   List<Object> get props => [model];
 }
+
+class FilterByTags extends DishEvent {
+  final List<String> tags;
+  final List<String> allTags;
+  const FilterByTags({
+    required this.tags,
+    required this.allTags,
+  });
+
+  @override
+  List<Object> get props => [tags, allTags];
+}

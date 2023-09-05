@@ -20,8 +20,8 @@ class DishAdapter extends TypeAdapter<Dish> {
       id: fields[0] as int,
       name: fields[1] as String,
       price: fields[2] as double,
-      ingredients: (fields[3] as List?)?.cast<Product>(),
-      tags: (fields[4] as List?)?.cast<Tag>(),
+      ingredients: (fields[3] as List).cast<Product>(),
+      tags: (fields[4] as List).cast<Tag>(),
       description: fields[5] as String,
       mediaId: fields[6] as String,
     );

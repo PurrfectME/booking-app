@@ -1,10 +1,10 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/create_dish.dart';
-import 'package:booking_app/models/local/ingredient_model.dart';
 import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/screens/menu/widgets/create_dish_form.dart';
 import 'package:booking_app/screens/menu/widgets/dish_item.dart';
 import 'package:booking_app/widgets/tag_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +17,8 @@ class DishScreen extends StatefulWidget {
 }
 
 class _DishScreenState extends State<DishScreen> {
+  final filterByTags = <String>[];
+
   @override
   Widget build(BuildContext context) => BlocConsumer<DishBloc, DishState>(
         bloc: widget.dBloc,
@@ -49,19 +51,42 @@ class _DishScreenState extends State<DishScreen> {
                           fontWeight: FontWeight.bold),
                     ),
                     Row(
+                      children: state.tags
+                          .map((e) => InkWell(
+                              onTap: () {
+                                setState(() {
+                                  filterByTags.add(e);
+                                });
+
+                                widget.dBloc.add(FilterByTags(
+                                    tags: filterByTags, allTags: state.tags));
+                              },
+                              child: TagItem(text: e)))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
                       children: [
-                        // state.food.map((x) => x.tags)
-                        const TagItem(text: "Мясо"),
-                        const TagItem(text: "Паста"),
-                        const TagItem(text: "Обеденное"),
-                        const TagItem(text: "Основное"),
-                        const TagItem(text: "Суп"),
-                        const TagItem(text: "Мясо"),
-                        const TagItem(text: "Мясо"),
-                        const TagItem(text: "Мясо"),
+                        const Text(
+                          'Фильтр:',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        ...filterByTags
+                            .map((e) => InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      filterByTags.remove(e);
+                                    });
+                                    widget.dBloc.add(FilterByTags(
+                                        tags: filterByTags,
+                                        allTags: state.tags));
+                                  },
+                                  child: TagItem(text: e),
+                                ))
+                            .toList()
                       ],
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 15),
                     if (state.dishes.isNotEmpty)
                       Expanded(
                         child: GridView.count(
@@ -71,13 +96,16 @@ class _DishScreenState extends State<DishScreen> {
                           shrinkWrap: true,
                           crossAxisCount: 3,
                           children: state.dishes
-                              .map(
-                                  (x) => DishItem(name: x.name, price: x.price))
+                              .map((x) => DishItem(
+                                    name: x.name,
+                                    price: x.price,
+                                    description: x.description,
+                                    tags: x.tags,
+                                    ingredients: x.ingredients,
+                                  ))
                               .toList(),
                         ),
                       )
-                    // FoodItem(
-                    //     name: state.food[0].name, price: state.food[0].price)
                     else
                       const Center(
                         child: Text(
@@ -92,6 +120,8 @@ class _DishScreenState extends State<DishScreen> {
                 ),
               ),
             );
+          } else if (state is DishLoading) {
+            return const Center(child: CupertinoActivityIndicator(radius: 20));
           } else {
             return const SizedBox.shrink();
           }

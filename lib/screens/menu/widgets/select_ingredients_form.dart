@@ -76,6 +76,7 @@ class _SelectIngredientsFormState extends State<SelectIngredientsForm> {
                   ),
                 ),
               ),
+              //TODO: убрать из поиска уже добавленные ингредиенты
               suggestionsCallback: (pattern) => widget.products.where(
                   (product) => product.name
                       .toLowerCase()
@@ -170,14 +171,4 @@ class _SelectIngredientsFormState extends State<SelectIngredientsForm> {
           .add(IngredientModel(name: product.name, amount: '0'));
     });
   }
-
-  // void _updateAmount(String name, double amount) {
-  //   setState(() {
-  //     if (amount > 0) {
-  //       selectedIngredientsWithAmount[name] = amount.toString();
-  //     } else {
-  //       selectedIngredientsWithAmount.remove(name);
-  //     }
-  //   });
-  // }
 }
