@@ -28,15 +28,18 @@ class _DishScreenState extends State<DishScreen> {
         builder: (context, state) {
           if (state is DishLoaded) {
             return Scaffold(
-              appBar: AppBar(title: const Text('Еда'), actions: [
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.black,
-                        shape: const StadiumBorder()),
-                    onPressed: () async => _createDish(state.products),
-                    child: const Text('Создать позицию')),
-              ]),
+              appBar: AppBar(
+                title: const Text('Еда'),
+                actions: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.black,
+                          shape: const StadiumBorder()),
+                      onPressed: () async => _createDish(state.products),
+                      child: const Text('Создать позицию')),
+                ],
+              ),
               body: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Column(

@@ -21,7 +21,8 @@ class HiveProvider {
       ..registerAdapter<Dish>(DishAdapter())
       ..registerAdapter<Tag>(TagAdapter())
       ..registerAdapter<Product>(ProductAdapter())
-      ..registerAdapter<Ingredient>(IngredientAdapter());
+      ..registerAdapter<Ingredient>(IngredientAdapter())
+      ..registerAdapter<Kitchen>(KitchenAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -309,23 +310,6 @@ class HiveProvider {
     }).toList();
   }
 
-  // static Future<List<CategoryModel>> getCategories(int placeId) async {
-  //   final box = await Hive.openBox<CategoryModel>('categories');
-
-  //   return box.values.where((x) => x.placeId == placeId).toList();
-  // }
-
-  // static Future createCategory(CategoryModel model) async {
-  //   final box = await Hive.openBox<CategoryModel>('categories');
-
-  //   final category = model.copyWith();
-
-  //   final id = await box.add(category);
-  //   category.id = id;
-
-  //   await category.save();
-  // }
-
   static Future<List<Ingredient>> getIngredients() async =>
       (await Hive.openBox<Ingredient>('ingredients')).values.toList();
 
@@ -335,7 +319,7 @@ class HiveProvider {
   static Future createProduct(Product data) async {
     final box = await Hive.openBox<Product>('products');
 
-    final id = await box.add(data);
+    await box.add(data);
   }
 
   static Future createIngredient(Ingredient data) async {
@@ -371,14 +355,14 @@ class HiveProvider {
       tag.id = tagId;
       await tag.save();
 
-      dish.tags!.add(tag);
+      dish.tags.add(tag);
     }
 
     for (final e in model.ingredients) {
       final ingredient = Ingredient(name: e.name, amount: e.amount);
       await createIngredient(ingredient);
 
-      dish.ingredients!.add(Product(
+      dish.ingredients.add(Product(
           name: ingredient.name,
           amount: double.parse(ingredient.amount),
           type: "type"));
@@ -392,8 +376,21 @@ class HiveProvider {
   static Future<List<Dish>> filterByTags(List<String> tags) async {
     final result = (await Hive.openBox<Dish>('dish'))
         .values
-        .where((x) => tags.containsAny(x.tags!.map((e) => e.name).toList()))
+        .where((x) => tags.containsAny(x.tags.map((e) => e.name).toList()))
         .toList();
     return result;
+  }
+
+  static Future<List<Kitchen>> getKitchenData() async =>
+      (await Hive.openBox<Kitchen>('kitchen')).values.toList();
+
+  static Future createKitchenItem(Kitchen data) async {
+    final box = await Hive.openBox<Kitchen>('kitchen');
+
+    final id = await box.add(data);
+
+    data.id = id;
+
+    await data.save();
   }
 }

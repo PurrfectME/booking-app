@@ -1,4 +1,5 @@
 export 'db/dish.dart';
+export 'db/kitchen.dart';
 export 'db/place_model.dart';
 export 'db/product.dart';
 export 'db/reservation_model.dart';

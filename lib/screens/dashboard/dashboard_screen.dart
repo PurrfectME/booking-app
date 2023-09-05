@@ -1,4 +1,5 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:booking_app/screens/screens.dart';
@@ -152,6 +153,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                           BlocProvider(
                                                               create: (context) =>
                                                                   ProductBloc()),
+                                                          BlocProvider(
+                                                              create: (context) =>
+                                                                  KitchenBloc()),
                                                         ],
                                                         child:
                                                             const TablesScreen())));
