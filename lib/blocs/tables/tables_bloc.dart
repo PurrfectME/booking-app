@@ -64,22 +64,32 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
       } else if (event is TablesPositionsLoad) {
         emit(TablesPositionsLoading());
 
-        final tablePositions = await HiveProvider.getTablePositions(placeId);
+        final tablePositions = await HiveProvider.getTablePositions();
+
+        final tables = (await HiveProvider.getTables())
+          ..removeWhere(
+              (x) => (tablePositions.map((e) => e.number)).contains(x.number));
 
         emit(TablesPositionsLoaded(
-            positions: TablePositionWrapper.wrap(tablePositions)));
+          positions: TablePositionWrapper.wrap(tablePositions),
+          tables: tables,
+        ));
       } else if (event is SaveTablesPositions) {
-        await HiveProvider.removeTablesSchemeByPlaceId(placeId);
+        await HiveProvider.removeTablesScheme();
 
         await HiveProvider.addTablesScheme(event.positions);
 
-        // emit(TablesPositionsUpdated());
-        final tablePositions = await HiveProvider.getTablePositions(placeId);
+        final tablePositions = await HiveProvider.getTablePositions();
+        final tables = (await HiveProvider.getTables())
+          ..removeWhere(
+              (x) => (tablePositions.map((e) => e.number)).contains(x.number));
 
         emit(TablesPositionsUpdated());
 
         emit(TablesPositionsLoaded(
-            positions: TablePositionWrapper.wrap(tablePositions)));
+          positions: TablePositionWrapper.wrap(tablePositions),
+          tables: tables,
+        ));
       }
     });
   }

@@ -21,24 +21,20 @@ class DishItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: 300,
-        height: 130,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
               width: 2, color: const Color.fromARGB(255, 45, 45, 45)),
           color: const Color.fromARGB(255, 23, 23, 23),
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 130,
-              width: 150,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30)),
+                    topRight: Radius.circular(30)),
                 image: DecorationImage(
                     opacity: 1,
                     fit: BoxFit.cover,
@@ -46,42 +42,38 @@ class DishItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 30),
-            Container(
-              // margin: const EdgeInsets.only(top: 30),
-              // padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    'Цена: $price',
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Text(
-                    'Описание: $description',
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Row(
-                    children: tags.map((e) => TagItem(text: e.name)).toList(),
-                  ),
-                  Text('Ингредиенты:'),
-                  ListView.builder(
-                    itemCount: ingredients.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Text(
-                          '${ingredients[index].name}, ${ingredients[index].amount}',
-                          style: TextStyle(color: Colors.white));
-                    },
-                  )
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  'Цена: $price',
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Text(
+                  'Описание: $description',
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Row(
+                  children: tags.map((e) => TagItem(text: e.name)).toList(),
+                ),
+                // Text('Ингредиенты:'),
+                // ListView.builder(
+                //   itemCount: ingredients.length,
+                //   shrinkWrap: true,
+                //   itemBuilder: (context, index) {
+                //     return Text(
+                //         '${ingredients[index].name}, ${ingredients[index].amount}',
+                //         style: TextStyle(color: Colors.white));
+                //   },
+                // ),
+              ],
             ),
           ],
         ),

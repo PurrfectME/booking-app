@@ -44,12 +44,14 @@ class TablesPositionsLoading extends TablesState {}
 
 class TablesPositionsLoaded extends TablesState {
   final List<TablePositionWrapper> positions;
+  final List<TableModel> tables;
   const TablesPositionsLoaded({
     required this.positions,
+    required this.tables,
   });
 
   @override
-  List<Object> get props => [positions];
+  List<Object> get props => [positions, tables];
 }
 
 class TablesPositionsUpdated extends TablesState {}

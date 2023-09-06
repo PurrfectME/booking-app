@@ -69,12 +69,13 @@ class _TablesScreenState extends State<TablesScreen> {
                               backgroundColor: Colors.black,
                               shape: const StadiumBorder()),
                           onPressed: () {
-                            widget.tBloc.add(TablesPositionsLoad());
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => TablesSchemeScreen(
-                                          tBloc: widget.tBloc,
+                                    builder: (context) => BlocProvider(
+                                          create: (context) => EditSchemeBloc()
+                                            ..add(EditSchemeLoad()),
+                                          child: const TablesSchemeScreen(),
                                         )));
                           },
                           child: const Text('Схема')),

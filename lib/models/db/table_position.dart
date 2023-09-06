@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
 
 part 'table_position.g.dart';
@@ -8,7 +9,7 @@ class TablePosition extends HiveObject {
   int id;
 
   @HiveField(1)
-  int tableId;
+  int number;
 
   @HiveField(2)
   double x;
@@ -17,28 +18,17 @@ class TablePosition extends HiveObject {
   double y;
 
   @HiveField(4)
-  int color;
+  int guests;
 
-  TablePosition(
-      {required this.id,
-      required this.tableId,
-      required this.x,
-      required this.y,
-      required this.color});
+  @HiveField(5)
+  int vip;
 
-  TablePosition copyWith({
-    int? id,
-    int? tableId,
-    int? placeId,
-    double? x,
-    double? y,
-    int? color,
-  }) =>
-      TablePosition(
-        id: id ?? this.id,
-        tableId: tableId ?? this.tableId,
-        x: x ?? this.x,
-        y: y ?? this.y,
-        color: color ?? this.color,
-      );
+  TablePosition({
+    required this.id,
+    required this.number,
+    required this.x,
+    required this.y,
+    required this.guests,
+    required this.vip,
+  });
 }

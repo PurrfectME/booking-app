@@ -96,8 +96,8 @@ class _DishScreenState extends State<DishScreen> {
                           primary: true,
                           mainAxisSpacing: 20,
                           crossAxisSpacing: 20,
-                          shrinkWrap: true,
                           crossAxisCount: 3,
+                          childAspectRatio: 0.5,
                           children: state.dishes
                               .map((x) => DishItem(
                                     name: x.name,

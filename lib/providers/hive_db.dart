@@ -1,4 +1,6 @@
 import 'package:booking_app/models/db/ingredient.dart';
+import 'package:booking_app/models/db/order.dart';
+import 'package:booking_app/models/db/order_item.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:dartx/dartx.dart';
@@ -22,7 +24,9 @@ class HiveProvider {
       ..registerAdapter<Tag>(TagAdapter())
       ..registerAdapter<Product>(ProductAdapter())
       ..registerAdapter<Ingredient>(IngredientAdapter())
-      ..registerAdapter<Kitchen>(KitchenAdapter());
+      ..registerAdapter<Kitchen>(KitchenAdapter())
+      ..registerAdapter<Order>(OrderAdapter())
+      ..registerAdapter<OrderItem>(OrderItemAdapter());
   }
 
   static Future<UserModel> createUser(UserModel model) async {
@@ -281,18 +285,16 @@ class HiveProvider {
     await table.save();
   }
 
-  static Future<List<TablePosition>> getTablePositions(int placeId) async {
+  static Future<List<TablePosition>> getTablePositions() async {
     final positions = await Hive.openBox<TablePosition>('tablesPositions');
 
     return positions.values.toList();
   }
 
-  static Future removeTablesSchemeByPlaceId(int placeId) async {
+  static Future removeTablesScheme() async {
     final box = await Hive.openBox<TablePosition>('tablesPositions');
 
-    final schemeToDelete = box.values.map((e) => e.id).toList();
-
-    await box.deleteAll(schemeToDelete);
+    await box.clear();
   }
 
   static Future addTablesScheme(List<TablePosition> positions) async {

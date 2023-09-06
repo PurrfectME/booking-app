@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/blocs/edit_scheme/edit_scheme_bloc.dart';
 import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
@@ -182,13 +183,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              final tBloc = context.read<TablesBloc>()
-                                ..add(TablesPositionsLoad());
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          TablesSchemeScreen(tBloc: tBloc)));
+                                      builder: (context) => BlocProvider(
+                                            create: (context) =>
+                                                EditSchemeBloc()
+                                                  ..add(EditSchemeLoad()),
+                                            child: const TablesSchemeScreen(),
+                                          )));
                             },
                             child: Container(
                               color: Colors.white,

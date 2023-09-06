@@ -1,4 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
+import 'package:booking_app/blocs/edit_scheme/edit_scheme_bloc.dart';
+import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,10 +9,8 @@ import 'widgets/background_paint.dart';
 import 'widgets/table_position_wrapper.dart';
 
 class TablesSchemeScreen extends StatefulWidget {
-  final TablesBloc tBloc;
   const TablesSchemeScreen({
     Key? key,
-    required this.tBloc,
   }) : super(key: key);
 
   @override
@@ -18,45 +18,25 @@ class TablesSchemeScreen extends StatefulWidget {
 }
 
 class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
-  var containersBox = [
-    Container(
-      width: 50,
-      height: 50,
-      color: Colors.red,
-    ),
-    Container(
-      width: 50,
-      height: 50,
-      color: Colors.yellowAccent,
-    ),
-  ];
-
-  List<TablePositionWrapper> droppedRectangles = [];
-
   @override
-  Widget build(BuildContext context) => BlocConsumer<TablesBloc, TablesState>(
-        bloc: widget.tBloc,
+  Widget build(BuildContext context) =>
+      BlocConsumer<EditSchemeBloc, EditSchemeState>(
         listener: (context, state) {
-          if (state is TablesPositionsUpdated) {
+          if (state is SchemeSaved) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Успешно обновлено')),
             );
           }
         },
         builder: (context, state) {
-          if (state is TablesPositionsLoaded) {
+          if (state is EditSchemeLoaded) {
             return Scaffold(
               appBar: AppBar(
                 title: const Text('Схема столов'),
                 actions: [
                   TextButton(
                       onPressed: () {
-                        final local = [...droppedRectangles];
-                        droppedRectangles.clear();
-
-                        widget.tBloc.add(SaveTablesPositions(positions: [
-                          ...local.map((x) => x.position),
-                        ]));
+                        context.read<EditSchemeBloc>().add(SaveScheme());
                       },
                       child: const Text('Сохранить схему',
                           style: TextStyle(color: Colors.white))),
@@ -68,11 +48,11 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
                     Expanded(
                       child: CustomPaint(
                         painter: BackgroundPaint(),
-                        child: _buildDropZone(state.positions),
+                        child: _buildDropZone(state.droppedTables),
                       ),
                     ),
                     const SizedBox(height: 20),
-                    _buildDraggableBoxes(),
+                    _buildDraggableBoxes(state.availableTables),
                   ],
                 ),
               ),
@@ -84,14 +64,7 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
       );
 
   Widget _buildDropZone(List<TablePositionWrapper> intialPositions) {
-    intialPositions
-        .skipWhile(
-            (value) => droppedRectangles.any((el) => el.key == value.key))
-        .map((x) => droppedRectangles
-            .add(TablePositionWrapper(key: x.key, position: x.position)))
-        .toList();
-
-    final positions = droppedRectangles
+    final positions = intialPositions
         .map((x) => Positioned(
               top: x.position.y,
               left: x.position.x,
@@ -100,12 +73,18 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
                 feedback: Container(
                   width: 50,
                   height: 50,
-                  color: Color(x.position.color).withOpacity(0.7),
+                  color: Constants.mainPurple.withOpacity(0.7),
+                  child: Center(
+                    child: Text(x.position.number.toString()),
+                  ),
                 ),
                 child: Container(
                   width: 50,
                   height: 50,
-                  color: Color(x.position.color),
+                  color: Constants.mainPurple,
+                  child: Center(
+                    child: Text(x.position.number.toString()),
+                  ),
                 ),
               ),
             ))
@@ -119,53 +98,55 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
         //TODO: add onLeave event
         onWillAccept: (data) => true,
         onAcceptWithDetails: (details) {
-          setState(() {
-            if (droppedRectangles.isNotEmpty) {
-              droppedRectangles
-                ..removeWhere((x) => x.key == details.data.key)
-                ..add(TablePositionWrapper(
-                    key: details.data.key,
-                    position: TablePosition(
-                        id: 0,
-                        tableId: 1,
-                        x: details.offset.dx,
-                        y: details.offset.dy - 55,
-                        color: details.data.position.color)));
-
-              return;
-            }
-
-            droppedRectangles.add(TablePositionWrapper(
-                key: UniqueKey(),
-                position: TablePosition(
-                    id: 0,
-                    tableId: 1,
-                    x: details.offset.dx,
-                    y: details.offset.dy - 55,
-                    color: details.data.position.color)));
-          });
+          if (intialPositions.isNotEmpty &&
+              intialPositions.indexWhere((x) =>
+                      x.position.number == details.data.position.number) !=
+                  -1) {
+            context.read<EditSchemeBloc>().add(DragTable(
+                position: details.data.position,
+                x: details.offset.dx,
+                y: details.offset.dy));
+          } else {
+            context.read<EditSchemeBloc>().add(AddTable(
+                position: details.data.position,
+                x: details.offset.dx,
+                y: details.offset.dy));
+          }
         },
       ),
     );
   }
 
-  Widget _buildDraggableBoxes() => SizedBox(
+  Widget _buildDraggableBoxes(List<TableModel> tablesToMove) => SizedBox(
         height: 100,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: containersBox.map(_buildDraggableBox).toList()),
+            children: tablesToMove.map(_buildDraggableBox).toList()),
       );
 
-  Widget _buildDraggableBox(Container item) => Draggable<TablePositionWrapper>(
+  Widget _buildDraggableBox(TableModel item) => Draggable<TablePositionWrapper>(
       key: UniqueKey(),
       data: TablePositionWrapper(
-          key: UniqueKey(),
           position: TablePosition(
-              id: 0, tableId: 0, x: 0, y: 0, color: item.color!.value)),
+            id: 0,
+            number: item.number,
+            x: 0,
+            y: 0,
+            guests: item.guests,
+            vip: 0,
+          ),
+          key: UniqueKey()),
       feedback: Container(
         width: 50,
         height: 50,
-        color: item.color?.withOpacity(0.7),
+        color: Constants.mainPurple.withOpacity(0.7),
       ),
-      child: Container(width: 50, height: 50, color: item.color));
+      child: Container(
+        width: 50,
+        height: 50,
+        color: Constants.mainPurple,
+        child: Center(
+          child: Text(item.number.toString()),
+        ),
+      ));
 }
