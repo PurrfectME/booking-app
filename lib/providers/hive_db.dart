@@ -85,7 +85,7 @@ class HiveProvider {
     return places;
   }
 
-  static Future<List<ReservationModel>> getReservations(int placeId) async {
+  static Future<List<ReservationModel>> getReservations() async {
     final reservationsBox =
         await Hive.openBox<ReservationModel>('reservations');
 
@@ -141,11 +141,8 @@ class HiveProvider {
     return id;
   }
 
-  static Future<List<TableModel>> getTables(int placeId) async =>
-      (await Hive.openBox<TableModel>('tables'))
-          .values
-          .where((table) => table.placeId == placeId)
-          .toList();
+  static Future<List<TableModel>> getTables() async =>
+      (await Hive.openBox<TableModel>('tables')).values.toList();
 
   static Future<TableModel> getTableById(int placeId, int tableId) async =>
       (await Hive.openBox<TableModel>('tables'))
@@ -287,14 +284,13 @@ class HiveProvider {
   static Future<List<TablePosition>> getTablePositions(int placeId) async {
     final positions = await Hive.openBox<TablePosition>('tablesPositions');
 
-    return positions.values.where((x) => x.placeId == placeId).toList();
+    return positions.values.toList();
   }
 
   static Future removeTablesSchemeByPlaceId(int placeId) async {
     final box = await Hive.openBox<TablePosition>('tablesPositions');
 
-    final schemeToDelete =
-        box.values.where((x) => x.placeId == placeId).map((e) => e.id).toList();
+    final schemeToDelete = box.values.map((e) => e.id).toList();
 
     await box.deleteAll(schemeToDelete);
   }

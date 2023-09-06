@@ -19,28 +19,25 @@ class TablePositionAdapter extends TypeAdapter<TablePosition> {
     return TablePosition(
       id: fields[0] as int,
       tableId: fields[1] as int,
-      placeId: fields[2] as int,
-      x: fields[3] as double,
-      y: fields[4] as double,
-      color: fields[5] as int,
+      x: fields[2] as double,
+      y: fields[3] as double,
+      color: fields[4] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, TablePosition obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.tableId)
       ..writeByte(2)
-      ..write(obj.placeId)
-      ..writeByte(3)
       ..write(obj.x)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.y)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.color);
   }
 

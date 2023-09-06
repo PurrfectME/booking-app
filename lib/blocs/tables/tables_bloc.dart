@@ -50,7 +50,7 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
 
         emit(TablesLoaded(tables));
       } else if (event is CreateTableLoad) {
-        emit(CreateTableLoaded(placeId: event.placeId));
+        emit(CreateTableLoaded());
       } else if (event is CreateTable) {
         final table = TableModel(
             id: 0,

@@ -11,21 +11,17 @@ class TablePosition extends HiveObject {
   int tableId;
 
   @HiveField(2)
-  int placeId;
-
-  @HiveField(3)
   double x;
 
-  @HiveField(4)
+  @HiveField(3)
   double y;
 
-  @HiveField(5)
+  @HiveField(4)
   int color;
 
   TablePosition(
       {required this.id,
       required this.tableId,
-      required this.placeId,
       required this.x,
       required this.y,
       required this.color});
@@ -41,7 +37,6 @@ class TablePosition extends HiveObject {
       TablePosition(
         id: id ?? this.id,
         tableId: tableId ?? this.tableId,
-        placeId: placeId ?? this.placeId,
         x: x ?? this.x,
         y: y ?? this.y,
         color: color ?? this.color,

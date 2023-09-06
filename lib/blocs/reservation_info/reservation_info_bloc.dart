@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/reservation_vm.dart';
-import 'package:booking_app/models/models.dart';
-import 'package:booking_app/providers/db.dart';
 import 'package:booking_app/providers/hive_db.dart';
 import 'package:booking_app/screens/reservations/reservations_screen.dart';
 import 'package:booking_app/utils/status_helper.dart';
@@ -59,7 +57,7 @@ class ReservationInfoBloc
                   id: updatedReservation.id!,
                   placeId: updatedReservation.placeId,
                   tableId: updatedReservation.tableId,
-                  tableNumber: table!.number,
+                  tableNumber: table.number,
                   name: updatedReservation.name!,
                   guests: updatedReservation.guests,
                   phoneNumber: updatedReservation.phoneNumber!,
@@ -83,7 +81,7 @@ class ReservationInfoBloc
               status: ReservationStatus.opened));
 
           //TODO: здесь не рендериться нормально когда с резер инфо нажимаешь назад на резервации
-          trBloc.add(TableReservationsLoad(placeId: event.placeId));
+          trBloc.add(TableReservationsLoad());
         } else {
           emit(const ReservationInfoError(error: 'Ошибка открытия заявки'));
         }
@@ -126,7 +124,7 @@ class ReservationInfoBloc
                   1,
               status: ReservationStatus.opened));
 
-          trBloc.add(TableReservationsLoad(placeId: event.placeId));
+          trBloc.add(TableReservationsLoad());
         } else {
           emit(const ReservationInfoError(error: 'Ошибка отмены заявки'));
         }
@@ -181,7 +179,7 @@ class ReservationInfoBloc
                   1,
               status: ReservationStatus.fresh));
 
-          trBloc.add(TableReservationsLoad(placeId: event.placeId));
+          trBloc.add(TableReservationsLoad());
         } else {
           emit(const ReservationInfoError(error: 'Ошибка обновления заявки'));
         }
@@ -204,7 +202,7 @@ class ReservationInfoBloc
             id: updatedReservation.id!,
             placeId: updatedReservation.placeId,
             tableId: updatedReservation.tableId,
-            tableNumber: table!.number,
+            tableNumber: table.number,
             name: updatedReservation.name!,
             guests: updatedReservation.guests,
             phoneNumber: updatedReservation.phoneNumber!,
@@ -227,7 +225,7 @@ class ReservationInfoBloc
                   1,
               status: ReservationStatus.waiting));
 
-          trBloc.add(TableReservationsLoad(placeId: event.placeId));
+          trBloc.add(TableReservationsLoad());
         } else {
           emit(const ReservationInfoError(
               error: 'Ошибка смены статуса на ожидание'));
@@ -254,7 +252,7 @@ class ReservationInfoBloc
             id: updatedReservation.id!,
             placeId: updatedReservation.placeId,
             tableId: updatedReservation.tableId,
-            tableNumber: table!.number,
+            tableNumber: table.number,
             name: updatedReservation.name!,
             guests: updatedReservation.guests,
             phoneNumber: updatedReservation.phoneNumber!,
@@ -277,7 +275,7 @@ class ReservationInfoBloc
                   1,
               status: ReservationStatus.closed));
 
-          trBloc.add(TableReservationsLoad(placeId: event.placeId));
+          trBloc.add(TableReservationsLoad());
         } else {
           emit(const ReservationInfoError(
               error: 'Ошибка смены статуса на ожидание'));

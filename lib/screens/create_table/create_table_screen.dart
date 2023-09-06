@@ -29,7 +29,7 @@ class _CreateTableScreenState extends State<CreateTableScreen> {
         bloc: widget.tBloc,
         listener: (context, state) {
           if (state is TableCreated) {
-            widget.trBloc.add(TableReservationsLoad(placeId: state.placeId));
+            widget.trBloc.add(TableReservationsLoad());
             Navigator.pop(context);
           }
         },

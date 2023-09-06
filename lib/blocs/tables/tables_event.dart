@@ -12,15 +12,7 @@ class TablesLoad extends TablesEvent {
   const TablesLoad();
 }
 
-class CreateTableLoad extends TablesEvent {
-  final int placeId;
-  const CreateTableLoad({
-    required this.placeId,
-  });
-
-  @override
-  List<Object?> get props => [placeId];
-}
+class CreateTableLoad extends TablesEvent {}
 
 class CreateTable extends TablesEvent {
   final int number;
@@ -34,15 +26,7 @@ class CreateTable extends TablesEvent {
   List<Object?> get props => [number, guests];
 }
 
-class TablesPositionsLoad extends TablesEvent {
-  final int placeId;
-  const TablesPositionsLoad({
-    required this.placeId,
-  });
-
-  @override
-  List<Object?> get props => [placeId];
-}
+class TablesPositionsLoad extends TablesEvent {}
 
 class SaveTablesPositions extends TablesEvent {
   final List<TablePosition> positions;

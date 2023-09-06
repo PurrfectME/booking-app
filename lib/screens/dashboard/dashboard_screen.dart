@@ -5,6 +5,7 @@ import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:booking_app/screens/kitchen/kitchen_screen.dart';
+import 'package:booking_app/screens/products/products_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -111,20 +112,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              final kBloc = context.read<KitchenBloc>()
-                                ..add(KitchenLoad());
+                              final pBloc = context.read<ProductBloc>()
+                                ..add(ProductsLoad());
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          KitchenScreen(kBloc: kBloc)));
+                                          ProductsScreen(pBloc: pBloc)));
                             },
                             child: Container(
                               color: Colors.white,
                               margin: const EdgeInsets.all(4),
                               child: const Center(
                                 child: Text(
-                                  '[Кухня]',
+                                  '[Продукты]',
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
@@ -132,20 +133,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              final kBloc = context.read<KitchenBloc>()
-                                ..add(KitchenLoad());
+                              final dBloc = context.read<DishBloc>()
+                                ..add(const DishLoad());
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          KitchenScreen(kBloc: kBloc)));
+                                          DishScreen(dBloc: dBloc)));
                             },
                             child: Container(
                               color: Colors.white,
                               margin: const EdgeInsets.all(4),
                               child: const Center(
                                 child: Text(
-                                  '[Кухня]',
+                                  '[Блюда]',
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
@@ -153,20 +154,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              final kBloc = context.read<KitchenBloc>()
-                                ..add(KitchenLoad());
+                              final tBloc = context.read<TablesBloc>();
+
+                              final trBloc = context
+                                  .read<TableReservationsBloc>()
+                                ..add(TableReservationsLoad());
+                              final rBloc = context.read<ReservationsBloc>();
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          KitchenScreen(kBloc: kBloc)));
+                                      builder: (context) => TablesScreen(
+                                            tBloc: tBloc,
+                                            trBloc: trBloc,
+                                            rBloc: rBloc,
+                                          )));
                             },
                             child: Container(
                               color: Colors.white,
                               margin: const EdgeInsets.all(4),
                               child: const Center(
                                 child: Text(
-                                  '[Кухня]',
+                                  '[Столы]',
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
@@ -174,41 +182,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              final kBloc = context.read<KitchenBloc>()
-                                ..add(KitchenLoad());
+                              final tBloc = context.read<TablesBloc>()
+                                ..add(TablesPositionsLoad());
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          KitchenScreen(kBloc: kBloc)));
+                                          TablesSchemeScreen(tBloc: tBloc)));
                             },
                             child: Container(
                               color: Colors.white,
                               margin: const EdgeInsets.all(4),
                               child: const Center(
                                 child: Text(
-                                  '[Кухня]',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              final kBloc = context.read<KitchenBloc>()
-                                ..add(KitchenLoad());
-                              Navigator.push<void>(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          KitchenScreen(kBloc: kBloc)));
-                            },
-                            child: Container(
-                              color: Colors.white,
-                              margin: const EdgeInsets.all(4),
-                              child: const Center(
-                                child: Text(
-                                  '[Кухня]',
+                                  '[Схема]',
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),

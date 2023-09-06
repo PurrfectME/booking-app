@@ -8,11 +8,9 @@ import 'widgets/table_position_wrapper.dart';
 
 class TablesSchemeScreen extends StatefulWidget {
   final TablesBloc tBloc;
-  final int placeId;
   const TablesSchemeScreen({
     Key? key,
     required this.tBloc,
-    required this.placeId,
   }) : super(key: key);
 
   @override
@@ -130,7 +128,6 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
                     position: TablePosition(
                         id: 0,
                         tableId: 1,
-                        placeId: widget.placeId,
                         x: details.offset.dx,
                         y: details.offset.dy - 55,
                         color: details.data.position.color)));
@@ -143,7 +140,6 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
                 position: TablePosition(
                     id: 0,
                     tableId: 1,
-                    placeId: widget.placeId,
                     x: details.offset.dx,
                     y: details.offset.dy - 55,
                     color: details.data.position.color)));
@@ -165,12 +161,7 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
       data: TablePositionWrapper(
           key: UniqueKey(),
           position: TablePosition(
-              id: 0,
-              tableId: 0,
-              placeId: widget.placeId,
-              x: 0,
-              y: 0,
-              color: item.color!.value)),
+              id: 0, tableId: 0, x: 0, y: 0, color: item.color!.value)),
       feedback: Container(
         width: 50,
         height: 50,

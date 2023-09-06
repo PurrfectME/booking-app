@@ -2,7 +2,6 @@ import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/blocs/table_info/table_info_bloc.dart';
 import 'package:booking_app/models/local/reservation_time.dart';
 import 'package:booking_app/screens/reserve_table/widgets/datetime_selector.dart';
-import 'package:booking_app/screens/table_info/table_info_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,8 +65,7 @@ class _ReserveTableScreenState extends State<ReserveTableScreen> {
               widget.tableInfoBloc.add(TableInfoLoad(
                   placeId: state.placeId, tableId: state.tableId));
 
-              widget.tableReservationsBloc
-                  .add(TableReservationsLoad(placeId: state.placeId));
+              widget.tableReservationsBloc.add(TableReservationsLoad());
 
               if (widget.initialStart != null) {
                 Navigator.pop(context);

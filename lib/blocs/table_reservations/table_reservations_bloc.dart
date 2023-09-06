@@ -19,13 +19,12 @@ class TableReservationsBloc
         emit(TableReservationsLoading());
         final List<TableReservationViewModel> result;
         if (tables.isEmpty) {
-          result = await _initReservations(
-              await HiveProvider.getTables(event.placeId), event.placeId);
+          result = await _initReservations(await HiveProvider.getTables());
         } else {
-          result = await _initReservations(tables, event.placeId);
+          result = await _initReservations(tables);
         }
 
-        emit(TableReservationsLoaded(result, event.placeId));
+        emit(TableReservationsLoaded(result));
       } else if (event is AdminTableReserve) {
         emit(TableReservationsLoading());
         final user = await HiveProvider.getUserByEmail(event.phoneNumber);
@@ -44,10 +43,10 @@ class TableReservationsBloc
             comment: 'event.',
             status: StatusHelper.fromStatus(ReservationStatus.fresh)));
 
-        final currentTables = await HiveProvider.getTables(event.placeId);
+        final currentTables = await HiveProvider.getTables();
 
-        final result = await _initReservations(currentTables, event.placeId);
-        emit(TableReservationsLoaded(result, event.placeId));
+        final result = await _initReservations(currentTables);
+        emit(TableReservationsLoaded(result));
       } else if (event is TableRemoveReservation) {
         emit(TableReservationsLoading());
 
@@ -55,8 +54,7 @@ class TableReservationsBloc
             .deleteReservation(event.reservationId, event.placeId);
 
         emit(TableRemoveReservationSuccess(tableNumber: event.tableNumber));
-        emit(TableReservationsLoaded(
-            await _initReservations(tables, event.placeId), event.placeId));
+        emit(TableReservationsLoaded(await _initReservations(tables)));
       } else if (event is AdminEditReservation) {
         emit(TableReservationsLoading());
 
@@ -78,17 +76,15 @@ class TableReservationsBloc
                 status: 0));
 
         emit(TableEditReservationSuccess());
-        emit(TableReservationsLoaded(
-            await _initReservations(tables, event.placeId), event.placeId));
+        emit(TableReservationsLoaded(await _initReservations(tables)));
       }
     });
   }
 
   Future<List<TableReservationViewModel>> _initReservations(
-      List<TableModel> tables, int placeId) async {
-    final userReservations = (await HiveProvider.getReservations(placeId))
-        .where((x) =>
-            StatusHelper.toStatus(x.status) != ReservationStatus.cancelled);
+      List<TableModel> tables) async {
+    final userReservations = (await HiveProvider.getReservations()).where(
+        (x) => StatusHelper.toStatus(x.status) != ReservationStatus.cancelled);
 
     final result = <TableReservationViewModel>[];
 

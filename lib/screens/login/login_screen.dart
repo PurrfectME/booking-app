@@ -51,8 +51,7 @@ class LoginScreenState extends State<LoginScreen> {
                                 create: (context) => ReservationsBloc()),
                             BlocProvider(
                                 create: (context) => TableReservationsBloc([])
-                                  ..add(
-                                      const TableReservationsLoad(placeId: 1))),
+                                  ..add(TableReservationsLoad())),
                             BlocProvider(create: (context) => MenuBloc()),
                             BlocProvider(create: (context) => DishBloc()),
                             BlocProvider(create: (context) => ProductBloc()),

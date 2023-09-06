@@ -8,15 +8,7 @@ abstract class TableReservationsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class TableReservationsLoad extends TableReservationsEvent {
-  final int placeId;
-  const TableReservationsLoad({
-    required this.placeId,
-  });
-
-  @override
-  List<Object> get props => [placeId];
-}
+class TableReservationsLoad extends TableReservationsEvent {}
 
 class TableRemoveReservation extends TableReservationsEvent {
   final int reservationId;

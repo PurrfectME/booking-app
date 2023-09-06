@@ -1,5 +1,4 @@
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/hive_db.dart';
@@ -16,8 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TablesScreen extends StatefulWidget {
+  final ReservationsBloc rBloc;
+  final TableReservationsBloc trBloc;
+  final TablesBloc tBloc;
   const TablesScreen({
     Key? key,
+    required this.rBloc,
+    required this.trBloc,
+    required this.tBloc,
   }) : super(key: key);
 
   @override
@@ -35,6 +40,7 @@ class _TablesScreenState extends State<TablesScreen> {
           title: const Text('Столы'),
           actions: [
             BlocBuilder<TableReservationsBloc, TableReservationsState>(
+              bloc: widget.trBloc,
               builder: (context, state) {
                 if (state is TableReservationsLoaded) {
                   return Row(
@@ -48,15 +54,14 @@ class _TablesScreenState extends State<TablesScreen> {
                         const SizedBox.shrink(),
                       TextButton(
                           onPressed: () {
-                            final tBloc = context.read<TablesBloc>()
-                              ..add(CreateTableLoad(placeId: state.placeId));
+                            widget.tBloc.add(CreateTableLoad());
                             final trBloc =
                                 context.read<TableReservationsBloc>();
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute<void>(
                                     builder: (context) => CreateTableScreen(
-                                          tBloc: tBloc,
+                                          tBloc: widget.tBloc,
                                           trBloc: trBloc,
                                         )));
                           },
@@ -69,15 +74,13 @@ class _TablesScreenState extends State<TablesScreen> {
                               shape: const StadiumBorder()),
                           onPressed: () {
                             final tBloc = context.read<TablesBloc>()
-                              ..add(CreateTableLoad(placeId: state.placeId));
-                            tBloc.add(
-                                TablesPositionsLoad(placeId: state.placeId));
+                              ..add(CreateTableLoad());
+                            tBloc.add(TablesPositionsLoad());
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => TablesSchemeScreen(
                                           tBloc: tBloc,
-                                          placeId: state.placeId,
                                         )));
                           },
                           child: const Text('Схема')),
@@ -139,6 +142,7 @@ class _TablesScreenState extends State<TablesScreen> {
           ],
         ),
         body: BlocConsumer<TableReservationsBloc, TableReservationsState>(
+          bloc: widget.trBloc,
           listener: (context, state) {},
           builder: (context, state) {
             if (state is TableReservationsLoading) {
@@ -361,8 +365,6 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void _onTablePress(TableModel table) {
-    final tableReservationsBloc = context.read<TableReservationsBloc>();
-    final reservationsBloc = context.read<ReservationsBloc>();
     Navigator.push<void>(
       context,
       MaterialPageRoute(
@@ -373,7 +375,7 @@ class _TablesScreenState extends State<TablesScreen> {
                   ),
                   BlocProvider(
                     create: (context) => ReservationInfoBloc(
-                        trBloc: tableReservationsBloc, rBloc: reservationsBloc),
+                        trBloc: widget.trBloc, rBloc: widget.rBloc),
                   ),
                   BlocProvider<TableInfoBloc>(
                     //TODO: передавать данные в сам блок
@@ -387,7 +389,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 child: TableInfoScreen(
                     tableNumber: table.number,
                     tableGuests: table.guests,
-                    tableReservationsBloc: tableReservationsBloc),
+                    tableReservationsBloc: widget.trBloc),
               )),
     );
   }
@@ -420,15 +422,12 @@ class _TablesScreenState extends State<TablesScreen> {
   void _onReservationsTap(int placeId) {
     final now = DateTime.now();
 
-    final trBloc = context.read<TableReservationsBloc>();
-    final rBloc = context.read<ReservationsBloc>()
-      ..add(ReservationsLoad(
-          placeId: placeId,
-          start: DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
-          end: DateTime(now.year, now.month, now.day + 1)
-                  .millisecondsSinceEpoch -
-              1,
-          status: ReservationStatus.fresh));
+    widget.rBloc.add(ReservationsLoad(
+        placeId: placeId,
+        start: DateTime(now.year, now.month, now.day).millisecondsSinceEpoch,
+        end: DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch -
+            1,
+        status: ReservationStatus.fresh));
 
     Navigator.push<void>(
       context,
@@ -436,54 +435,13 @@ class _TablesScreenState extends State<TablesScreen> {
         builder: (context) => MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) =>
-                  ReservationInfoBloc(trBloc: trBloc, rBloc: rBloc),
+              create: (context) => ReservationInfoBloc(
+                  trBloc: widget.trBloc, rBloc: widget.rBloc),
             ),
           ],
-          child: ReservationsScreen(reservationsBloc: rBloc),
+          child: ReservationsScreen(reservationsBloc: widget.rBloc),
         ),
       ),
     );
   }
 }
-
-// VerticalWeightSlider(
-                  //   haptic: Haptic.none,
-                  //   isVertical: false,
-                  //   controller: WeightSliderController(
-                  //       initialWeight: 0,
-                  //       minWeight: 0,
-                  //       interval: 0.1,
-                  //       itemExtent: 15),
-                  //   decoration: const PointerDecoration(
-                  //     width: 130.0,
-                  //     height: 3.0,
-                  //     largeColor: Color.fromARGB(255, 0, 0, 0),
-                  //     mediumColor: Color(0xFFC5C5C5),
-                  //     smallColor: Color.fromARGB(255, 41, 171, 134),
-                  //     gap: 40.0,
-                  //   ),
-                  //   onChanged: (double value) {
-                  //     setState(() {
-                  //       // _weight = value;
-                  //     });
-                  //   },
-                  //   indicator: Container(
-                  //     height: 3.0,
-                  //     width: 200.0,
-                  //     alignment: Alignment.centerLeft,
-                  //     color: Colors.red[300],
-                  //   ),
-                  // ),
-
-                  // HorizontalPicker(
-                  //   height: 140,
-                  //   minValue: 0,
-                  //   maxValue: 23,
-                  //   divisions: 252,
-                  //   // showCursor: true,
-                  //   backgroundColor: Colors.grey.shade900,
-                  //   activeItemTextColor: Colors.white,
-                  //   passiveItemsTextColor: Colors.amber,
-                  //   onChanged: (value) {},
-                  // ),
