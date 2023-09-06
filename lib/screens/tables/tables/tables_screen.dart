@@ -2,8 +2,6 @@ import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/reserve_table/reserve_table_bloc.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/hive_db.dart';
-import 'package:booking_app/screens/kitchen/kitchen_screen.dart';
-import 'package:booking_app/screens/products/products_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:booking_app/screens/tables/tables/widgets/reservation_label.dart';
 import 'package:booking_app/screens/tables/tables/widgets/table_status.dart';
@@ -55,14 +53,12 @@ class _TablesScreenState extends State<TablesScreen> {
                       TextButton(
                           onPressed: () {
                             widget.tBloc.add(CreateTableLoad());
-                            final trBloc =
-                                context.read<TableReservationsBloc>();
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute<void>(
                                     builder: (context) => CreateTableScreen(
                                           tBloc: widget.tBloc,
-                                          trBloc: trBloc,
+                                          trBloc: widget.trBloc,
                                         )));
                           },
                           child: const Text('Создать стол',
@@ -73,62 +69,15 @@ class _TablesScreenState extends State<TablesScreen> {
                               backgroundColor: Colors.black,
                               shape: const StadiumBorder()),
                           onPressed: () {
-                            final tBloc = context.read<TablesBloc>()
-                              ..add(CreateTableLoad());
-                            tBloc.add(TablesPositionsLoad());
+                            widget.tBloc.add(TablesPositionsLoad());
                             Navigator.push<void>(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => TablesSchemeScreen(
-                                          tBloc: tBloc,
+                                          tBloc: widget.tBloc,
                                         )));
                           },
                           child: const Text('Схема')),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.black,
-                              shape: const StadiumBorder()),
-                          onPressed: () {
-                            final dBloc = context.read<DishBloc>()
-                              ..add(DishLoad());
-                            Navigator.push<void>(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        DishScreen(dBloc: dBloc)));
-                          },
-                          child: const Text('Меню')),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.black,
-                              shape: const StadiumBorder()),
-                          onPressed: () {
-                            final pBloc = context.read<ProductBloc>()
-                              ..add(ProductsLoad());
-                            Navigator.push<void>(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductsScreen(pBloc: pBloc)));
-                          },
-                          child: const Text('Продукты')),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.black,
-                              shape: const StadiumBorder()),
-                          onPressed: () {
-                            final kBloc = context.read<KitchenBloc>()
-                              ..add(KitchenLoad());
-                            Navigator.push<void>(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        KitchenScreen(kBloc: kBloc)));
-                          },
-                          child: const Text('Кухня')),
                     ],
                   );
                 } else {
