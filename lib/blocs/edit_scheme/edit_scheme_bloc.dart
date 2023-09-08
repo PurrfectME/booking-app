@@ -28,13 +28,13 @@ class EditSchemeBloc extends Bloc<EditSchemeEvent, EditSchemeState> {
         ));
       } else if (event is AddTable) {
         droppedTables.add(TablePosition(
-          id: 0,
-          number: event.position.number,
-          x: event.x,
-          y: event.y - 55,
-          guests: event.position.guests,
-          vip: event.position.vip,
-        ));
+            id: 0,
+            number: event.position.number,
+            x: event.x,
+            y: event.y - 55,
+            guests: event.position.guests,
+            vip: event.position.vip,
+            active: false));
         availableTables.removeWhere((x) => x.number == event.position.number);
 
         emit(EditSchemeLoaded(
@@ -46,13 +46,13 @@ class EditSchemeBloc extends Bloc<EditSchemeEvent, EditSchemeState> {
             droppedTables.indexWhere((x) => x.number == event.position.number);
 
         droppedTables[tableIndex] = TablePosition(
-          id: 0,
-          x: event.x,
-          y: event.y - 55, //magic number? ПАШОЛ НАХУЙ!!!!
-          number: event.position.number,
-          vip: 0,
-          guests: event.position.guests,
-        );
+            id: 0,
+            x: event.x,
+            y: event.y - 55, //magic number? ПАШОЛ НАХУЙ!!!!
+            number: event.position.number,
+            vip: 0,
+            guests: event.position.guests,
+            active: event.position.active);
 
         emit(EditSchemeLoaded(
           droppedTables: TablePositionWrapper.wrap(droppedTables),
@@ -63,6 +63,13 @@ class EditSchemeBloc extends Bloc<EditSchemeEvent, EditSchemeState> {
         await HiveProvider.addTablesScheme(droppedTables);
 
         emit(SchemeSaved());
+
+        emit(EditSchemeLoaded(
+          droppedTables: TablePositionWrapper.wrap(droppedTables),
+          availableTables: availableTables,
+        ));
+      } else if (event is OpenTable) {
+        droppedTables.firstWhere((x) => x.number == event.number).active = true;
 
         emit(EditSchemeLoaded(
           droppedTables: TablePositionWrapper.wrap(droppedTables),

@@ -68,22 +68,27 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
         .map((x) => Positioned(
               top: x.position.y,
               left: x.position.x,
-              child: Draggable<TablePositionWrapper>(
-                data: x,
-                feedback: Container(
-                  width: 50,
-                  height: 50,
-                  color: Constants.mainPurple.withOpacity(0.7),
-                  child: Center(
-                    child: Text(x.position.number.toString()),
+              child: InkWell(
+                onTap: () async {
+                  await showConfirmationDialog(context, x.position.number);
+                },
+                child: Draggable<TablePositionWrapper>(
+                  data: x,
+                  feedback: Container(
+                    width: 50,
+                    height: 50,
+                    color: Constants.mainPurple.withOpacity(0.7),
+                    child: Center(
+                      child: Text(x.position.number.toString()),
+                    ),
                   ),
-                ),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  color: Constants.mainPurple,
-                  child: Center(
-                    child: Text(x.position.number.toString()),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    color: Constants.mainPurple,
+                    child: Center(
+                      child: Text(x.position.number.toString()),
+                    ),
                   ),
                 ),
               ),
@@ -117,6 +122,37 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
     );
   }
 
+  Future<bool?> showConfirmationDialog(BuildContext context, int number) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Подтверждение"),
+        content: Text("Открыть счёт?"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Нет"),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: Text("Да"),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      ),
+    );
+
+    if (result == null) {
+      return null;
+    }
+
+    //TODO: create order here
+    context.read<EditSchemeBloc>().add(OpenTable(number: number));
+  }
+
   Widget _buildDraggableBoxes(List<TableModel> tablesToMove) => SizedBox(
         height: 100,
         child: Row(
@@ -128,6 +164,7 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
       key: UniqueKey(),
       data: TablePositionWrapper(
           position: TablePosition(
+            active: false,
             id: 0,
             number: item.number,
             x: 0,

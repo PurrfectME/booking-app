@@ -39,3 +39,13 @@ class DragTable extends EditSchemeEvent {
 }
 
 class SaveScheme extends EditSchemeEvent {}
+
+class OpenTable extends EditSchemeEvent {
+  final int number;
+  const OpenTable({
+    required this.number,
+  });
+
+  @override
+  List<Object> get props => [number];
+}

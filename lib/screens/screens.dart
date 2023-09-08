@@ -3,6 +3,7 @@ export 'dashboard/dashboard_screen.dart';
 export 'login/login_screen.dart';
 export 'menu/dish/dish_screen.dart';
 export 'menu/menu_screen.dart';
+export 'order/order_screen.dart';
 export 'registration/registration_screen.dart';
 export 'reservation_info/reservation_info_screen.dart';
 export 'reservations/reservations_screen.dart';

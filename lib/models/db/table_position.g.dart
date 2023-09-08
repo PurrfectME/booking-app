@@ -23,13 +23,14 @@ class TablePositionAdapter extends TypeAdapter<TablePosition> {
       y: fields[3] as double,
       guests: fields[4] as int,
       vip: fields[5] as int,
+      active: fields[6] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, TablePosition obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class TablePositionAdapter extends TypeAdapter<TablePosition> {
       ..writeByte(4)
       ..write(obj.guests)
       ..writeByte(5)
-      ..write(obj.vip);
+      ..write(obj.vip)
+      ..writeByte(6)
+      ..write(obj.active);
   }
 
   @override

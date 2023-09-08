@@ -23,6 +23,9 @@ class TablePosition extends HiveObject {
   @HiveField(5)
   int vip;
 
+  @HiveField(6)
+  bool active;
+
   TablePosition({
     required this.id,
     required this.number,
@@ -30,5 +33,6 @@ class TablePosition extends HiveObject {
     required this.y,
     required this.guests,
     required this.vip,
+    required this.active,
   });
 }

@@ -391,4 +391,14 @@ class HiveProvider {
 
     await data.save();
   }
+
+  static Future createOrder(int tableNumber) async {}
+
+  static Future<Order> getOrderById(int id) async {
+    final box = await Hive.openBox<Order>('orders');
+
+    final result = box.values.firstWhere((x) => x.id == id);
+
+    return result;
+  }
 }
