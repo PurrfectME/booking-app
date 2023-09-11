@@ -2,7 +2,7 @@ import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/local/ingredient_model.dart';
 import 'package:booking_app/models/local/product_model.dart';
-import 'package:booking_app/screens/menu/widgets/select_ingredients_form.dart';
+import 'package:booking_app/screens/dish/widgets/select_ingredients_form.dart';
 import 'package:flutter/material.dart';
 
 import '../../../widgets/tag_item.dart';

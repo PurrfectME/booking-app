@@ -1,18 +1,18 @@
 import 'package:booking_app/constants/constants.dart';
-import 'package:booking_app/models/local/create_category.dart';
+import 'package:booking_app/models/local/create_order_model.dart';
 import 'package:flutter/material.dart';
 
-class CreateCategoryForm extends StatefulWidget {
-  const CreateCategoryForm({super.key});
+class CreateOrderForm extends StatefulWidget {
+  const CreateOrderForm({super.key});
 
   @override
-  State<CreateCategoryForm> createState() => _CreateCategoryFormState();
+  State<CreateOrderForm> createState() => _CreateOrderFormState();
 }
 
-class _CreateCategoryFormState extends State<CreateCategoryForm> {
+class _CreateOrderFormState extends State<CreateOrderForm> {
   final _formKey = GlobalKey<FormState>();
 
-  late String name;
+  late int guests;
   @override
   Widget build(BuildContext context) => Form(
         key: _formKey,
@@ -25,9 +25,9 @@ class _CreateCategoryFormState extends State<CreateCategoryForm> {
                 TextFormField(
                   style: const TextStyle(color: Colors.white),
                   initialValue: '',
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   onSaved: (newValue) {
-                    name = newValue!;
+                    guests = int.parse(newValue!);
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -41,7 +41,7 @@ class _CreateCategoryFormState extends State<CreateCategoryForm> {
                     ),
                     hintStyle:
                         const TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
-                    hintText: 'Название категории',
+                    hintText: 'Количество гостей',
                   ),
                   // onChanged: phoneNumberOnChange,
                   // The validator receives the text that the user has entered.
@@ -53,8 +53,8 @@ class _CreateCategoryFormState extends State<CreateCategoryForm> {
                     _formKey.currentState!.save();
                     Navigator.pop(
                         context,
-                        CreateCategoryModel(
-                          name: name,
+                        CreateOrderModel(
+                          guests: guests,
                         ));
                   },
                   style: ElevatedButton.styleFrom(
@@ -69,8 +69,8 @@ class _CreateCategoryFormState extends State<CreateCategoryForm> {
                       height: 50,
                       width: 150,
                       child: Center(
-                          child:
-                              Text('Создать', style: TextStyle(fontSize: 20)))),
+                          child: Text('Открыть счёт',
+                              style: TextStyle(fontSize: 20)))),
                 ),
               ],
             ),

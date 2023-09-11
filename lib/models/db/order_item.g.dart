@@ -22,13 +22,14 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
       note: fields[2] as String,
       waiter: fields[3] as String,
       guest: fields[4] as int,
+      dish: fields[5] as Dish,
     );
   }
 
   @override
   void write(BinaryWriter writer, OrderItem obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
       ..writeByte(3)
       ..write(obj.waiter)
       ..writeByte(4)
-      ..write(obj.guest);
+      ..write(obj.guest)
+      ..writeByte(5)
+      ..write(obj.dish);
   }
 
   @override

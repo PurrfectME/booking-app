@@ -19,3 +19,5 @@ class OrderLoaded extends OrderState {
   @override
   List<Object> get props => [order];
 }
+
+class OrderPrinted extends OrderState {}

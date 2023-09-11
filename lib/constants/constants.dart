@@ -20,3 +20,5 @@ class Constants {
 
   static const Color mainPurple = Color.fromARGB(255, 104, 0, 185);
 }
+
+enum ProductMeasure { Killos }

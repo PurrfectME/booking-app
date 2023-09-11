@@ -15,13 +15,13 @@ class Order extends HiveObject {
   int openDate;
 
   @HiveField(3)
-  int closeDate;
+  int? closeDate;
 
   @HiveField(4)
   List<OrderItem> items;
 
   @HiveField(5)
-  int cardId;
+  int? cardId;
 
   @HiveField(6)
   String administrator;

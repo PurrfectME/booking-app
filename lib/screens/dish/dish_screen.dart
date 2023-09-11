@@ -1,8 +1,8 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/local/product_model.dart';
-import 'package:booking_app/screens/menu/widgets/create_dish_form.dart';
-import 'package:booking_app/screens/menu/widgets/dish_item.dart';
+import 'package:booking_app/screens/dish/widgets/create_dish_form.dart';
+import 'package:booking_app/screens/dish/widgets/dish_item.dart';
 import 'package:booking_app/widgets/tag_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DishScreen extends StatefulWidget {
   final DishBloc dBloc;
-  const DishScreen({super.key, required this.dBloc});
+  final bool isSelectable;
+  const DishScreen({
+    super.key,
+    required this.dBloc,
+    required this.isSelectable,
+  });
 
   @override
   State<DishScreen> createState() => _DishScreenState();
@@ -18,6 +23,7 @@ class DishScreen extends StatefulWidget {
 
 class _DishScreenState extends State<DishScreen> {
   final filterByTags = <String>[];
+  final List<int> selectedDishes = [];
 
   @override
   Widget build(BuildContext context) => BlocConsumer<DishBloc, DishState>(
@@ -28,6 +34,15 @@ class _DishScreenState extends State<DishScreen> {
         builder: (context, state) {
           if (state is DishLoaded) {
             return Scaffold(
+              floatingActionButton: widget.isSelectable
+                  ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.black,
+                          shape: const StadiumBorder()),
+                      onPressed: () => Navigator.pop(context, selectedDishes),
+                      child: const Text('Добавит в счёт'))
+                  : null,
               appBar: AppBar(
                 title: const Text('Еда'),
                 actions: [
@@ -98,15 +113,37 @@ class _DishScreenState extends State<DishScreen> {
                           crossAxisSpacing: 20,
                           crossAxisCount: 3,
                           childAspectRatio: 0.5,
-                          children: state.dishes
-                              .map((x) => DishItem(
+                          children: state.dishes.map((x) {
+                            if (widget.isSelectable) {
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedDishes.add(x.id);
+                                  });
+                                },
+                                child: Container(
+                                  color: selectedDishes.contains(x.id)
+                                      ? Colors.amberAccent
+                                      : null,
+                                  child: DishItem(
                                     name: x.name,
                                     price: x.price,
                                     description: x.description,
                                     tags: x.tags,
                                     ingredients: x.ingredients,
-                                  ))
-                              .toList(),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return DishItem(
+                                name: x.name,
+                                price: x.price,
+                                description: x.description,
+                                tags: x.tags,
+                                ingredients: x.ingredients,
+                              );
+                            }
+                          }).toList(),
                         ),
                       )
                     else

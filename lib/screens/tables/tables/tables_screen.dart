@@ -16,11 +16,13 @@ class TablesScreen extends StatefulWidget {
   final ReservationsBloc rBloc;
   final TableReservationsBloc trBloc;
   final TablesBloc tBloc;
+  final OrderBloc oBloc;
   const TablesScreen({
     Key? key,
     required this.rBloc,
     required this.trBloc,
     required this.tBloc,
+    required this.oBloc,
   }) : super(key: key);
 
   @override
@@ -75,7 +77,8 @@ class _TablesScreenState extends State<TablesScreen> {
                                     builder: (context) => BlocProvider(
                                           create: (context) => EditSchemeBloc()
                                             ..add(EditSchemeLoad()),
-                                          child: const TablesSchemeScreen(),
+                                          child: TablesSchemeScreen(
+                                              oBloc: widget.oBloc),
                                         )));
                           },
                           child: const Text('Схема')),

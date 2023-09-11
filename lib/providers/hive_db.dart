@@ -331,6 +331,14 @@ class HiveProvider {
     return a;
   }
 
+  static Future<List<Dish>> getDishesByIds(List<int> ids) async {
+    final a = (await Hive.openBox<Dish>('dish'))
+        .values
+        .where((x) => ids.contains(x.id))
+        .toList();
+    return a;
+  }
+
   static Future createDish(CreateDishModel model) async {
     final box = await Hive.openBox<Dish>('dish');
 
@@ -392,7 +400,16 @@ class HiveProvider {
     await data.save();
   }
 
-  static Future createOrder(int tableNumber) async {}
+  static Future<int> createOrder(Order order) async {
+    final box = await Hive.openBox<Order>('orders');
+
+    final id = await box.add(order);
+    order.id = id;
+
+    await order.save();
+
+    return id;
+  }
 
   static Future<Order> getOrderById(int id) async {
     final box = await Hive.openBox<Order>('orders');

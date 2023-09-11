@@ -139,8 +139,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          DishScreen(dBloc: dBloc)));
+                                      builder: (context) => DishScreen(
+                                            dBloc: dBloc,
+                                            isSelectable: false,
+                                          )));
                             },
                             child: Container(
                               color: Colors.white,
@@ -156,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           InkWell(
                             onTap: () {
                               final tBloc = context.read<TablesBloc>();
-
+                              final oBloc = context.read<OrderBloc>();
                               final trBloc = context
                                   .read<TableReservationsBloc>()
                                 ..add(TableReservationsLoad());
@@ -168,6 +170,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             tBloc: tBloc,
                                             trBloc: trBloc,
                                             rBloc: rBloc,
+                                            oBloc: oBloc,
                                           )));
                             },
                             child: Container(
@@ -183,6 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           InkWell(
                             onTap: () {
+                              final oBloc = context.read<OrderBloc>();
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
@@ -190,7 +194,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             create: (context) =>
                                                 EditSchemeBloc()
                                                   ..add(EditSchemeLoad()),
-                                            child: const TablesSchemeScreen(),
+                                            child: TablesSchemeScreen(
+                                                oBloc: oBloc),
                                           )));
                             },
                             child: Container(
@@ -199,6 +204,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: const Center(
                                 child: Text(
                                   '[Схема]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              final oBloc = context.read<OrderBloc>()
+                                ..add(OrderLoad(orderId: 0));
+
+                              final dBloc = context.read<DishBloc>();
+
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OrderScreen(
+                                          oBloc: oBloc,
+                                          tableNumber: 1,
+                                          dBloc: dBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Счета]',
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
@@ -217,37 +248,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
         },
       );
 }
-                                      
-
-  // Future _createPlace(int ownerId) async {
-  //   final data = await showDialog<CreatePlaceModel>(
-  //       context: context,
-  //       builder: (context) => const AlertDialog(
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
-  //             titlePadding: EdgeInsets.symmetric(horizontal: 30),
-  //             backgroundColor: Color.fromARGB(255, 23, 23, 23),
-  //             title: Align(
-  //               child: Text(
-  //                 'Создать заведение',
-  //                 style: TextStyle(
-  //                   color: Colors.white,
-  //                   fontSize: 30,
-  //                   fontWeight: FontWeight.w500,
-  //                 ),
-  //               ),
-  //             ),
-  //             content:
-  //                 SizedBox(height: 350, width: 500, child: CreatePlaceForm()),
-  //           ));
-
-  //   if (data == null) {
-  //     return;
-  //   }
-
-  //   context.read<DashboardBloc>().add(CreatePlace(
-  //       ownerId: ownerId,
-  //       name: data.name,
-  //       city: data.city,
-  //       address: data.address));
-  // }

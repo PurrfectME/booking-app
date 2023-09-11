@@ -1,7 +1,9 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/edit_scheme/edit_scheme_bloc.dart';
 import 'package:booking_app/constants/constants.dart';
+import 'package:booking_app/models/local/create_order_model.dart';
 import 'package:booking_app/models/models.dart';
+import 'package:booking_app/screens/tables_scheme/widgets/create_order_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,8 +11,10 @@ import 'widgets/background_paint.dart';
 import 'widgets/table_position_wrapper.dart';
 
 class TablesSchemeScreen extends StatefulWidget {
+  final OrderBloc oBloc;
   const TablesSchemeScreen({
     Key? key,
+    required this.oBloc,
   }) : super(key: key);
 
   @override
@@ -123,33 +127,32 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
   }
 
   Future<bool?> showConfirmationDialog(BuildContext context, int number) async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text("Подтверждение"),
-        content: Text("Открыть счёт?"),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Нет"),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-          TextButton(
-            child: Text("Да"),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ],
-      ),
-    );
+    final result = await showDialog<CreateOrderModel>(
+        context: context,
+        builder: (BuildContext context) => const AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              titlePadding: EdgeInsets.symmetric(horizontal: 30),
+              backgroundColor: Color.fromARGB(255, 23, 23, 23),
+              title: Align(
+                child: Text(
+                  'Открыть счёт',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              content: SizedBox(width: 500, child: CreateOrderForm()),
+            ));
 
     if (result == null) {
       return null;
     }
 
-    //TODO: create order here
+    widget.oBloc.add(CreateOrder(tableNumber: number, guests: result.guests));
+
     context.read<EditSchemeBloc>().add(OpenTable(number: number));
   }
 

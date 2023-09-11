@@ -20,9 +20,9 @@ class OrderAdapter extends TypeAdapter<Order> {
       id: fields[0] as int,
       table: fields[1] as int,
       openDate: fields[2] as int,
-      closeDate: fields[3] as int,
+      closeDate: fields[3] as int?,
       items: (fields[4] as List).cast<OrderItem>(),
-      cardId: fields[5] as int,
+      cardId: fields[5] as int?,
       administrator: fields[6] as String,
       guests: fields[7] as int,
     );
