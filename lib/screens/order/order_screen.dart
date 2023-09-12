@@ -137,8 +137,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                         dishId: x.dish.id,
                                       ));
                                     },
+                                    controller:
+                                        TextEditingController(text: x.note),
                                   ),
-                                  // controller: amountControllers[x.name],
                                 ),
                               ],
                             ),

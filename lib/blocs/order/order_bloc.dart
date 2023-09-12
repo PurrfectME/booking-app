@@ -50,7 +50,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             )
             .toList();
 
-        final order = Order(
+        final currentOrder = Order(
             id: 0,
             table: 0,
             openDate: 1,
@@ -60,7 +60,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             administrator: "administrator",
             guests: 1);
 
-        emit(OrderLoaded(order: order));
+        emit(OrderLoaded(order: currentOrder));
       } else if (event is EditOrderItem) {
         orderItems.firstWhere((x) => x.dish.id == event.dishId).note =
             event.note;
@@ -71,6 +71,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           await order?.save();
 
           emit(OrderPrinted());
+
+          emit(OrderLoaded(order: order!));
         }
       } else {
         emit(OrderLoading());
