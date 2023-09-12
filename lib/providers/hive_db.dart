@@ -418,4 +418,11 @@ class HiveProvider {
 
     return result;
   }
+
+  static Future deleteDishById(int id) async {
+    final dishToDelete =
+        (await Hive.openBox<Dish>('dish')).values.firstWhere((x) => x.id == id);
+
+    await dishToDelete.delete();
+  }
 }

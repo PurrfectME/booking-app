@@ -77,6 +77,29 @@ class DishBloc extends Bloc<DishEvent, DishState> {
             dishes: filteredDishes,
             tags: event.allTags,
             products: productsList));
+      } else if (event is UpdateDish) {
+        await HiveProvider.deleteDishById(event.model.id);
+        await HiveProvider.createDish(CreateDishModel(
+            name: event.model.name,
+            price: event.model.price,
+            tags: event.model.tags.map((e) => e.name).toList(),
+            ingredients: event.model.ingredients,
+            description: event.model.description,
+            mediaId: event.model.mediaId));
+
+        final dishData = await _getDishes();
+
+        final products = await HiveProvider.getProducts();
+        final productsList = products
+            .map((x) =>
+                ProductModel(name: x.name, amount: x.amount, type: x.type))
+            .toList();
+
+        emit(DishLoaded(
+          dishes: dishData.dishes,
+          products: productsList,
+          tags: dishData.tags,
+        ));
       } else {
         emit(DishLoading());
       }

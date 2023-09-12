@@ -1,8 +1,10 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/local/create_dish.dart';
+import 'package:booking_app/models/local/dish_model.dart';
 import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/screens/dish/widgets/create_dish_form.dart';
 import 'package:booking_app/screens/dish/widgets/dish_item.dart';
+import 'package:booking_app/screens/dish/widgets/edit_dish_form.dart';
 import 'package:booking_app/widgets/tag_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +114,7 @@ class _DishScreenState extends State<DishScreen> {
                           mainAxisSpacing: 20,
                           crossAxisSpacing: 20,
                           crossAxisCount: 3,
-                          childAspectRatio: 0.5,
+                          childAspectRatio: 1.5,
                           children: state.dishes.map((x) {
                             if (widget.isSelectable) {
                               return InkWell(
@@ -135,12 +137,15 @@ class _DishScreenState extends State<DishScreen> {
                                 ),
                               );
                             } else {
-                              return DishItem(
-                                name: x.name,
-                                price: x.price,
-                                description: x.description,
-                                tags: x.tags,
-                                ingredients: x.ingredients,
+                              return InkWell(
+                                onTap: () => _editDish(x, state.products),
+                                child: DishItem(
+                                  name: x.name,
+                                  price: x.price,
+                                  description: x.description,
+                                  tags: x.tags,
+                                  ingredients: x.ingredients,
+                                ),
                               );
                             }
                           }).toList(),
@@ -155,7 +160,7 @@ class _DishScreenState extends State<DishScreen> {
                               fontSize: 36,
                               fontWeight: FontWeight.bold),
                         ),
-                      ),
+                      )
                   ],
                 ),
               ),
@@ -198,5 +203,35 @@ class _DishScreenState extends State<DishScreen> {
     //TODO: мб блюдо создать просто так, а уже потом можно заредачить
     //TODO: добавив ему ингредиентов(хотя по факту эта операция простая)
     widget.dBloc.add(CreateDish(model: data));
+  }
+
+  Future _editDish(DishModel model, List<ProductModel> products) async {
+    final data = await showDialog<DishModel>(
+        context: context,
+        builder: (context) => AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              titlePadding: const EdgeInsets.symmetric(horizontal: 30),
+              backgroundColor: const Color.fromARGB(255, 23, 23, 23),
+              title: const Align(
+                child: Text(
+                  'Редактирвоать позицию',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              content: SizedBox(
+                  width: 500,
+                  child: EditDishForm(products: products, dish: model)),
+            ));
+
+    if (data == null) {
+      return;
+    }
+
+    widget.dBloc.add(UpdateDish(model: data));
   }
 }

@@ -31,6 +31,8 @@ class DishItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              height: 150,
+              width: double.maxFinite,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
@@ -42,38 +44,41 @@ class DishItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 30),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  'Цена: $price',
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                Text(
-                  'Описание: $description',
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                Row(
-                  children: tags.map((e) => TagItem(text: e.name)).toList(),
-                ),
-                // Text('Ингредиенты:'),
-                // ListView.builder(
-                //   itemCount: ingredients.length,
-                //   shrinkWrap: true,
-                //   itemBuilder: (context, index) {
-                //     return Text(
-                //         '${ingredients[index].name}, ${ingredients[index].amount}',
-                //         style: TextStyle(color: Colors.white));
-                //   },
-                // ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    'Цена: $price',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Text(
+                    'Описание: $description',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Row(
+                    children: tags.map((e) => TagItem(text: e.name)).toList(),
+                  ),
+                  // Text('Ингредиенты:'),
+                  // ListView.builder(
+                  //   itemCount: ingredients.length,
+                  //   shrinkWrap: true,
+                  //   itemBuilder: (context, index) {
+                  //     return Text(
+                  //         '${ingredients[index].name}, ${ingredients[index].amount}',
+                  //         style: TextStyle(color: Colors.white));
+                  //   },
+                  // ),
+                ],
+              ),
             ),
           ],
         ),

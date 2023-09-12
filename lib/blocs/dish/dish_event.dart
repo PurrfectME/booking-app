@@ -36,3 +36,13 @@ class FilterByTags extends DishEvent {
   @override
   List<Object> get props => [tags, allTags];
 }
+
+class UpdateDish extends DishEvent {
+  final DishModel model;
+  const UpdateDish({
+    required this.model,
+  });
+
+  @override
+  List<Object> get props => [model];
+}
