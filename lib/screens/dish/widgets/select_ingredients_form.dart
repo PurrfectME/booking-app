@@ -111,34 +111,51 @@ class _SelectIngredientsFormState extends State<SelectIngredientsForm> {
                     ),
                   ),
                 ),
+                DataColumn(
+                  label: Text(''),
+                ),
               ],
               rows: selectedIngredientsWithAmount
                   .map((x) => DataRow(cells: [
                         DataCell(Text(x.name,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 15))),
-                        DataCell(TextField(
-                            style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
+                        DataCell(
+                          TextField(
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: const BorderSide(
+                                        color: Constants.mainPurple, width: 2)),
+                                enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: const BorderSide(
-                                      color: Constants.mainPurple, width: 2)),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                                borderSide: const BorderSide(
-                                    color: Color.fromARGB(255, 66, 66, 66),
-                                    width: 2),
+                                      color: Color.fromARGB(255, 66, 66, 66),
+                                      width: 2),
+                                ),
                               ),
-                            ),
-                            onChanged: (value) {
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedIngredientsWithAmount
+                                      .firstWhere((e) => x.name == e.name)
+                                      .amount = value;
+                                });
+                              },
+                              controller: amountControllers[x.name]),
+                        ),
+                        DataCell(
+                          IconButton(
+                            icon: const Icon(Icons.delete_forever,
+                                color: Colors.white),
+                            onPressed: () {
                               setState(() {
-                                selectedIngredientsWithAmount
-                                    .firstWhere((e) => x.name == e.name)
-                                    .amount = value;
+                                selectedIngredientsWithAmount.removeWhere(
+                                    (ingredient) => ingredient == x);
                               });
                             },
-                            controller: amountControllers[x.name])),
+                          ),
+                        ),
                       ]))
                   .toList(),
             ),

@@ -116,7 +116,7 @@ class _EditDishFormState extends State<EditDishForm> {
                     const SizedBox(height: 20),
                     TextFormField(
                       style: const TextStyle(color: Colors.white),
-                      initialValue: localDish.tags.join(' '),
+                      initialValue: localDish.tags.map((e) => e.name).join(' '),
                       keyboardType: TextInputType.text,
                       onSaved: (newValue) {
                         final separated = newValue!.split(' ');
@@ -199,42 +199,65 @@ class _EditDishFormState extends State<EditDishForm> {
                             ),
                           ),
                         ),
+                        DataColumn(
+                          label: Text(''),
+                        ),
                       ],
                       rows: localDish.ingredients
                           .map((x) => DataRow(cells: [
                                 DataCell(Text(x.name,
                                     style: const TextStyle(
                                         color: Colors.white, fontSize: 15))),
-                                DataCell(TextField(
-                                    style: const TextStyle(color: Colors.white),
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
+                                DataCell(
+                                  TextField(
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            borderSide: const BorderSide(
+                                                color: Constants.mainPurple,
+                                                width: 2)),
+                                        enabledBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(30),
                                           borderSide: const BorderSide(
-                                              color: Constants.mainPurple,
-                                              width: 2)),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                        borderSide: const BorderSide(
-                                            color:
-                                                Color.fromARGB(255, 66, 66, 66),
-                                            width: 2),
+                                              color: Color.fromARGB(
+                                                  255, 66, 66, 66),
+                                              width: 2),
+                                        ),
                                       ),
-                                    ),
-                                    onChanged: (value) {
-                                      final d = localDish.copyWith();
-                                      final ingrs = d.ingredients;
-                                      ingrs
-                                          .firstWhere((e) => x.name == e.name)
-                                          .amount = value;
+                                      onChanged: (value) {
+                                        final d = localDish.copyWith();
+                                        final ingrs = d.ingredients;
+                                        ingrs
+                                            .firstWhere((e) => x.name == e.name)
+                                            .amount = value;
 
+                                        setState(() {
+                                          localDish = localDish.copyWith(
+                                              ingredients: ingrs);
+                                        });
+                                      },
+                                      controller: amountControllers[x.name]),
+                                ),
+                                DataCell(
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_forever,
+                                        color: Colors.white),
+                                    onPressed: () {
                                       setState(() {
                                         localDish = localDish.copyWith(
-                                            ingredients: ingrs);
+                                          ingredients: localDish.ingredients
+                                              .where((ingredient) =>
+                                                  ingredient != x)
+                                              .toList(),
+                                        );
                                       });
                                     },
-                                    controller: amountControllers[x.name])),
+                                  ),
+                                ),
                               ]))
                           .toList(),
                     ),

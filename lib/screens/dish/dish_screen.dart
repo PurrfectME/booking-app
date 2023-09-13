@@ -215,7 +215,7 @@ class _DishScreenState extends State<DishScreen> {
               backgroundColor: const Color.fromARGB(255, 23, 23, 23),
               title: const Align(
                 child: Text(
-                  'Редактирвоать позицию',
+                  'Редактировать позицию',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 30,
