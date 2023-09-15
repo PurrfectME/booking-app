@@ -3,6 +3,7 @@ import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/local/ingredient_model.dart';
 import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/screens/dish/widgets/select_ingredients_form.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 
 import '../../../widgets/tag_item.dart';
@@ -22,6 +23,7 @@ class _CreateDishFormState extends State<CreateDishForm> {
   late double price;
   late List<String> tags;
   late String description;
+  late String mediaId;
   List<IngredientModel> selectedIngredients = [];
 
   Map<String, TextEditingController> amountControllers = {};
@@ -238,6 +240,10 @@ class _CreateDishFormState extends State<CreateDishForm> {
                               child: Text('Выбрать ингредиенты',
                                   style: TextStyle(fontSize: 20)))),
                     ),
+                    InkWell(
+                      onTap: _selectAndReplaceImage,
+                      child: const Icon(Icons.camera_alt, size: 100),
+                    ),
                   ],
                 ),
               ),
@@ -254,7 +260,7 @@ class _CreateDishFormState extends State<CreateDishForm> {
                       tags: tags,
                       description: description,
                       ingredients: selectedIngredients,
-                      mediaId: "mediaID"));
+                      mediaId: mediaId));
             },
             style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -271,6 +277,20 @@ class _CreateDishFormState extends State<CreateDishForm> {
           ),
         ],
       );
+
+  Future _selectAndReplaceImage() async {
+    const typeGroup = XTypeGroup(
+      label: 'images',
+      extensions: ['jpg', 'png'],
+    );
+    final file = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+
+    if (file != null) {
+      setState(() {
+        mediaId = file.path;
+      });
+    }
+  }
 
   Future _addIngredient(
       List<ProductModel> list, List<IngredientModel> selected) async {

@@ -114,7 +114,8 @@ class _DishScreenState extends State<DishScreen> {
                           mainAxisSpacing: 20,
                           crossAxisSpacing: 20,
                           crossAxisCount: 3,
-                          childAspectRatio: 1.5,
+                          shrinkWrap: true,
+                          // childAspectRatio: 2,
                           children: state.dishes.map((x) {
                             if (widget.isSelectable) {
                               return InkWell(
@@ -133,6 +134,7 @@ class _DishScreenState extends State<DishScreen> {
                                     description: x.description,
                                     tags: x.tags,
                                     ingredients: x.ingredients,
+                                    mediaId: x.mediaId,
                                   ),
                                 ),
                               );
@@ -145,6 +147,7 @@ class _DishScreenState extends State<DishScreen> {
                                   description: x.description,
                                   tags: x.tags,
                                   ingredients: x.ingredients,
+                                  mediaId: x.mediaId,
                                 ),
                               );
                             }

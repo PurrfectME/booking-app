@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/local/dish_model.dart';
@@ -5,7 +7,10 @@ import 'package:booking_app/models/local/ingredient_model.dart';
 import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dish/widgets/select_ingredients_form.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class EditDishForm extends StatefulWidget {
   final DishModel dish;
@@ -21,6 +26,7 @@ class EditDishForm extends StatefulWidget {
 }
 
 class _EditDishFormState extends State<EditDishForm> {
+  bool isHovered = false;
   final _formKey = GlobalKey<FormState>();
 
   late DishModel localDish;
@@ -57,6 +63,7 @@ class _EditDishFormState extends State<EditDishForm> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    const SizedBox(height: 10),
                     TextFormField(
                       style: const TextStyle(color: Colors.white),
                       initialValue: localDish.name,
@@ -281,6 +288,57 @@ class _EditDishFormState extends State<EditDishForm> {
                               child: Text('Выбрать ингредиенты',
                                   style: TextStyle(fontSize: 20)))),
                     ),
+                    const SizedBox(height: 20),
+                    MouseRegion(
+                      onEnter: (_) {
+                        setState(() {
+                          isHovered = true;
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          isHovered = false;
+                        });
+                      },
+                      child: Stack(children: [
+                        if (localDish.mediaId.isNotEmpty)
+                          Container(
+                            height: 200,
+                            width: double.maxFinite,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                              image: DecorationImage(
+                                  opacity: 1,
+                                  fit: BoxFit.fill,
+                                  image: FileImage(File(localDish.mediaId))),
+                            ),
+                          )
+                        else
+                          Container(
+                            height: 200,
+                            width: double.maxFinite,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                              image: DecorationImage(
+                                  opacity: 1,
+                                  fit: BoxFit.fill,
+                                  image: AssetImage('assets/images/neft.jpg')),
+                            ),
+                          ),
+                        if (isHovered)
+                          Positioned.fill(
+                            child: InkWell(
+                              onTap: _selectAndReplaceImage,
+                              child: const Icon(Icons.camera_alt, size: 100),
+                            ),
+                          ),
+                      ]),
+                    ),
+                    const SizedBox(height: 70),
                   ],
                 ),
               ),
@@ -306,6 +364,20 @@ class _EditDishFormState extends State<EditDishForm> {
           ),
         ],
       );
+
+  Future _selectAndReplaceImage() async {
+    const typeGroup = XTypeGroup(
+      label: 'images',
+      extensions: ['jpg', 'png'],
+    );
+    final file = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+
+    if (file != null) {
+      setState(() {
+        localDish = localDish.copyWith(mediaId: file.path);
+      });
+    }
+  }
 
   Future _addIngredient(
       List<ProductModel> list, List<IngredientModel> selected) async {
