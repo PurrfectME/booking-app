@@ -13,3 +13,4 @@ export 'table_reservations/table_reservations_bloc.dart';
 export 'tables/tables_bloc.dart';
 export 'update_place/update_place_bloc.dart';
 export 'update_table/update_table_bloc.dart';
+export 'user/user_bloc.dart';

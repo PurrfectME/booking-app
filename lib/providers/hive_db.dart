@@ -1,6 +1,8 @@
 import 'package:booking_app/models/db/ingredient.dart';
 import 'package:booking_app/models/db/order.dart';
 import 'package:booking_app/models/db/order_item.dart';
+import 'package:booking_app/models/db/role.dart';
+import 'package:booking_app/models/db/user.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:dartx/dartx.dart';
@@ -26,11 +28,13 @@ class HiveProvider {
       ..registerAdapter<Ingredient>(IngredientAdapter())
       ..registerAdapter<Kitchen>(KitchenAdapter())
       ..registerAdapter<Order>(OrderAdapter())
-      ..registerAdapter<OrderItem>(OrderItemAdapter());
+      ..registerAdapter<OrderItem>(OrderItemAdapter())
+      ..registerAdapter<User>(UserAdapter())
+      ..registerAdapter<Role>(RoleAdapter());
   }
 
-  static Future<UserModel> createUser(UserModel model) async {
-    final usersBox = await Hive.openBox<UserModel>('users');
+  static Future<UserModel> createUserModel(UserModel model) async {
+    final usersBox = await Hive.openBox<UserModel>('usersModel');
     final user = model.copyWith();
 
     final id = await usersBox.add(user);
@@ -113,18 +117,18 @@ class HiveProvider {
     await (await Hive.openBox<TableModel>('tables')).clear();
   }
 
-  static Future<List<UserModel>> getUsers() async {
-    final users = (await Hive.openBox<UserModel>('users')).values.toList();
+  static Future<List<UserModel>> getUserModels() async {
+    final users = (await Hive.openBox<UserModel>('usersModel')).values.toList();
     return users;
   }
 
   static Future<UserModel> getUserById(int id) async =>
-      (await Hive.openBox<UserModel>('users'))
+      (await Hive.openBox<UserModel>('usersModel'))
           .values
           .firstWhere((x) => x.id == id);
 
   static Future<UserModel?> getUserByEmail(String email) async {
-    final user = (await Hive.openBox<UserModel>('users'))
+    final user = (await Hive.openBox<UserModel>('usersModel'))
         .values
         .firstOrNullWhere((user) => user.email == email);
 
@@ -424,5 +428,29 @@ class HiveProvider {
         (await Hive.openBox<Dish>('dish')).values.firstWhere((x) => x.id == id);
 
     await dishToDelete.delete();
+  }
+
+  static Future<List<User>> getUsers() async =>
+      (await Hive.openBox<User>('users')).values.toList();
+
+  static Future createUser(User user) async {
+    final box = await Hive.openBox<User>('users');
+
+    final id = await box.add(user);
+    user.id = id;
+
+    await user.save();
+  }
+
+  static Future<List<Role>> getRoles() async =>
+      (await Hive.openBox<Role>('roles')).values.toList();
+
+  static Future createRole(String role) async {
+    final box = await Hive.openBox<Role>('roles');
+    final r = Role(id: -1, name: role);
+    final id = await box.add(r);
+    r.id = id;
+
+    await r.save();
   }
 }

@@ -57,6 +57,7 @@ class LoginScreenState extends State<LoginScreen> {
                             BlocProvider(create: (context) => ProductBloc()),
                             BlocProvider(create: (context) => KitchenBloc()),
                             BlocProvider(create: (context) => OrderBloc()),
+                            BlocProvider(create: (context) => UserBloc()),
                           ],
                           child: const DashboardScreen(),
                         )),

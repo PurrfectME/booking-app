@@ -34,7 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           refreshToken: 'response.refreshToken',
         );
 
-        final createdUser = await HiveProvider.createUser(user);
+        final createdUser = await HiveProvider.createUserModel(user);
 
         emit(RegistrationSuccess(user: createdUser));
       } else if (event is RegistrationLoad) {

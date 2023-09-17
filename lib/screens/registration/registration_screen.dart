@@ -45,6 +45,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             BlocProvider(create: (context) => ProductBloc()),
                             BlocProvider(create: (context) => KitchenBloc()),
                             BlocProvider(create: (context) => OrderBloc()),
+                            BlocProvider(create: (context) => UserBloc()),
                           ],
                           child: const DashboardScreen(),
                         )),

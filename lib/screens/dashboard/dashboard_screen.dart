@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/edit_scheme/edit_scheme_bloc.dart';
 import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
+import 'package:booking_app/models/db/user.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:booking_app/screens/kitchen/kitchen_screen.dart';
@@ -230,6 +231,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: const Center(
                                 child: Text(
                                   '[Счета]',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              final uBloc = context.read<UserBloc>()
+                                ..add(UsersLoad());
+
+                              Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          UsersScreen(uBloc: uBloc)));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(4),
+                              child: const Center(
+                                child: Text(
+                                  '[Пользователи]',
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
