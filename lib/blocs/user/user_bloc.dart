@@ -49,6 +49,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UsersSaved());
 
         emit(UsersLoaded(users: users, roles: roles));
+      } else if (event is RemoveUser) {
+        await event.user.delete();
+
+        users = await HiveProvider.getUsers();
+
+        emit(UsersLoaded(users: users, roles: roles));
       } else {
         emit(const UsersError(error: 'Ошибка'));
       }

@@ -71,6 +71,9 @@ class _UsersScreenState extends State<UsersScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   )),
+                  DataColumn(
+                    label: Text(''),
+                  ),
                 ],
                 rows: state.users
                     .map((user) => DataRow(cells: [
@@ -118,6 +121,15 @@ class _UsersScreenState extends State<UsersScreen> {
                                       name: user.name));
                                 },
                               ),
+                            ),
+                          ),
+                          DataCell(
+                            IconButton(
+                              icon: const Icon(Icons.delete_forever,
+                                  color: Colors.white),
+                              onPressed: () {
+                                widget.uBloc.add(RemoveUser(user: user));
+                              },
                             ),
                           ),
                         ]))

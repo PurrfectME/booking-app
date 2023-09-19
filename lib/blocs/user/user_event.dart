@@ -27,3 +27,13 @@ class EditUser extends UserEvent {
 }
 
 class SaveUsers extends UserEvent {}
+
+class RemoveUser extends UserEvent {
+  final User user;
+  const RemoveUser({
+    required this.user,
+  });
+
+  @override
+  List<Object> get props => [user];
+}
