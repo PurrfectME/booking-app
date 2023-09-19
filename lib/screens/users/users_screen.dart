@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/models/db/role.dart';
 import 'package:flutter/material.dart';
@@ -79,43 +81,43 @@ class _UsersScreenState extends State<UsersScreen> {
                             onChanged: (value) {
                               widget.uBloc.add(EditUser(
                                 id: user.id,
-                                role: value,
-                                name: user.name,
+                                role: user.role,
+                                name: value,
                               ));
                             },
                           )),
                           DataCell(
-                            DropdownButton<Role>(
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 15),
-                              selectedItemBuilder: (context) => [
-                                //TODO: figure out how to use Strings instead of Role object
-                                DropdownMenuItem<Role>(
-                                  value: state.roles
-                                      .firstWhere((x) => x.name == user.role),
-                                  child: Text(
-                                    user.role,
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                  ),
-                                )
-                              ],
-                              // value: user.role,
-                              items: state.roles
-                                  .map((value) => DropdownMenuItem<Role>(
-                                        value: value,
-                                        child: Text(value.name,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 15)),
-                                      ))
-                                  .toList(),
-                              onChanged: (newValue) {
-                                widget.uBloc.add(EditUser(
-                                    id: user.id,
-                                    role: newValue!.name,
-                                    name: user.name));
-                              },
+                            Container(
+                              width: 150,
+                              child: DropdownButton<Role>(
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                                selectedItemBuilder: (context) =>
+                                    state.roles.map(
+                                  (value) {
+                                    return Text(value.name,
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 15));
+                                  },
+                                ).toList(),
+                                value: state.roles
+                                    .firstWhere((x) => x.name == user.role),
+                                items: state.roles
+                                    .map((value) => DropdownMenuItem<Role>(
+                                          value: value,
+                                          child: Text(value.name,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15)),
+                                        ))
+                                    .toList(),
+                                onChanged: (newValue) {
+                                  widget.uBloc.add(EditUser(
+                                      id: user.id,
+                                      role: newValue!.name,
+                                      name: user.name));
+                                },
+                              ),
                             ),
                           ),
                         ]))

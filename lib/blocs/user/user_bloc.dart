@@ -37,6 +37,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         users.firstWhere((x) => x.id == event.id)
           ..role = event.role
           ..name = event.name;
+
+        emit(UsersLoading());
+
+        emit(UsersLoaded(users: users, roles: roles));
       } else if (event is SaveUsers) {
         for (var i = 0; i < users.length; i++) {
           await users[i].save();
