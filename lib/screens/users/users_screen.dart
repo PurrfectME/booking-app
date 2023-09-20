@@ -51,7 +51,34 @@ class _UsersScreenState extends State<UsersScreen> {
                   ),
                 ],
               ),
-              body: DataTable(
+              body:
+                  // PaginatedDataTable(
+                  //   columns: const [
+                  //     DataColumn(
+                  //         label: Text(
+                  //       'Имя',
+                  //       style: TextStyle(
+                  //         color: Colors.white,
+                  //         fontSize: 22,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     )),
+                  //     DataColumn(
+                  //         label: Text(
+                  //       'Роль',
+                  //       style: TextStyle(
+                  //         color: Colors.white,
+                  //         fontSize: 22,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     )),
+                  //     DataColumn(
+                  //       label: Text(''),
+                  //     ),
+                  //   ],
+                  //   source: ,
+                  // ),
+                  DataTable(
                 columns: const [
                   DataColumn(
                       label: Text(
@@ -95,14 +122,14 @@ class _UsersScreenState extends State<UsersScreen> {
                               child: DropdownButton<Role>(
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 15),
-                                selectedItemBuilder: (context) =>
-                                    state.roles.map(
-                                  (value) {
-                                    return Text(value.name,
-                                        style: const TextStyle(
-                                            color: Colors.white, fontSize: 15));
-                                  },
-                                ).toList(),
+                                selectedItemBuilder: (context) => state.roles
+                                    .map(
+                                      (value) => Text(value.name,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                    )
+                                    .toList(),
                                 value: state.roles
                                     .firstWhere((x) => x.name == user.role),
                                 items: state.roles

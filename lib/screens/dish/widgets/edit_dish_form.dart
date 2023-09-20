@@ -184,6 +184,56 @@ class _EditDishFormState extends State<EditDishForm> {
                       // validator: validatePhoneNumber),
                     ),
                     const SizedBox(height: 20),
+                    MouseRegion(
+                      onEnter: (_) {
+                        setState(() {
+                          isHovered = true;
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          isHovered = false;
+                        });
+                      },
+                      child: Stack(children: [
+                        if (localDish.mediaId.isNotEmpty)
+                          Container(
+                            height: 200,
+                            width: double.maxFinite,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                              image: DecorationImage(
+                                  opacity: 1,
+                                  fit: BoxFit.fill,
+                                  image: FileImage(File(localDish.mediaId))),
+                            ),
+                          )
+                        else
+                          Container(
+                            height: 200,
+                            width: double.maxFinite,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                            ),
+                            child: InkWell(
+                              onTap: _selectAndReplaceImage,
+                              child: const Icon(Icons.camera_alt, size: 100),
+                            ),
+                          ),
+                        if (isHovered)
+                          Positioned.fill(
+                            child: InkWell(
+                              onTap: _selectAndReplaceImage,
+                              child: const Icon(Icons.camera_alt, size: 100),
+                            ),
+                          ),
+                      ]),
+                    ),
+                    const SizedBox(height: 20),
                     DataTable(
                       columns: const [
                         DataColumn(
@@ -268,6 +318,7 @@ class _EditDishFormState extends State<EditDishForm> {
                               ]))
                           .toList(),
                     ),
+                    const SizedBox(height: 5),
                     ElevatedButton(
                       onPressed: () async => await _addIngredient(
                         widget.products,
@@ -285,58 +336,8 @@ class _EditDishFormState extends State<EditDishForm> {
                           height: 50,
                           width: 150,
                           child: Center(
-                              child: Text('Выбрать ингредиенты',
+                              child: Text('Ингредиенты',
                                   style: TextStyle(fontSize: 20)))),
-                    ),
-                    const SizedBox(height: 20),
-                    MouseRegion(
-                      onEnter: (_) {
-                        setState(() {
-                          isHovered = true;
-                        });
-                      },
-                      onExit: (_) {
-                        setState(() {
-                          isHovered = false;
-                        });
-                      },
-                      child: Stack(children: [
-                        if (localDish.mediaId.isNotEmpty)
-                          Container(
-                            height: 200,
-                            width: double.maxFinite,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(30),
-                                  topRight: Radius.circular(30)),
-                              image: DecorationImage(
-                                  opacity: 1,
-                                  fit: BoxFit.fill,
-                                  image: FileImage(File(localDish.mediaId))),
-                            ),
-                          )
-                        else
-                          Container(
-                            height: 200,
-                            width: double.maxFinite,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30),
-                                  topRight: Radius.circular(30)),
-                              image: DecorationImage(
-                                  opacity: 1,
-                                  fit: BoxFit.fill,
-                                  image: AssetImage('assets/images/neft.jpg')),
-                            ),
-                          ),
-                        if (isHovered)
-                          Positioned.fill(
-                            child: InkWell(
-                              onTap: _selectAndReplaceImage,
-                              child: const Icon(Icons.camera_alt, size: 100),
-                            ),
-                          ),
-                      ]),
                     ),
                     const SizedBox(height: 70),
                   ],

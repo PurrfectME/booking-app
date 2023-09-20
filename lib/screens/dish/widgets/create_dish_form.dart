@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/models/local/create_dish.dart';
 import 'package:booking_app/models/local/ingredient_model.dart';
@@ -18,12 +20,13 @@ class CreateDishForm extends StatefulWidget {
 
 class _CreateDishFormState extends State<CreateDishForm> {
   final _formKey = GlobalKey<FormState>();
+  bool isHovered = false;
 
   late String name;
   late double price;
   late List<String> tags;
   late String description;
-  late String mediaId;
+  String mediaId = '';
   List<IngredientModel> selectedIngredients = [];
 
   Map<String, TextEditingController> amountControllers = {};
@@ -164,6 +167,66 @@ class _CreateDishFormState extends State<CreateDishForm> {
                       // validator: validatePhoneNumber),
                     ),
                     const SizedBox(height: 20),
+                    const Center(
+                        child: Text(
+                      'Фото',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+                    const SizedBox(height: 5),
+                    MouseRegion(
+                      onEnter: (_) {
+                        setState(() {
+                          isHovered = true;
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          isHovered = false;
+                        });
+                      },
+                      child: Stack(children: [
+                        if (mediaId.isNotEmpty)
+                          Container(
+                            height: 200,
+                            width: double.maxFinite,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                              image: DecorationImage(
+                                  opacity: 1,
+                                  fit: BoxFit.fill,
+                                  image: FileImage(File(mediaId))),
+                            ),
+                          )
+                        else
+                          Container(
+                            height: 200,
+                            width: double.maxFinite,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                            ),
+                            child: InkWell(
+                              onTap: _selectAndReplaceImage,
+                              child: const Icon(Icons.camera_alt, size: 100),
+                            ),
+                          ),
+                        if (isHovered)
+                          Positioned.fill(
+                            child: InkWell(
+                              onTap: _selectAndReplaceImage,
+                              child: const Icon(Icons.camera_alt, size: 100),
+                            ),
+                          ),
+                      ]),
+                    ),
+                    const SizedBox(height: 20),
                     DataTable(
                       columns: const [
                         DataColumn(
@@ -237,13 +300,10 @@ class _CreateDishFormState extends State<CreateDishForm> {
                           height: 50,
                           width: 150,
                           child: Center(
-                              child: Text('Выбрать ингредиенты',
+                              child: Text('Ингредиенты',
                                   style: TextStyle(fontSize: 20)))),
                     ),
-                    InkWell(
-                      onTap: _selectAndReplaceImage,
-                      child: const Icon(Icons.camera_alt, size: 100),
-                    ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
