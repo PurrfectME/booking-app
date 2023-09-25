@@ -11,8 +11,8 @@ class BackgroundPaint extends CustomPainter {
     mainBackground.addRect(Rect.fromLTRB(0, 0, width, height));
     paint.color = Colors.grey;
 
-    final heightLine = 25; // your Horizontal line
-    final widthLine = 25; // your Vertical line
+    final heightLine = 35; // your Horizontal line
+    final widthLine = 35; // your Vertical line
 
     for (var i = 1; i < height; i++) {
       if (i % heightLine == 0) {

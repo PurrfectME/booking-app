@@ -12,6 +12,8 @@ class UsersLoad extends UserEvent {}
 
 class AddUser extends UserEvent {}
 
+class AddRole extends UserEvent {}
+
 class EditUser extends UserEvent {
   final int id;
   final String role;
@@ -26,6 +28,18 @@ class EditUser extends UserEvent {
   List<Object> get props => [id, role, name];
 }
 
+class EditRole extends UserEvent {
+  final int id;
+  final String name;
+  const EditRole({
+    required this.id,
+    required this.name,
+  });
+
+  @override
+  List<Object> get props => [id, name];
+}
+
 class SaveUsers extends UserEvent {}
 
 class RemoveUser extends UserEvent {
@@ -36,4 +50,14 @@ class RemoveUser extends UserEvent {
 
   @override
   List<Object> get props => [user];
+}
+
+class RemoveRole extends UserEvent {
+  final Role role;
+  const RemoveRole({
+    required this.role,
+  });
+
+  @override
+  List<Object> get props => [role];
 }

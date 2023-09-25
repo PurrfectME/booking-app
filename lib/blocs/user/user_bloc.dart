@@ -33,6 +33,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         users = await HiveProvider.getUsers();
 
         emit(UsersLoaded(users: users, roles: roles));
+      } else if (event is AddRole) {
+        await HiveProvider.createRole('роль');
+
+        roles = await HiveProvider.getRoles();
+
+        emit(UsersLoaded(users: users, roles: roles));
       } else if (event is EditUser) {
         users.firstWhere((x) => x.id == event.id)
           ..role = event.role
@@ -46,6 +52,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           await users[i].save();
         }
 
+        for (var i = 0; i < roles.length; i++) {
+          await roles[i].save();
+        }
+
         emit(UsersSaved());
 
         emit(UsersLoaded(users: users, roles: roles));
@@ -53,6 +63,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         await event.user.delete();
 
         users = await HiveProvider.getUsers();
+
+        emit(UsersLoaded(users: users, roles: roles));
+      } else if (event is EditRole) {
+        roles.firstWhere((x) => x.id == event.id).name = event.name;
+
+        emit(UsersLoading());
+
+        emit(UsersLoaded(users: users, roles: roles));
+      } else if (event is RemoveRole) {
+        //TODO: если такая роль есть у юзера и она удаляется то установить юзеру дефолтную роль
+        await event.role.delete();
+
+        roles = await HiveProvider.getRoles();
 
         emit(UsersLoaded(users: users, roles: roles));
       } else {

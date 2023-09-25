@@ -6,6 +6,7 @@ import 'package:booking_app/models/models.dart';
 import 'package:booking_app/screens/tables_scheme/widgets/create_order_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'widgets/background_paint.dart';
 import 'widgets/table_position_wrapper.dart';
@@ -77,24 +78,17 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
                   await showConfirmationDialog(context, x.position.number);
                 },
                 child: Draggable<TablePositionWrapper>(
-                  data: x,
-                  feedback: Container(
-                    width: 50,
-                    height: 50,
-                    color: Constants.mainPurple.withOpacity(0.7),
-                    child: Center(
-                      child: Text(x.position.number.toString()),
+                    data: x,
+                    feedback: SvgPicture.asset(
+                      'assets/images/table2.svg',
+                      width: 75,
+                      height: 75,
                     ),
-                  ),
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    color: Constants.mainPurple,
-                    child: Center(
-                      child: Text(x.position.number.toString()),
-                    ),
-                  ),
-                ),
+                    child: SvgPicture.asset(
+                      'assets/images/table2.svg',
+                      width: 75,
+                      height: 75,
+                    )),
               ),
             ))
         .toList();
@@ -156,37 +150,52 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
     context.read<EditSchemeBloc>().add(OpenTable(number: number));
   }
 
-  Widget _buildDraggableBoxes(List<TableModel> tablesToMove) => SizedBox(
+  Widget _buildDraggableBoxes(List<TableModel> tablesToMove) => Container(
         height: 100,
+        color: Colors.redAccent,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: tablesToMove.map(_buildDraggableBox).toList()),
       );
 
   Widget _buildDraggableBox(TableModel item) => Draggable<TablePositionWrapper>(
-      key: UniqueKey(),
-      data: TablePositionWrapper(
-          position: TablePosition(
-            active: false,
-            id: 0,
-            number: item.number,
-            x: 0,
-            y: 0,
-            guests: item.guests,
-            vip: 0,
+        key: UniqueKey(),
+        data: TablePositionWrapper(
+            position: TablePosition(
+              active: false,
+              id: 0,
+              number: item.number,
+              x: 0,
+              y: 0,
+              guests: item.guests,
+              vip: 0,
+            ),
+            key: UniqueKey()),
+        feedback: Container(
+          width: 100,
+          height: 100,
+          child: SvgPicture.asset(
+            'assets/images/table2.svg',
           ),
-          key: UniqueKey()),
-      feedback: Container(
-        width: 50,
-        height: 50,
-        color: Constants.mainPurple.withOpacity(0.7),
-      ),
-      child: Container(
-        width: 50,
-        height: 50,
-        color: Constants.mainPurple,
-        child: Center(
-          child: Text(item.number.toString()),
         ),
-      ));
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              child: SvgPicture.asset(
+                'assets/images/table${item.guests}.svg',
+                width: 50,
+                height: 100,
+              ),
+            ),
+            Container(
+                child: Center(
+              child: Text(
+                item.number.toString(),
+                style: TextStyle(color: Colors.white),
+              ),
+            )),
+          ],
+        ),
+      );
 }
