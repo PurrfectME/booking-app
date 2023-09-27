@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
 import 'package:booking_app/models/local/kitchen_model.dart';
+import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/screens/kitchen/widgets/create_kitchen_item_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +35,8 @@ class _KitchenScreenState extends State<KitchenScreen> {
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.black,
                           shape: const StadiumBorder()),
-                      onPressed: () async => await _createKitchenItem(),
+                      onPressed: () async =>
+                          await _createKitchenItem(state.products),
                       child: const Text('Создать позицию')),
                 ],
               ),
@@ -95,15 +97,15 @@ class _KitchenScreenState extends State<KitchenScreen> {
         },
       );
 
-  Future _createKitchenItem() async {
+  Future _createKitchenItem(List<ProductModel> products) async {
     final data = await showDialog<KitchenModel>(
         context: context,
-        builder: (context) => const AlertDialog(
-              shape: RoundedRectangleBorder(
+        builder: (context) => AlertDialog(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))),
-              titlePadding: EdgeInsets.symmetric(horizontal: 30),
-              backgroundColor: Color.fromARGB(255, 23, 23, 23),
-              title: Align(
+              titlePadding: const EdgeInsets.symmetric(horizontal: 30),
+              backgroundColor: const Color.fromARGB(255, 23, 23, 23),
+              title: const Align(
                 child: Text(
                   'Создать продукт кухни',
                   style: TextStyle(
@@ -113,7 +115,12 @@ class _KitchenScreenState extends State<KitchenScreen> {
                   ),
                 ),
               ),
-              content: SizedBox(width: 500, child: CreateKitchenItemForm()),
+              content: SizedBox(
+                width: 500,
+                child: CreateKitchenItemForm(
+                  products: products,
+                ),
+              ),
             ));
 
     if (data == null) {

@@ -16,7 +16,7 @@ class TablesScreen extends StatefulWidget {
   final ReservationsBloc rBloc;
   final TableReservationsBloc trBloc;
   final TablesBloc tBloc;
-  final OrderBloc oBloc;
+  final OrderInfoBloc oBloc;
   const TablesScreen({
     Key? key,
     required this.rBloc,

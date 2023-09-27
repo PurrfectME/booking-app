@@ -1,9 +1,15 @@
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/models/local/kitchen_model.dart';
+import 'package:booking_app/models/local/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class CreateKitchenItemForm extends StatefulWidget {
-  const CreateKitchenItemForm({super.key});
+  final List<ProductModel> products;
+  const CreateKitchenItemForm({
+    super.key,
+    required this.products,
+  });
 
   @override
   State<CreateKitchenItemForm> createState() => _CreateKitchenItemFormState();
@@ -11,10 +17,12 @@ class CreateKitchenItemForm extends StatefulWidget {
 
 class _CreateKitchenItemFormState extends State<CreateKitchenItemForm> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _typeAheadController = TextEditingController();
 
   late String name;
   late double amount;
   late String user;
+  String measure = '';
 
   @override
   Widget build(BuildContext context) => Form(
@@ -25,31 +33,40 @@ class _CreateKitchenItemFormState extends State<CreateKitchenItemForm> {
           children: [
             Column(
               children: [
-                TextFormField(
-                  style: const TextStyle(color: Colors.white),
-                  initialValue: '',
-                  keyboardType: TextInputType.text,
-                  onSaved: (newValue) {
-                    name = newValue!;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Название продукта',
-                    floatingLabelStyle: const TextStyle(color: Colors.white),
-                    labelStyle:
-                        const TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
-                    focusedBorder: OutlineInputBorder(
+                TypeAheadField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                    style: const TextStyle(color: Colors.white),
+                    controller: _typeAheadController,
+                    decoration: InputDecoration(
+                      labelText: 'Название продукта',
+                      floatingLabelStyle: const TextStyle(color: Colors.white),
+                      labelStyle: const TextStyle(
+                          color: Color.fromARGB(255, 66, 66, 66)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: const BorderSide(
+                              color: Constants.mainPurple, width: 2)),
+                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: const BorderSide(
-                            color: Constants.mainPurple, width: 2)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 66, 66, 66), width: 2),
+                            color: Color.fromARGB(255, 66, 66, 66), width: 2),
+                      ),
                     ),
                   ),
-                  // onChanged: phoneNumberOnChange,
-                  // The validator receives the text that the user has entered.
-                  // validator: validatePhoneNumber),
+                  suggestionsCallback: (pattern) => widget.products.where(
+                      (product) => product.name
+                          .toLowerCase()
+                          .contains(pattern.toLowerCase())),
+                  itemBuilder: (context, suggestion) => ListTile(
+                    title: Text(suggestion.name),
+                  ),
+                  onSuggestionSelected: (suggestion) {
+                    _typeAheadController.text = suggestion.name;
+                    setState(() {
+                      name = suggestion.name;
+                      measure = suggestion.type;
+                    });
+                  },
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
@@ -61,7 +78,7 @@ class _CreateKitchenItemFormState extends State<CreateKitchenItemForm> {
                     amount = double.parse(newValue!);
                   },
                   decoration: InputDecoration(
-                    labelText: 'Количество',
+                    labelText: 'Количество в $measure',
                     floatingLabelStyle: const TextStyle(color: Colors.white),
                     labelStyle:
                         const TextStyle(color: Color.fromARGB(255, 66, 66, 66)),

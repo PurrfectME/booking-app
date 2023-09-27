@@ -415,6 +415,9 @@ class HiveProvider {
     return id;
   }
 
+  static Future<List<Order>> getOrders() async =>
+      (await Hive.openBox<Order>('orders')).values.toList();
+
   static Future<Order> getOrderById(int id) async {
     final box = await Hive.openBox<Order>('orders');
 

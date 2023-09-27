@@ -72,7 +72,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
         emit(UsersLoaded(users: users, roles: roles));
       } else if (event is RemoveRole) {
-        //TODO: если такая роль есть у юзера и она удаляется то установить юзеру дефолтную роль
+        //TODO: если такая роль есть у юзера то не позволять удалять(ERROR MESSAGE)
         await event.role.delete();
 
         roles = await HiveProvider.getRoles();

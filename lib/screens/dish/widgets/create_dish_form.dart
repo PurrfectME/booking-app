@@ -8,8 +8,6 @@ import 'package:booking_app/screens/dish/widgets/select_ingredients_form.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 
-import '../../../widgets/tag_item.dart';
-
 class CreateDishForm extends StatefulWidget {
   final List<ProductModel> products;
   const CreateDishForm({super.key, required this.products});

@@ -5,6 +5,7 @@ export 'edit_scheme/edit_scheme_bloc.dart';
 export 'kitchen/kitchen_bloc.dart';
 export 'menu/menu_bloc.dart';
 export 'order/order_bloc.dart';
+export 'order_info/order_info_bloc.dart';
 export 'product/product_bloc.dart';
 export 'reservation_info/reservation_info_bloc.dart';
 export 'reservations/reservations_bloc.dart';

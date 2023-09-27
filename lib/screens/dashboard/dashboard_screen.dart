@@ -1,18 +1,9 @@
-import 'dart:ui';
-
 import 'package:booking_app/blocs/blocs.dart';
-import 'package:booking_app/blocs/edit_scheme/edit_scheme_bloc.dart';
-import 'package:booking_app/blocs/kitchen/kitchen_bloc.dart';
-import 'package:booking_app/models/db/user.dart';
-import 'package:booking_app/models/models.dart';
-import 'package:booking_app/screens/dashboard/widgets/place_item.dart';
 import 'package:booking_app/screens/kitchen/kitchen_screen.dart';
 import 'package:booking_app/screens/products/products_screen.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'widgets/create_place_form.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const pageRoute = '/dashboard';
@@ -159,7 +150,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           InkWell(
                             onTap: () {
                               final tBloc = context.read<TablesBloc>();
-                              final oBloc = context.read<OrderBloc>();
+                              final oBloc = context.read<OrderInfoBloc>();
                               final trBloc = context
                                   .read<TableReservationsBloc>()
                                 ..add(TableReservationsLoad());
@@ -187,7 +178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              final oBloc = context.read<OrderBloc>();
+                              final oBloc = context.read<OrderInfoBloc>();
                               Navigator.push<void>(
                                   context,
                                   MaterialPageRoute(
@@ -213,17 +204,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           InkWell(
                             onTap: () {
                               final oBloc = context.read<OrderBloc>()
-                                ..add(OrderLoad(orderId: 0));
-
+                                ..add(OrdersLoad());
                               final dBloc = context.read<DishBloc>();
+                              final oIBloc = context.read<OrderInfoBloc>();
 
                               Navigator.push<void>(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => OrderScreen(
-                                          oBloc: oBloc,
-                                          tableNumber: 1,
-                                          dBloc: dBloc)));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrdersScreen(
+                                    oBloc: oBloc,
+                                    oIBloc: oIBloc,
+                                    dBloc: dBloc,
+                                  ),
+                                ),
+                              );
                             },
                             child: Container(
                               color: Colors.white,

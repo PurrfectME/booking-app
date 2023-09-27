@@ -1,5 +1,6 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/blocs/edit_scheme/edit_scheme_bloc.dart';
+import 'package:booking_app/blocs/order_info/order_info_bloc.dart';
 import 'package:booking_app/constants/constants.dart';
 import 'package:booking_app/models/local/create_order_model.dart';
 import 'package:booking_app/models/models.dart';
@@ -12,7 +13,7 @@ import 'widgets/background_paint.dart';
 import 'widgets/table_position_wrapper.dart';
 
 class TablesSchemeScreen extends StatefulWidget {
-  final OrderBloc oBloc;
+  final OrderInfoBloc oBloc;
   const TablesSchemeScreen({
     Key? key,
     required this.oBloc,
@@ -78,17 +79,46 @@ class _TablesSchemeScreenState extends State<TablesSchemeScreen> {
                   await showConfirmationDialog(context, x.position.number);
                 },
                 child: Draggable<TablePositionWrapper>(
-                    data: x,
-                    feedback: SvgPicture.asset(
-                      'assets/images/table2.svg',
-                      width: 75,
-                      height: 75,
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/images/table2.svg',
-                      width: 75,
-                      height: 75,
-                    )),
+                  data: x,
+                  feedback: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        child: SvgPicture.asset(
+                          'assets/images/table${x.position.guests}.svg',
+                          width: 50,
+                          height: 100,
+                        ),
+                      ),
+                      Container(
+                          child: Center(
+                        child: Text(
+                          x.position.number.toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )),
+                    ],
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        child: SvgPicture.asset(
+                          'assets/images/table${x.position.guests}.svg',
+                          width: 50,
+                          height: 100,
+                        ),
+                      ),
+                      Container(
+                          child: Center(
+                        child: Text(
+                          x.position.number.toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
               ),
             ))
         .toList();

@@ -1,6 +1,9 @@
 import 'package:booking_app/constants/constants.dart';
+import 'package:booking_app/models/db/measure.dart';
 import 'package:booking_app/models/local/product_model.dart';
+import 'package:booking_app/utils/measure_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class CreateProductForm extends StatefulWidget {
   const CreateProductForm({super.key});
@@ -11,10 +14,11 @@ class CreateProductForm extends StatefulWidget {
 
 class _CreateProductFormState extends State<CreateProductForm> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _typeAheadController = TextEditingController();
 
   late String name;
   late double amount;
-  late String type;
+  late String measure;
 //TODO: валидация на добавление продукта который уже существует
   @override
   Widget build(BuildContext context) => Form(
@@ -80,31 +84,40 @@ class _CreateProductFormState extends State<CreateProductForm> {
                   // validator: validatePhoneNumber),
                 ),
                 const SizedBox(height: 20),
-                TextFormField(
-                  style: const TextStyle(color: Colors.white),
-                  initialValue: '',
-                  keyboardType: TextInputType.text,
-                  onSaved: (newValue) {
-                    type = newValue!;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Мера',
-                    floatingLabelStyle: const TextStyle(color: Colors.white),
-                    labelStyle:
-                        const TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
-                    focusedBorder: OutlineInputBorder(
+                TypeAheadField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                    style: const TextStyle(color: Colors.white),
+                    controller: _typeAheadController,
+                    decoration: InputDecoration(
+                      labelText: 'Мера',
+                      floatingLabelStyle: const TextStyle(color: Colors.white),
+                      labelStyle: const TextStyle(
+                          color: Color.fromARGB(255, 66, 66, 66)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: const BorderSide(
+                              color: Constants.mainPurple, width: 2)),
+                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: const BorderSide(
-                            color: Constants.mainPurple, width: 2)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 66, 66, 66), width: 2),
+                            color: Color.fromARGB(255, 66, 66, 66), width: 2),
+                      ),
                     ),
                   ),
-                  // onChanged: phoneNumberOnChange,
-                  // The validator receives the text that the user has entered.
-                  // validator: validatePhoneNumber),
+                  suggestionsCallback: (pattern) => Measure.values
+                      .map(MeasureHelper.fromMeasure)
+                      .where((measure) => measure
+                          .toLowerCase()
+                          .contains(pattern.toLowerCase())),
+                  itemBuilder: (context, suggestion) => ListTile(
+                    title: Text(suggestion),
+                  ),
+                  onSuggestionSelected: (suggestion) {
+                    _typeAheadController.text = suggestion;
+                    setState(() {
+                      measure = suggestion;
+                    });
+                  },
                 ),
                 const SizedBox(height: 20),
               ],
@@ -113,7 +126,7 @@ class _CreateProductFormState extends State<CreateProductForm> {
               onPressed: () {
                 _formKey.currentState!.save();
                 Navigator.pop(context,
-                    ProductModel(name: name, amount: amount, type: type));
+                    ProductModel(name: name, amount: amount, type: measure));
               },
               style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

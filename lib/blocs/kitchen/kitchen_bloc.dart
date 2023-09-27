@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:booking_app/models/local/kitchen_model.dart';
+import 'package:booking_app/models/local/product_model.dart';
 import 'package:booking_app/models/models.dart';
 import 'package:booking_app/providers/hive_db.dart';
 import 'package:equatable/equatable.dart';
@@ -14,8 +15,17 @@ class KitchenBloc extends Bloc<KitchenEvent, KitchenState> {
         emit(KitchenLoading());
 
         final kitchenData = await _getKitchenData();
+        final products = (await HiveProvider.getProducts())
+            .map(
+              (e) => ProductModel(
+                name: e.name,
+                amount: e.amount,
+                type: e.type,
+              ),
+            )
+            .toList();
 
-        emit(KitchenLoaded(kitchenData: kitchenData));
+        emit(KitchenLoaded(kitchenData: kitchenData, products: products));
       } else if (event is CreateKitchenItem) {
         await HiveProvider.createKitchenItem(Kitchen(
             id: 0,
@@ -25,8 +35,17 @@ class KitchenBloc extends Bloc<KitchenEvent, KitchenState> {
             user: event.kitchen.user));
 
         final kitchenData = await _getKitchenData();
+        final products = (await HiveProvider.getProducts())
+            .map(
+              (e) => ProductModel(
+                name: e.name,
+                amount: e.amount,
+                type: e.type,
+              ),
+            )
+            .toList();
 
-        emit(KitchenLoaded(kitchenData: kitchenData));
+        emit(KitchenLoaded(kitchenData: kitchenData, products: products));
       } else {
         emit(const KitchenError(error: 'ОШИБКА КУХНИ'));
       }

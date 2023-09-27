@@ -1,5 +1,6 @@
 import 'package:booking_app/screens/reservations/reservations_screen.dart';
 
+// ignore: avoid_classes_with_only_static_members
 class StatusHelper {
   static ReservationStatus toStatus(int status) {
     switch (status) {

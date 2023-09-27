@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'order_bloc.dart';
 
 class OrderState extends Equatable {
@@ -10,14 +9,12 @@ class OrderState extends Equatable {
 
 class OrderLoading extends OrderState {}
 
-class OrderLoaded extends OrderState {
-  final Order order;
-  const OrderLoaded({
-    required this.order,
+class OrdersLoaded extends OrderState {
+  final List<Order> orders;
+  const OrdersLoaded({
+    required this.orders,
   });
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => [orders];
 }
-
-class OrderPrinted extends OrderState {}

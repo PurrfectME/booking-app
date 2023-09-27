@@ -12,12 +12,14 @@ class KitchenLoading extends KitchenState {}
 
 class KitchenLoaded extends KitchenState {
   final List<KitchenModel> kitchenData;
+  final List<ProductModel> products;
   const KitchenLoaded({
     required this.kitchenData,
+    required this.products,
   });
 
   @override
-  List<Object> get props => [kitchenData];
+  List<Object> get props => [kitchenData, products];
 }
 
 class KitchenError extends KitchenState {

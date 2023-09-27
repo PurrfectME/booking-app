@@ -1,15 +1,14 @@
 import 'package:booking_app/blocs/blocs.dart';
 import 'package:booking_app/constants/constants.dart';
-import 'package:booking_app/screens/order/widgets/order_item.dart';
 import 'package:booking_app/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class OrderScreen extends StatefulWidget {
+class OrderInfoScreen extends StatefulWidget {
   final int tableNumber;
-  final OrderBloc oBloc;
+  final OrderInfoBloc oBloc;
   final DishBloc dBloc;
-  const OrderScreen({
+  const OrderInfoScreen({
     super.key,
     required this.tableNumber,
     required this.oBloc,
@@ -17,27 +16,28 @@ class OrderScreen extends StatefulWidget {
   });
 
   @override
-  State<OrderScreen> createState() => _OrderScreenState();
+  State<OrderInfoScreen> createState() => _OrderInfoScreenState();
 }
 
-class _OrderScreenState extends State<OrderScreen> {
+class _OrderInfoScreenState extends State<OrderInfoScreen> {
   @override
-  Widget build(BuildContext context) => BlocConsumer<OrderBloc, OrderState>(
+  Widget build(BuildContext context) =>
+      BlocConsumer<OrderInfoBloc, OrderInfoState>(
         bloc: widget.oBloc,
         listener: (context, state) {
           if (state is OrderPrinted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Отправлено')),
+              const SnackBar(content: Text('Отправлено')),
             );
           }
         },
         builder: (context, state) {
-          if (state is OrderLoaded) {
+          if (state is OrderInfoLoaded) {
             return Scaffold(
                 floatingActionButton: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: Colors.black,
+                      backgroundColor: Constants.mainPurple,
                       shape: const StadiumBorder()),
                   onPressed: _saveOrder,
                   child: const Text('Сохранить счёт'),
