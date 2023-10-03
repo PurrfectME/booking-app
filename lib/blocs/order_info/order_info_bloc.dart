@@ -9,15 +9,16 @@ part 'order_info_state.dart';
 
 class OrderInfoBloc extends Bloc<OrderInfoEvent, OrderInfoState> {
   List<OrderItem> orderItems = [];
-  Order? orderInfo;
+  Order? order;
+
   OrderInfoBloc() : super(OrderInfoLoading()) {
     on<OrderInfoEvent>((event, emit) async {
       if (event is OrderInfoLoad) {
         emit(OrderInfoLoading());
 
-        orderInfo = await HiveProvider.getOrderById(event.orderId);
+        order = await HiveProvider.getOrderById(event.orderId);
 
-        emit(OrderInfoLoaded(order: orderInfo!));
+        emit(OrderInfoLoaded(order: order!));
       } else if (event is CreateOrder) {
         //TODO: Откуда брать админа(прост юзер который залогинен скорее всего)
         final id = await HiveProvider.createOrder(Order(
@@ -39,7 +40,7 @@ class OrderInfoBloc extends Bloc<OrderInfoEvent, OrderInfoState> {
 
         dishes
             .map(
-              (x) => orderItems.add(OrderItem(
+              (x) => order!.items.add(OrderItem(
                   id: 0,
                   createDate: DateTime.now().millisecondsSinceEpoch,
                   note: "note",
@@ -49,30 +50,24 @@ class OrderInfoBloc extends Bloc<OrderInfoEvent, OrderInfoState> {
             )
             .toList();
 
-        final currentOrder = Order(
-            id: 0,
-            table: 0,
-            openDate: 1,
-            closeDate: 1,
-            items: orderItems,
-            cardId: 1,
-            administrator: "administrator",
-            guests: 1);
-
-        emit(OrderInfoLoaded(order: currentOrder));
+        emit(OrderInfoLoaded(order: order!));
       } else if (event is EditOrderItem) {
-        orderItems.firstWhere((x) => x.dish.id == event.dishId).note =
+        order!.items.firstWhere((x) => x.dish.id == event.dishId).note =
             event.note;
       } else if (event is SaveOrder) {
         if (orderItems.isNotEmpty) {
-          orderInfo?.items.addAll(orderItems);
+          order?.items.addAll(orderItems);
 
-          await orderInfo?.save();
+          await order?.save();
 
           emit(OrderPrinted());
 
-          emit(OrderInfoLoaded(order: orderInfo!));
+          emit(OrderInfoLoaded(order: order!));
         }
+      } else if (event is RemoveOrderItem) {
+        order!.items.removeWhere((x) => x.id == event.id);
+
+        emit(OrderInfoLoaded(order: order!));
       }
     });
   }

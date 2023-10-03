@@ -49,7 +49,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => OrderInfoScreen(
-                                    oBloc: widget.oIBloc,
+                                    oIBloc: widget.oIBloc,
                                     dBloc: widget.dBloc,
                                     tableNumber: order.table,
                                   ),

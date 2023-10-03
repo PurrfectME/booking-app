@@ -121,7 +121,11 @@ class _DishScreenState extends State<DishScreen> {
                               return InkWell(
                                 onTap: () {
                                   setState(() {
-                                    selectedDishes.add(x.id);
+                                    if (selectedDishes.contains(x.id)) {
+                                      selectedDishes.remove(x.id);
+                                    } else {
+                                      selectedDishes.add(x.id);
+                                    }
                                   });
                                 },
                                 child: Container(

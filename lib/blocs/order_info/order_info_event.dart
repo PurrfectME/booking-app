@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'order_info_bloc.dart';
 
 class OrderInfoEvent extends Equatable {
@@ -52,3 +53,13 @@ class EditOrderItem extends OrderInfoEvent {
 }
 
 class SaveOrder extends OrderInfoEvent {}
+
+class RemoveOrderItem extends OrderInfoEvent {
+  final int id;
+  const RemoveOrderItem({
+    required this.id,
+  });
+
+  @override
+  List<Object> get props => [id];
+}

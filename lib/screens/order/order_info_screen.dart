@@ -6,12 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrderInfoScreen extends StatefulWidget {
   final int tableNumber;
-  final OrderInfoBloc oBloc;
+  final OrderInfoBloc oIBloc;
   final DishBloc dBloc;
   const OrderInfoScreen({
     super.key,
     required this.tableNumber,
-    required this.oBloc,
+    required this.oIBloc,
     required this.dBloc,
   });
 
@@ -23,7 +23,7 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
   @override
   Widget build(BuildContext context) =>
       BlocConsumer<OrderInfoBloc, OrderInfoState>(
-        bloc: widget.oBloc,
+        bloc: widget.oIBloc,
         listener: (context, state) {
           if (state is OrderPrinted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -99,6 +99,9 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                             ),
                           ),
                         ),
+                        DataColumn(
+                          label: Text(''),
+                        ),
                       ],
                       rows: state.order.items
                           .map(
@@ -132,13 +135,23 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                                       ),
                                     ),
                                     onChanged: (value) {
-                                      widget.oBloc.add(EditOrderItem(
+                                      widget.oIBloc.add(EditOrderItem(
                                         note: value,
                                         dishId: x.dish.id,
                                       ));
                                     },
                                     controller:
                                         TextEditingController(text: x.note),
+                                  ),
+                                ),
+                                DataCell(
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_forever,
+                                        color: Colors.white),
+                                    onPressed: () {
+                                      widget.oIBloc
+                                          .add(RemoveOrderItem(id: x.id));
+                                    },
                                   ),
                                 ),
                               ],
@@ -153,17 +166,21 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
       );
 
   void _saveOrder() {
-    widget.oBloc.add(SaveOrder());
+    widget.oIBloc.add(SaveOrder());
   }
 
   Future _addOrderItems() async {
     final selectedItems = await Navigator.push<List<int>>(
       context,
       MaterialPageRoute(
-        builder: (context) => DishScreen(
-          dBloc: widget.dBloc,
-          isSelectable: true,
-        ),
+        builder: (context) {
+          widget.dBloc.add(const DishLoad());
+
+          return DishScreen(
+            dBloc: widget.dBloc,
+            isSelectable: true,
+          );
+        },
       ),
     );
 
@@ -171,6 +188,6 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
       return null;
     }
 
-    widget.oBloc.add(AddItemsToOrder(selectedItems: selectedItems));
+    widget.oIBloc.add(AddItemsToOrder(selectedItems: selectedItems));
   }
 }
